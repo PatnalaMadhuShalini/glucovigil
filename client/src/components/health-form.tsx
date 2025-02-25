@@ -29,32 +29,35 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
   const { toast } = useToast();
   const [error, setError] = useState<string | null>(null);
 
+  // Define strict default values with explicit booleans
+  const defaultValues: HealthData = {
+    demographics: {
+      age: 0,
+      gender: "male",
+      ethnicity: "",
+    },
+    physiological: {
+      height: 0,
+      weight: 0,
+      bloodPressure: {
+        systolic: 0,
+        diastolic: 0,
+      },
+      bloodSugar: 0,
+    },
+    lifestyle: {
+      exercise: "none",
+      diet: "fair",
+      stressLevel: "moderate",
+      workStyle: "sedentary",
+      alcohol: false,
+      smoking: false
+    },
+  };
+
   const form = useForm<HealthData>({
     resolver: zodResolver(healthDataSchema),
-    defaultValues: {
-      demographics: {
-        age: 0,
-        gender: "male",
-        ethnicity: "",
-      },
-      physiological: {
-        height: 0,
-        weight: 0,
-        bloodPressure: {
-          systolic: 0,
-          diastolic: 0,
-        },
-        bloodSugar: 0
-      },
-      lifestyle: {
-        exercise: "none",
-        diet: "fair",
-        stressLevel: "moderate",
-        workStyle: "sedentary",
-        alcohol: false,
-        smoking: false
-      }
-    }
+    defaultValues,
   });
 
   const mutation = useMutation({
@@ -85,33 +88,41 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
     },
   });
 
-  const onSubmit = (data: HealthData) => {
-    const transformedData: HealthData = {
-      demographics: {
-        age: Number(data.demographics.age),
-        gender: data.demographics.gender,
-        ethnicity: data.demographics.ethnicity,
-      },
-      physiological: {
-        height: Number(data.physiological.height),
-        weight: Number(data.physiological.weight),
-        bloodPressure: {
-          systolic: Number(data.physiological.bloodPressure.systolic),
-          diastolic: Number(data.physiological.bloodPressure.diastolic),
+  const onSubmit = (formData: HealthData) => {
+    try {
+      // Transform and validate all fields
+      const transformedData: HealthData = {
+        demographics: {
+          age: Number(formData.demographics.age),
+          gender: formData.demographics.gender,
+          ethnicity: formData.demographics.ethnicity,
         },
-        bloodSugar: Number(data.physiological.bloodSugar),
-      },
-      lifestyle: {
-        exercise: data.lifestyle.exercise,
-        diet: data.lifestyle.diet,
-        stressLevel: data.lifestyle.stressLevel,
-        workStyle: data.lifestyle.workStyle,
-        alcohol: data.lifestyle.alcohol,
-        smoking: data.lifestyle.smoking
-      }
-    };
+        physiological: {
+          height: Number(formData.physiological.height),
+          weight: Number(formData.physiological.weight),
+          bloodPressure: {
+            systolic: Number(formData.physiological.bloodPressure.systolic),
+            diastolic: Number(formData.physiological.bloodPressure.diastolic),
+          },
+          bloodSugar: Number(formData.physiological.bloodSugar),
+        },
+        lifestyle: {
+          exercise: formData.lifestyle.exercise,
+          diet: formData.lifestyle.diet,
+          stressLevel: formData.lifestyle.stressLevel,
+          workStyle: formData.lifestyle.workStyle,
+          // Explicitly cast to boolean
+          alcohol: formData.lifestyle.alcohol === true,
+          smoking: formData.lifestyle.smoking === true
+        }
+      };
 
-    mutation.mutate(transformedData);
+      console.log("Form data before submission:", transformedData);
+      mutation.mutate(transformedData);
+    } catch (error) {
+      console.error("Form submission error:", error);
+      setError("Failed to process form data");
+    }
   };
 
   return (
@@ -136,6 +147,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                   <FormControl>
                     <Input
                       type="number"
+                      min="0"
                       {...field}
                       value={field.value || ""}
                       onChange={(e) => field.onChange(Number(e.target.value))}
@@ -185,7 +197,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
           </div>
         </div>
 
-        {/* Physiological Data Section */}
+        {/* Physiological Section */}
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Physiological Data</h2>
           <div className="grid md:grid-cols-2 gap-4">
@@ -198,6 +210,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                   <FormControl>
                     <Input
                       type="number"
+                      min="0"
                       {...field}
                       value={field.value || ""}
                       onChange={(e) => field.onChange(Number(e.target.value))}
@@ -217,6 +230,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                   <FormControl>
                     <Input
                       type="number"
+                      min="0"
                       {...field}
                       value={field.value || ""}
                       onChange={(e) => field.onChange(Number(e.target.value))}
@@ -236,6 +250,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                   <FormControl>
                     <Input
                       type="number"
+                      min="0"
                       {...field}
                       value={field.value || ""}
                       onChange={(e) => field.onChange(Number(e.target.value))}
@@ -255,6 +270,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                   <FormControl>
                     <Input
                       type="number"
+                      min="0"
                       {...field}
                       value={field.value || ""}
                       onChange={(e) => field.onChange(Number(e.target.value))}
@@ -274,6 +290,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                   <FormControl>
                     <Input
                       type="number"
+                      min="0"
                       {...field}
                       value={field.value || ""}
                       onChange={(e) => field.onChange(Number(e.target.value))}
@@ -392,13 +409,32 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Alcohol Consumption</FormLabel>
-                  <Select
-                    onValueChange={(value) => field.onChange(value === "true")}
-                    value={field.value ? "true" : "false"}
-                  >
+                  <Select onValueChange={(value) => field.onChange(value === "true")} value={String(field.value)}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select alcohol consumption" />
+                        <SelectValue placeholder="Do you consume alcohol?" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="false">No</SelectItem>
+                      <SelectItem value="true">Yes</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="lifestyle.smoking"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Smoking</FormLabel>
+                  <Select onValueChange={(value) => field.onChange(value === "true")} value={String(field.value)}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Do you smoke?" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -412,32 +448,6 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
             />
           </div>
         </div>
-
-        {/* Add smoking field to lifestyle section */}
-        <FormField
-          control={form.control}
-          name="lifestyle.smoking"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Smoking</FormLabel>
-              <Select
-                onValueChange={(value) => field.onChange(value === "true")}
-                value={field.value ? "true" : "false"}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Do you smoke?" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="false">No</SelectItem>
-                  <SelectItem value="true">Yes</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         <Button
           type="submit"
