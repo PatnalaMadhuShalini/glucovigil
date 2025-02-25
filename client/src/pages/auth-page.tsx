@@ -17,20 +17,25 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { insertUserSchema, type InsertUser } from "@shared/schema";
 import { Loader2 } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
+type LoginData = {
+  username: string;
+  password: string;
+};
 
 export default function AuthPage() {
   const [, setLocation] = useLocation();
   const { user, loginMutation, registerMutation } = useAuth();
   const [activeTab, setActiveTab] = useState("login");
 
-  const form = useForm<InsertUser>({
+  const loginForm = useForm<LoginData>({
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
+
+  const registerForm = useForm<InsertUser>({
     resolver: zodResolver(insertUserSchema),
     defaultValues: {
       username: "",
@@ -49,9 +54,19 @@ export default function AuthPage() {
     return null;
   }
 
-  const handleRegisterSuccess = () => {
-    form.reset();
-    setActiveTab("login");
+  const handleLogin = (data: LoginData) => {
+    loginMutation.mutate(data, {
+      onSuccess: () => setLocation("/dashboard"),
+    });
+  };
+
+  const handleRegister = (data: InsertUser) => {
+    registerMutation.mutate(data, {
+      onSuccess: () => {
+        registerForm.reset();
+        setActiveTab("login");
+      },
+    });
   };
 
   return (
@@ -78,23 +93,13 @@ export default function AuthPage() {
               </TabsList>
 
               <TabsContent value="login">
-                <Form {...form}>
+                <Form {...loginForm}>
                   <form
-                    onSubmit={form.handleSubmit((data) => {
-                      loginMutation.mutate(
-                        {
-                          username: data.username,
-                          password: data.password,
-                        },
-                        {
-                          onSuccess: () => setLocation("/dashboard"),
-                        }
-                      );
-                    })}
+                    onSubmit={loginForm.handleSubmit(handleLogin)}
                     className="space-y-4"
                   >
                     <FormField
-                      control={form.control}
+                      control={loginForm.control}
                       name="username"
                       render={({ field }) => (
                         <FormItem>
@@ -107,7 +112,7 @@ export default function AuthPage() {
                       )}
                     />
                     <FormField
-                      control={form.control}
+                      control={loginForm.control}
                       name="password"
                       render={({ field }) => (
                         <FormItem>
@@ -124,27 +129,27 @@ export default function AuthPage() {
                       className="w-full bg-gradient-to-r from-blue-600 to-cyan-600"
                       disabled={loginMutation.isPending}
                     >
-                      {loginMutation.isPending && (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {loginMutation.isPending ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Logging in...
+                        </>
+                      ) : (
+                        "Login"
                       )}
-                      Login
                     </Button>
                   </form>
                 </Form>
               </TabsContent>
 
               <TabsContent value="register">
-                <Form {...form}>
+                <Form {...registerForm}>
                   <form
-                    onSubmit={form.handleSubmit((data) => {
-                      registerMutation.mutate(data, {
-                        onSuccess: handleRegisterSuccess,
-                      });
-                    })}
+                    onSubmit={registerForm.handleSubmit(handleRegister)}
                     className="space-y-4"
                   >
                     <FormField
-                      control={form.control}
+                      control={registerForm.control}
                       name="username"
                       render={({ field }) => (
                         <FormItem>
@@ -157,7 +162,7 @@ export default function AuthPage() {
                       )}
                     />
                     <FormField
-                      control={form.control}
+                      control={registerForm.control}
                       name="fullName"
                       render={({ field }) => (
                         <FormItem>
@@ -170,7 +175,7 @@ export default function AuthPage() {
                       )}
                     />
                     <FormField
-                      control={form.control}
+                      control={registerForm.control}
                       name="email"
                       render={({ field }) => (
                         <FormItem>
@@ -183,7 +188,7 @@ export default function AuthPage() {
                       )}
                     />
                     <FormField
-                      control={form.control}
+                      control={registerForm.control}
                       name="phone"
                       render={({ field }) => (
                         <FormItem>
@@ -196,7 +201,7 @@ export default function AuthPage() {
                       )}
                     />
                     <FormField
-                      control={form.control}
+                      control={registerForm.control}
                       name="gender"
                       render={({ field }) => (
                         <FormItem>
@@ -221,7 +226,7 @@ export default function AuthPage() {
                       )}
                     />
                     <FormField
-                      control={form.control}
+                      control={registerForm.control}
                       name="place"
                       render={({ field }) => (
                         <FormItem>
@@ -234,7 +239,7 @@ export default function AuthPage() {
                       )}
                     />
                     <FormField
-                      control={form.control}
+                      control={registerForm.control}
                       name="password"
                       render={({ field }) => (
                         <FormItem>
@@ -251,10 +256,14 @@ export default function AuthPage() {
                       className="w-full bg-gradient-to-r from-blue-600 to-cyan-600"
                       disabled={registerMutation.isPending}
                     >
-                      {registerMutation.isPending && (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {registerMutation.isPending ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Registering...
+                        </>
+                      ) : (
+                        "Register"
                       )}
-                      Register
                     </Button>
                   </form>
                 </Form>

@@ -54,42 +54,6 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
   const { toast } = useToast();
   const form = useForm<HealthData>({
     resolver: zodResolver(healthDataSchema),
-    defaultValues: {
-      demographics: {
-        age: 0,
-        gender: "male",
-        ethnicity: "",
-      },
-      physiological: {
-        height: 0,
-        weight: 0,
-        bloodPressure: {
-          systolic: 0,
-          diastolic: 0,
-        },
-        bloodSugar: 0,
-        cholesterol: {
-          total: 0,
-          hdl: 0,
-          ldl: 0,
-        },
-      },
-      lifestyle: {
-        smoking: false,
-        alcohol: {
-          consumption: "none",
-          frequencyPerWeek: 0,
-        },
-        exercise: "none",
-        diet: "fair",
-        sleep: {
-          hoursPerNight: 7,
-          quality: "good",
-        },
-        stressLevel: "moderate",
-        workStyle: "sedentary",
-      },
-    },
   });
 
   const mutation = useMutation({
@@ -118,15 +82,11 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
     },
   });
 
-  const onSubmit = (data: HealthData) => {
+  const onSubmit = async (data: HealthData) => {
     try {
-      mutation.mutate(data);
+      await mutation.mutateAsync(data);
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to submit health data. Please try again.",
-        variant: "destructive",
-      });
+      console.error("Submit error:", error);
     }
   };
 
@@ -683,7 +643,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
         <Button
           type="submit"
           className="w-full bg-gradient-to-r from-blue-600 to-cyan-600"
-          disabled={mutation.isPending || !form.formState.isValid}
+          disabled={mutation.isPending}
         >
           {mutation.isPending ? (
             <>
