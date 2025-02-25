@@ -61,9 +61,9 @@ export default function AuthPage() {
           <CardHeader>
             <div className="flex justify-center mb-6">
               <img
-                src="/attached_assets/logo_1740495461101.png"
+                src="/logo.svg"
                 alt="GlucoSmart Logo"
-                className="h-20 w-auto object-contain"
+                className="h-24 w-auto"
               />
             </div>
             <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">

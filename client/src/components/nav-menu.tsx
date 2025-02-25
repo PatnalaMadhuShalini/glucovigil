@@ -19,7 +19,7 @@ export default function NavMenu() {
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <Link href="/">
           <img 
-            src="/attached_assets/logo_1740495461101.png"
+            src="/logo.svg"
             alt="GlucoSmart Logo" 
             className="h-10 w-auto cursor-pointer"
           />
