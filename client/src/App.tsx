@@ -8,15 +8,14 @@ import Dashboard from "@/pages/dashboard";
 import AuthPage from "@/pages/auth-page";
 import NotFound from "@/pages/not-found";
 import { ProtectedRoute } from "./lib/protected-route";
-import VoiceAssistant from "@/components/voice-assistant";
 
 function Router() {
   return (
     <Switch>
       <Route path="/auth" component={AuthPage} />
-      <ProtectedRoute path="/" component={HomePage} />
       <ProtectedRoute path="/dashboard" component={Dashboard} />
-      <Route component={NotFound} />
+      <ProtectedRoute path="/" component={HomePage} />
+      <Route path="*" component={NotFound} />
     </Switch>
   );
 }
@@ -26,7 +25,6 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Router />
-        <VoiceAssistant />
         <Toaster />
       </AuthProvider>
     </QueryClientProvider>
