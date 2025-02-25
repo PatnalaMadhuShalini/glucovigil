@@ -8,6 +8,7 @@ import Dashboard from "@/pages/dashboard";
 import AuthPage from "@/pages/auth-page";
 import NotFound from "@/pages/not-found";
 import { ProtectedRoute } from "./lib/protected-route";
+import VoiceAssistant from "@/components/voice-assistant";
 
 function Router() {
   return (
@@ -25,6 +26,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Router />
+        <VoiceAssistant />
         <Toaster />
       </AuthProvider>
     </QueryClientProvider>

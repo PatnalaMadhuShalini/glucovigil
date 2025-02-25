@@ -4,9 +4,16 @@ import { setupAuth } from "./auth";
 import { storage } from "./storage";
 import { healthDataSchema, feedbackSchema } from "@shared/schema";
 import { ZodError } from "zod";
+import fileUpload from 'express-fileupload';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   setupAuth(app);
+
+  // Add file upload middleware
+  app.use(fileUpload({
+    limits: { fileSize: 50 * 1024 * 1024 }, // 50MB max file size
+    debug: process.env.NODE_ENV === 'development'
+  }));
 
   // Health data submission
   app.post("/api/health-data", async (req, res) => {
@@ -58,6 +65,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         res.status(500).send("Internal server error");
       }
+    }
+  });
+
+  // Medical records upload and processing
+  app.post("/api/medical-records", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+
+    try {
+      if (!req.files || !req.files.file) {
+        return res.status(400).send('No file uploaded');
+      }
+
+      const file = req.files.file;
+
+      // Validate file type
+      if (file.mimetype !== 'application/pdf') {
+        return res.status(400).send('Only PDF files are supported');
+      }
+
+      try {
+        // Dynamically import pdf-parse only when needed
+        const pdfParse = await import('pdf-parse');
+        const pdfData = await pdfParse.default(file.data);
+        const extractedData = await extractHealthData(pdfData.text);
+
+        if (extractedData) {
+          // Update the latest health data entry with extracted information
+          const healthData = await storage.getHealthDataByUserId(req.user!.id);
+          const latestData = healthData[healthData.length - 1];
+
+          if (latestData) {
+            // Merge extracted data with existing data
+            const updatedData = {
+              ...latestData,
+              physiological: {
+                ...latestData.physiological,
+                ...extractedData
+              }
+            };
+
+            // Calculate new prediction with updated data
+            const prediction = calculateDiabetesRisk(updatedData);
+            await storage.createHealthData(req.user!.id, {
+              ...updatedData,
+              prediction
+            });
+          }
+        }
+
+        res.json({ 
+          message: 'Medical records processed successfully',
+          extractedData 
+        });
+      } catch (parseError) {
+        console.error('Error parsing PDF:', parseError);
+        res.status(422).send('Could not process the PDF file');
+      }
+    } catch (err) {
+      console.error('Error processing medical records:', err);
+      res.status(500).send('Error processing medical records');
     }
   });
 
@@ -164,4 +231,39 @@ function generateRecommendations(riskScore: number, data: any) {
   }
 
   return recommendations;
+}
+
+async function extractHealthData(text: string) {
+  // Example patterns to extract health data
+  const bloodSugarPattern = /blood sugar[:\s]+(\d+)/i;
+  const bloodPressurePattern = /blood pressure[:\s]+(\d+)\/(\d+)/i;
+  const heightPattern = /height[:\s]+(\d+(?:\.\d+)?)\s*cm/i;
+  const weightPattern = /weight[:\s]+(\d+(?:\.\d+)?)\s*kg/i;
+
+  const extractedData: any = {};
+
+  const bloodSugarMatch = text.match(bloodSugarPattern);
+  if (bloodSugarMatch) {
+    extractedData.bloodSugar = parseFloat(bloodSugarMatch[1]);
+  }
+
+  const bloodPressureMatch = text.match(bloodPressurePattern);
+  if (bloodPressureMatch) {
+    extractedData.bloodPressure = {
+      systolic: parseInt(bloodPressureMatch[1]),
+      diastolic: parseInt(bloodPressureMatch[2])
+    };
+  }
+
+  const heightMatch = text.match(heightPattern);
+  if (heightMatch) {
+    extractedData.height = parseFloat(heightMatch[1]);
+  }
+
+  const weightMatch = text.match(weightPattern);
+  if (weightMatch) {
+    extractedData.weight = parseFloat(weightMatch[1]);
+  }
+
+  return Object.keys(extractedData).length > 0 ? extractedData : null;
 }

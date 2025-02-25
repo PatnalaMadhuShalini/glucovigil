@@ -57,6 +57,26 @@ export class MemStorage implements IStorage {
     );
   }
 
+  async updateHealthData(userId: number, data: Partial<HealthData>): Promise<HealthData | undefined> {
+    const userHealthData = await this.getHealthDataByUserId(userId);
+    const latestData = userHealthData[userHealthData.length - 1];
+
+    if (latestData) {
+      const updatedData = {
+        ...latestData,
+        ...data,
+        physiological: {
+          ...latestData.physiological,
+          ...(data.physiological || {})
+        }
+      };
+      this.healthData.set(latestData.id, updatedData);
+      return updatedData;
+    }
+
+    return undefined;
+  }
+
   async createFeedback(userId: number, feedback: Feedback): Promise<Feedback> {
     const id = this.currentId++;
     const newFeedback = {
