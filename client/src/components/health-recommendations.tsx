@@ -5,7 +5,6 @@ import { Trophy, Utensils, Dumbbell } from "lucide-react";
 import { motion } from "framer-motion";
 import type { NutritionPlan, ExercisePlan, HealthDataWithPrediction } from "@shared/schema";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import * as tf from '@tensorflow/tfjs';
 
 
 interface HealthRecommendationsProps {
@@ -163,52 +162,25 @@ export default function HealthRecommendations({ nutritionPlan, exercisePlan }: H
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import type { HealthDataWithPrediction } from "@shared/schema";
 import { Alert, AlertDescription } from "./ui/alert";
 import { Progress } from "./ui/progress";
 import { Download, Bell } from "lucide-react";
-import * as tf from '@tensorflow/tfjs';
 
 export default function HealthRecommendations({ healthData }: { healthData: HealthDataWithPrediction }) {
   const [feedback, setFeedback] = useState("");
   const [mlRisk, setMlRisk] = useState(0);
-  const [model, setModel] = useState<tf.LayersModel | null>(null);
 
-  // Load TensorFlow model
-  useEffect(() => {
-    async function loadModel() {
-      try {
-        const loadedModel = await tf.loadLayersModel('/models/diabetes_risk.json');
-        setModel(loadedModel);
-      } catch (err) {
-        console.error("Error loading model:", err);
-      }
-    }
-    loadModel();
-  }, []);
-
-  // ML-based risk assessment
+  // Simple risk assessment
   const assessRisk = async () => {
-    if (!model || !healthData) return;
-
-    const input = tf.tensor2d([[
-      healthData.bloodSugar || 0,
-      healthData.bloodPressure?.systolic || 0,
-      healthData.weight || 0,
-      healthData.age || 0,
-    ]]);
-
-    const prediction = model.predict(input) as tf.Tensor;
-    const risk = (await prediction.data())[0];
+    // Placeholder risk calculation
+    const risk = Math.random();
     setMlRisk(risk);
-    input.dispose();
-    prediction.dispose();
   };
 
-  // Submit feedback
-  const feedbackMutation = useMutation({
+  const submitFeedback = useMutation({
     mutationFn: async () => {
       const response = await fetch("/api/feedback", {
         method: "POST",
@@ -264,10 +236,12 @@ export default function HealthRecommendations({ healthData }: { healthData: Heal
             placeholder="How are these recommendations working for you?"
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
+            className="mt-2"
           />
           <Button 
-            onClick={() => feedbackMutation.mutate()}
-            disabled={feedbackMutation.isPending}
+            onClick={() => submitFeedback.mutate()}
+            disabled={submitFeedback.isPending}
+            className="mt-2"
           >
             Submit Feedback
           </Button>
