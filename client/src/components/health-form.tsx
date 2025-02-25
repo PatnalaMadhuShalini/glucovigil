@@ -25,6 +25,7 @@ import { Loader2, AlertTriangle, FileUp } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
+import { Slider } from "@/components/ui/slider";
 
 export default function HealthForm({ onComplete }: { onComplete: () => void }) {
   const { toast } = useToast();
@@ -44,12 +45,26 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
           diastolic: 0,
         },
         bloodSugar: 0,
+        cholesterol: {
+          total: 0,
+          hdl: 0,
+          ldl: 0,
+        },
       },
       lifestyle: {
         smoking: false,
-        alcohol: false,
+        alcohol: {
+          consumption: "none",
+          frequencyPerWeek: 0,
+        },
         exercise: "none",
         diet: "fair",
+        sleep: {
+          hoursPerNight: 7,
+          quality: "good",
+        },
+        stressLevel: "moderate",
+        workStyle: "sedentary",
       },
     },
   });
@@ -316,6 +331,58 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                 </FormItem>
               )}
             />
+            {/* New Cholesterol Fields */}
+            <FormField
+              control={form.control}
+              name="physiological.cholesterol.total"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Total Cholesterol (mg/dL)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      {...field}
+                      onChange={(e) => field.onChange(parseNumberInput(e.target.value))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="physiological.cholesterol.hdl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>HDL Cholesterol (mg/dL)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      {...field}
+                      onChange={(e) => field.onChange(parseNumberInput(e.target.value))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="physiological.cholesterol.ldl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>LDL Cholesterol (mg/dL)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      {...field}
+                      onChange={(e) => field.onChange(parseNumberInput(e.target.value))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
 
           {/* Risk Alert */}
@@ -380,6 +447,156 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       <SelectItem value="fair">Fair</SelectItem>
                       <SelectItem value="good">Good</SelectItem>
                       <SelectItem value="excellent">Excellent</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* Sleep Section */}
+            <FormField
+              control={form.control}
+              name="lifestyle.sleep.hoursPerNight"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Sleep Hours per Night</FormLabel>
+                  <FormControl>
+                    <div className="pt-2">
+                      <Slider
+                        min={4}
+                        max={12}
+                        step={0.5}
+                        value={[field.value]}
+                        onValueChange={(value) => field.onChange(value[0])}
+                      />
+                      <div className="text-center mt-2">{field.value} hours</div>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lifestyle.sleep.quality"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Sleep Quality</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select sleep quality" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="poor">Poor</SelectItem>
+                      <SelectItem value="fair">Fair</SelectItem>
+                      <SelectItem value="good">Good</SelectItem>
+                      <SelectItem value="excellent">Excellent</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Alcohol Consumption */}
+            <FormField
+              control={form.control}
+              name="lifestyle.alcohol.consumption"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Alcohol Consumption</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select alcohol consumption" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="none">None</SelectItem>
+                      <SelectItem value="occasional">Occasional</SelectItem>
+                      <SelectItem value="moderate">Moderate</SelectItem>
+                      <SelectItem value="frequent">Frequent</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lifestyle.alcohol.frequencyPerWeek"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Drinks per Week</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      {...field}
+                      onChange={(e) => field.onChange(parseNumberInput(e.target.value))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Stress Level */}
+            <FormField
+              control={form.control}
+              name="lifestyle.stressLevel"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Stress Level</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select stress level" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="low">Low</SelectItem>
+                      <SelectItem value="moderate">Moderate</SelectItem>
+                      <SelectItem value="high">High</SelectItem>
+                      <SelectItem value="severe">Severe</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Work Style */}
+            <FormField
+              control={form.control}
+              name="lifestyle.workStyle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Work Style</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select work style" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="sedentary">Sedentary</SelectItem>
+                      <SelectItem value="light">Light Activity</SelectItem>
+                      <SelectItem value="moderate">Moderate Activity</SelectItem>
+                      <SelectItem value="active">Very Active</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
