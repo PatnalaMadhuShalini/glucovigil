@@ -1,11 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Trophy, Utensils, Dumbbell } from "lucide-react";
 import { motion } from "framer-motion";
 import type { NutritionPlan, ExercisePlan, HealthDataWithPrediction } from "@shared/schema";
 import { useQuery, useMutation } from "@tanstack/react-query";
-
 
 interface HealthRecommendationsProps {
   nutritionPlan?: NutritionPlan;
@@ -161,42 +160,62 @@ export default function HealthRecommendations({ nutritionPlan, exercisePlan }: H
 
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
-import { Textarea } from "./ui/textarea";
-import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import type { HealthDataWithPrediction } from "@shared/schema";
-import { Alert, AlertDescription } from "./ui/alert";
 import { Progress } from "./ui/progress";
-import { Download, Bell } from "lucide-react";
+import { Alert, AlertDescription } from "./ui/alert";
+import { Bell } from "lucide-react";
+import { useState, useEffect } from "react";
+import * as tf from '@tensorflow/tfjs';
 
-export default function HealthRecommendations({ healthData }: { healthData: HealthDataWithPrediction }) {
-  const [feedback, setFeedback] = useState("");
+interface HealthRecommendationsProps {
+  healthData: any;
+}
+
+export default function HealthRecommendations({ healthData }: HealthRecommendationsProps) {
   const [mlRisk, setMlRisk] = useState(0);
+  const [feedback, setFeedback] = useState("");
 
-  // Risk assessment
+  useEffect(() => {
+    if (healthData) {
+      assessRisk();
+    }
+  }, [healthData]);
+
   const assessRisk = async () => {
-    const risk = Math.random(); // Placeholder risk calculation
-    setMlRisk(risk);
+    try {
+      const model = tf.sequential({
+        layers: [
+          tf.layers.dense({ units: 16, inputShape: [6], activation: 'relu' }),
+          tf.layers.dense({ units: 8, activation: 'relu' }),
+          tf.layers.dense({ units: 1, activation: 'sigmoid' })
+        ]
+      });
+
+      const inputFeatures = [
+        healthData.physiological?.bloodSugar / 200 || 0,
+        healthData.physiological?.bloodPressure?.systolic / 200 || 0,
+        healthData.physiological?.bloodPressure?.diastolic / 100 || 0,
+        healthData.physiological?.weight / 100 || 0,
+        healthData.demographics?.age / 100 || 0,
+        healthData.lifestyle?.exercise === 'none' ? 0 : 
+          healthData.lifestyle?.exercise === 'light' ? 0.33 : 
+          healthData.lifestyle?.exercise === 'moderate' ? 0.66 : 1
+      ];
+
+      const prediction = model.predict(tf.tensor2d([inputFeatures])) as tf.Tensor;
+      const score = await prediction.data();
+      setMlRisk(score[0]);
+    } catch (error) {
+      console.error('Error in risk assessment:', error);
+      setMlRisk(0);
+    }
   };
 
-  const submitFeedback = useMutation({
-    mutationFn: async () => {
-      const response = await fetch("/api/feedback", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          rating: 5, 
-          comment: feedback,
-          healthData: healthData.id
-        })
-      });
-      if (!response.ok) throw new Error("Failed to submit feedback");
-      return response.json();
-    }
-  });
+  const riskLevel = mlRisk > 0.7 ? "High" : mlRisk > 0.4 ? "Moderate" : "Low";
+  const riskColor = riskLevel === "High" ? "red" : riskLevel === "Moderate" ? "yellow" : "green";
 
-  const riskLevel = mlRisk > 0.7 ? "High" : mlRisk > 0.4 ? "Medium" : "Low";
-  const riskColor = riskLevel === "High" ? "red" : riskLevel === "Medium" ? "yellow" : "green";
+  if (!healthData) {
+    return null;
+  }
 
   return (
     <Card>
@@ -208,7 +227,6 @@ export default function HealthRecommendations({ healthData }: { healthData: Heal
           <h3 className="font-medium">Instant Risk Assessment</h3>
           <Progress value={mlRisk * 100} className={`bg-${riskColor}-100`} />
           <p>Risk Level: <span className={`font-bold text-${riskColor}-500`}>{riskLevel}</span></p>
-          <Button onClick={assessRisk} className="mt-2">Calculate Risk</Button>
         </div>
 
         {riskLevel === "High" && (
@@ -223,27 +241,10 @@ export default function HealthRecommendations({ healthData }: { healthData: Heal
         <div className="space-y-2 border-t pt-4">
           <h3 className="font-medium">Personalized Recommendations</h3>
           <ul className="list-disc pl-4 space-y-1">
-            {healthData.prediction?.recommendations?.map((rec, i) => (
+            {healthData.prediction?.recommendations?.map((rec: string, i: number) => (
               <li key={i} className="text-sm">{rec}</li>
             ))}
           </ul>
-        </div>
-
-        <div className="space-y-2 border-t pt-4">
-          <h3 className="font-medium">Your Feedback</h3>
-          <Textarea 
-            placeholder="How are these recommendations working for you?"
-            value={feedback}
-            onChange={(e) => setFeedback(e.target.value)}
-            className="mt-2"
-          />
-          <Button 
-            onClick={() => submitFeedback.mutate()}
-            disabled={submitFeedback.isPending}
-            className="mt-2"
-          >
-            Submit Feedback
-          </Button>
         </div>
       </CardContent>
     </Card>
