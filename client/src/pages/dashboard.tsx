@@ -13,16 +13,7 @@ import { Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { HealthDataWithPrediction } from "@shared/schema";
 import Achievements from "@/components/achievements";
-
-// Added FeedbackSystem component
-function FeedbackSystem() {
-  return (
-    <div className="p-4">
-      <h2 className="text-xl font-semibold mb-4">Provide Feedback</h2>
-      {/* Add feedback form elements here */}
-    </div>
-  );
-}
+import FeedbackSystem from "@/components/feedback-system";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -94,13 +85,10 @@ export default function Dashboard() {
               </div>
 
               <div className="grid md:grid-cols-2 gap-8 mb-8">
-                <div className="space-y-4">
+                <div className="space-y-8">
                   <HealthRecommendations healthData={latestData} />
                   <FeedbackSystem />
                 </div>
-              </div>
-
-              <div className="mb-8">
                 <Achievements achievements={latestData?.achievements || []} />
               </div>
             </>
