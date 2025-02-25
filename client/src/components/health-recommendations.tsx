@@ -1,208 +1,56 @@
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trophy, Utensils, Dumbbell } from "lucide-react";
-import type { NutritionPlan, ExercisePlan, HealthDataWithPrediction } from "@shared/schema";
-
-interface HealthRecommendationsProps {
-  nutritionPlan?: NutritionPlan;
-  exercisePlan?: ExercisePlan;
-}
-
-export default function HealthRecommendations({ nutritionPlan, exercisePlan }: HealthRecommendationsProps) {
-  const [selectedTab, setSelectedTab] = useState("nutrition");
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Trophy className="h-5 w-5 text-yellow-500" />
-          Your Personalized Health Plan
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="nutrition">
-              <Utensils className="h-4 w-4 mr-2" />
-              Nutrition
-            </TabsTrigger>
-            <TabsTrigger value="exercise">
-              <Dumbbell className="h-4 w-4 mr-2" />
-              Exercise
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="nutrition">
-            {nutritionPlan ? (
-              <div className="space-y-6">
-                <div>
-                  <h3 className="font-semibold mb-2">Daily Meal Plan</h3>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <h4 className="text-sm font-medium">Breakfast</h4>
-                      <ul className="text-sm text-gray-600 list-disc list-inside">
-                        {nutritionPlan.mealPlan.breakfast.map((item, i) => (
-                          <li key={i}>{item}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="space-y-2">
-                      <h4 className="text-sm font-medium">Lunch</h4>
-                      <ul className="text-sm text-gray-600 list-disc list-inside">
-                        {nutritionPlan.mealPlan.lunch.map((item, i) => (
-                          <li key={i}>{item}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold mb-2">Nutritional Goals</h3>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-blue-600">{nutritionPlan.calories}</p>
-                      <p className="text-sm text-gray-600">Daily Calories</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-green-600">{nutritionPlan.macros.protein}g</p>
-                      <p className="text-sm text-gray-600">Protein</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-orange-600">{nutritionPlan.macros.carbs}g</p>
-                      <p className="text-sm text-gray-600">Carbs</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <p className="text-center text-gray-600 py-8">
-                Complete your health assessment to get personalized nutrition recommendations.
-              </p>
-            )}
-          </TabsContent>
-
-          <TabsContent value="exercise">
-            {exercisePlan ? (
-              <div className="space-y-6">
-                <div>
-                  <h3 className="font-semibold mb-2">Weekly Exercise Plan</h3>
-                  <div className="space-y-4">
-                    {Object.entries(exercisePlan.weeklyPlan).map(([day, exercises]) => (
-                      <div
-                        key={day}
-                        className="p-4 rounded-lg bg-gray-50"
-                      >
-                        <h4 className="font-medium capitalize mb-2">{day}</h4>
-                        <ul className="space-y-2">
-                          {exercises.map((exercise, i) => (
-                            <li key={i} className="text-sm text-gray-600">
-                              {exercise.type} - {exercise.duration} mins ({exercise.intensity})
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold mb-2">Exercise Goals</h3>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-blue-600">{exercisePlan.goals.steps}</p>
-                      <p className="text-sm text-gray-600">Daily Steps</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-green-600">{exercisePlan.goals.duration}min</p>
-                      <p className="text-sm text-gray-600">Activity Time</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-orange-600">{exercisePlan.goals.intensity}</p>
-                      <p className="text-sm text-gray-600">Intensity</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <p className="text-center text-gray-600 py-8">
-                Complete your health assessment to get personalized exercise recommendations.
-              </p>
-            )}
-          </TabsContent>
-        </Tabs>
-      </CardContent>
-    </Card>
-  );
-}
-
-import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Progress } from "./ui/progress";
 import { Alert, AlertDescription } from "./ui/alert";
-import { Bell } from "lucide-react";
+import type { HealthDataWithPrediction } from "@shared/schema";
 
 interface HealthRecommendationsProps {
-  healthData: any;
+  healthData: HealthDataWithPrediction;
 }
 
 export default function HealthRecommendations({ healthData }: HealthRecommendationsProps) {
-  const getRiskColor = (level: string) => {
-    switch (level) {
-      case 'low': return 'bg-green-500';
-      case 'moderate': return 'bg-yellow-500';
-      case 'high': return 'bg-red-500';
-      default: return 'bg-gray-500';
+  const riskLevel = healthData?.prediction?.level || "low";
+  const riskScore = healthData?.prediction?.score || 0;
+
+  const getRiskColor = () => {
+    switch (riskLevel) {
+      case "high":
+        return "text-red-500";
+      case "moderate":
+        return "text-yellow-500";
+      default:
+        return "text-green-500";
     }
   };
-
-  if (!healthData?.prediction) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Health Recommendations</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-center text-gray-600">
-            Complete your health assessment to get personalized recommendations.
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Health Recommendations</CardTitle>
+        <CardTitle>Health Assessment</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div>
-          <h3 className="font-medium mb-2">Risk Assessment</h3>
-          <Progress 
-            value={healthData.prediction.score * 10} 
-            className={getRiskColor(healthData.prediction.level)}
-          />
-          <p className="text-sm mt-2 capitalize">
-            Risk Level: {healthData.prediction.level}
-          </p>
-        </div>
+      <CardContent>
+        <div className="space-y-6">
+          <div>
+            <h3 className="font-medium mb-2">Risk Level</h3>
+            <div className={`text-2xl font-bold capitalize ${getRiskColor()}`}>
+              {riskLevel}
+            </div>
+            <Progress value={riskScore * 10} className="mt-2" />
+          </div>
 
-        <Alert>
-          <Bell className="h-4 w-4" />
-          <AlertDescription>
-            Based on your health data, we've generated personalized recommendations.
-          </AlertDescription>
-        </Alert>
+          <div className="space-y-2">
+            <h3 className="font-medium">Recommendations</h3>
+            <ul className="list-disc pl-4 space-y-1">
+              {healthData?.prediction?.recommendations?.map((rec, i) => (
+                <li key={i} className="text-sm">{rec}</li>
+              ))}
+            </ul>
+          </div>
 
-        <div className="space-y-2">
-          <h3 className="font-medium">Recommendations</h3>
-          <ul className="list-disc pl-4 space-y-1">
-            {healthData.prediction.recommendations?.map((rec: string, i: number) => (
-              <li key={i} className="text-sm">{rec}</li>
-            ))}
-          </ul>
+          <Alert>
+            <AlertDescription>
+              Keep tracking your health metrics regularly for better insights.
+            </AlertDescription>
+          </Alert>
         </div>
       </CardContent>
     </Card>
