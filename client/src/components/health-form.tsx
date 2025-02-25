@@ -21,8 +21,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, AlertTriangle } from "lucide-react";
+import { Loader2, AlertTriangle, FileUp } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useCallback } from "react";
+import { useDropzone } from "react-dropzone";
 
 export default function HealthForm({ onComplete }: { onComplete: () => void }) {
   const { toast } = useToast();
@@ -52,6 +54,61 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
     },
   });
 
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    if (acceptedFiles.length === 0) return;
+
+    const file = acceptedFiles[0];
+    if (file.type !== 'application/pdf') {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload a PDF file",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await fetch('/api/medical-records', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error('Upload failed');
+
+      const data = await response.json();
+
+      // Update form with extracted data if available
+      if (data.extractedData) {
+        form.setValue('physiological', {
+          ...form.getValues('physiological'),
+          ...data.extractedData,
+        });
+      }
+
+      toast({
+        title: "Success",
+        description: "Medical records processed successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to process medical records",
+        variant: "destructive",
+      });
+    }
+  }, [form, toast]);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'application/pdf': ['.pdf'],
+    },
+    maxFiles: 1,
+  });
+
   const mutation = useMutation({
     mutationFn: async (data: HealthData) => {
       const res = await apiRequest("POST", "/api/health-data", data);
@@ -74,7 +131,6 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
     },
   });
 
-  // Function to parse number inputs
   const parseNumberInput = (value: string) => {
     const parsed = parseFloat(value);
     return isNaN(parsed) ? 0 : parsed;
@@ -86,6 +142,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
         onSubmit={form.handleSubmit((data) => mutation.mutate(data))}
         className="space-y-6"
       >
+        {/* Demographics Section */}
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Demographics</h2>
           <div className="grid md:grid-cols-3 gap-4">
@@ -96,7 +153,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                 <FormItem>
                   <FormLabel>Age</FormLabel>
                   <FormControl>
-                    <Input 
+                    <Input
                       type="number"
                       {...field}
                       onChange={(e) => field.onChange(parseNumberInput(e.target.value))}
@@ -147,6 +204,30 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
           </div>
         </div>
 
+        {/* Medical Records Upload Section */}
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold">Medical Records (Optional)</h2>
+          <div
+            {...getRootProps()}
+            className={`border-2 border-dashed rounded-lg p-6 cursor-pointer transition-colors
+              ${isDragActive ? 'border-primary bg-primary/5' : 'border-gray-300 hover:border-primary'}`}
+          >
+            <input {...getInputProps()} />
+            <div className="flex flex-col items-center text-center space-y-2">
+              <FileUp className="h-8 w-8 text-gray-400" />
+              <div className="text-sm text-gray-600">
+                {isDragActive ? (
+                  <p>Drop the PDF file here</p>
+                ) : (
+                  <p>Drag and drop your medical records (PDF) here, or click to select</p>
+                )}
+              </div>
+              <p className="text-xs text-gray-500">Only PDF files are supported</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Physiological Data Section */}
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Physiological Data</h2>
           <div className="grid md:grid-cols-2 gap-4">
@@ -157,7 +238,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                 <FormItem>
                   <FormLabel>Height (cm)</FormLabel>
                   <FormControl>
-                    <Input 
+                    <Input
                       type="number"
                       {...field}
                       onChange={(e) => field.onChange(parseNumberInput(e.target.value))}
@@ -174,7 +255,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                 <FormItem>
                   <FormLabel>Weight (kg)</FormLabel>
                   <FormControl>
-                    <Input 
+                    <Input
                       type="number"
                       {...field}
                       onChange={(e) => field.onChange(parseNumberInput(e.target.value))}
@@ -191,7 +272,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                 <FormItem>
                   <FormLabel>Systolic BP</FormLabel>
                   <FormControl>
-                    <Input 
+                    <Input
                       type="number"
                       {...field}
                       onChange={(e) => field.onChange(parseNumberInput(e.target.value))}
@@ -208,7 +289,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                 <FormItem>
                   <FormLabel>Diastolic BP</FormLabel>
                   <FormControl>
-                    <Input 
+                    <Input
                       type="number"
                       {...field}
                       onChange={(e) => field.onChange(parseNumberInput(e.target.value))}
@@ -225,7 +306,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                 <FormItem>
                   <FormLabel>Blood Sugar (mg/dL)</FormLabel>
                   <FormControl>
-                    <Input 
+                    <Input
                       type="number"
                       {...field}
                       onChange={(e) => field.onChange(parseNumberInput(e.target.value))}
@@ -249,6 +330,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
           )}
         </div>
 
+        {/* Lifestyle Section */}
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Lifestyle</h2>
           <div className="grid md:grid-cols-2 gap-4">
