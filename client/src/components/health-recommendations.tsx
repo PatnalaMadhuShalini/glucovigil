@@ -173,10 +173,9 @@ export default function HealthRecommendations({ healthData }: { healthData: Heal
   const [feedback, setFeedback] = useState("");
   const [mlRisk, setMlRisk] = useState(0);
 
-  // Simple risk assessment
+  // Risk assessment
   const assessRisk = async () => {
-    // Placeholder risk calculation
-    const risk = Math.random();
+    const risk = Math.random(); // Placeholder risk calculation
     setMlRisk(risk);
   };
 
@@ -224,15 +223,15 @@ export default function HealthRecommendations({ healthData }: { healthData: Heal
         <div className="space-y-2 border-t pt-4">
           <h3 className="font-medium">Personalized Recommendations</h3>
           <ul className="list-disc pl-4 space-y-1">
-            {healthData.prediction.recommendations.map((rec, i) => (
+            {healthData.prediction?.recommendations?.map((rec, i) => (
               <li key={i} className="text-sm">{rec}</li>
             ))}
           </ul>
         </div>
 
         <div className="space-y-2 border-t pt-4">
-          <h3 className="font-medium">Track Your Progress</h3>
-          <Textarea
+          <h3 className="font-medium">Your Feedback</h3>
+          <Textarea 
             placeholder="How are these recommendations working for you?"
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
@@ -246,11 +245,6 @@ export default function HealthRecommendations({ healthData }: { healthData: Heal
             Submit Feedback
           </Button>
         </div>
-
-        <Button className="w-full" onClick={() => window.print()}>
-          <Download className="mr-2 h-4 w-4" />
-          Download Summary Report
-        </Button>
       </CardContent>
     </Card>
   );
