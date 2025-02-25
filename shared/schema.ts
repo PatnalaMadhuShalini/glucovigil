@@ -6,7 +6,30 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
+  fullName: text("full_name").notNull(),
+  email: text("email").notNull().unique(),
+  phone: text("phone").notNull(),
+  gender: text("gender").notNull(),
+  place: text("place").notNull(),
+  verified: integer("verified").default(0),
+  verificationToken: text("verification_token"),
 });
+
+export const insertUserSchema = createInsertSchema(users)
+  .pick({
+    username: true,
+    password: true,
+    fullName: true,
+    email: true,
+    phone: true,
+    gender: true,
+    place: true,
+  })
+  .extend({
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    email: z.string().email("Invalid email address"),
+    phone: z.string().regex(/^\+?[1-9]\d{9,11}$/, "Invalid phone number"),
+  });
 
 export const healthData = pgTable("health_data", {
   id: serial("id").primaryKey(),
@@ -16,11 +39,6 @@ export const healthData = pgTable("health_data", {
   lifestyle: json("lifestyle").notNull(),
   prediction: json("prediction"),
   createdAt: text("created_at").notNull(),
-});
-
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
 });
 
 export const healthDataSchema = z.object({

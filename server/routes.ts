@@ -5,8 +5,75 @@ import { storage } from "./storage";
 import { healthDataSchema, feedbackSchema } from "@shared/schema";
 import { ZodError } from "zod";
 import fileUpload from 'express-fileupload';
+import crypto from 'crypto';
+import { createTransport } from 'nodemailer';
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Configure email transport
+  const transporter = createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  });
+
+  app.post("/api/register", async (req, res, next) => {
+    try {
+      const existingUser = await storage.getUserByUsername(req.body.username);
+      if (existingUser) {
+        return res.status(400).send("Username already exists");
+      }
+
+      const user = await storage.createUser({
+        ...req.body,
+        password: await hashPassword(req.body.password),
+      });
+
+      // Send verification email
+      const verificationLink = `${process.env.REPL_SLUG}.replit.dev/api/verify-email/${user.verificationToken}`;
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: user.email,
+        subject: "Verify your GlucoSmart account",
+        html: `
+          <h1>Welcome to GlucoSmart!</h1>
+          <p>Thank you for registering. Please click the link below to verify your email:</p>
+          <a href="${verificationLink}">Verify Email</a>
+        `,
+      });
+
+      req.login(user, (err) => {
+        if (err) return next(err);
+        res.status(201).json(user);
+      });
+    } catch (err) {
+      console.error("Registration error:", err);
+      res.status(500).send("Error during registration");
+    }
+  });
+
+  // Email verification endpoint
+  app.get("/api/verify-email/:token", async (req, res) => {
+    try {
+      const token = req.params.token;
+      const user = await storage.getUserByVerificationToken(token);
+
+      if (!user) {
+        return res.status(400).send("Invalid or expired verification token");
+      }
+
+      await storage.verifyUser(user.id);
+      res.redirect("/auth?verified=true");
+    } catch (err) {
+      console.error("Error verifying email:", err);
+      res.status(500).send("Error verifying email");
+    }
+  });
+
+
   setupAuth(app);
 
   // Add file upload middleware
@@ -21,8 +88,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     try {
       const data = healthDataSchema.parse(req.body);
-
-      // Calculate prediction and recommendations
       const prediction = calculateDiabetesRisk(data);
       const healthData = await storage.createHealthData(req.user!.id, {
         ...data,
@@ -67,6 +132,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     }
   });
+
 
   // Medical records upload and processing
   app.post("/api/medical-records", async (req, res) => {
@@ -130,6 +196,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   const httpServer = createServer(app);
   return httpServer;
+}
+
+async function hashPassword(password: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    crypto.scrypt(password, 'salt', 64, (err, derivedKey) => {
+      if (err) return reject(err);
+      resolve(derivedKey.toString('hex'));
+    })
+  })
 }
 
 function calculateDiabetesRisk(data: any) {

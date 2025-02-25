@@ -32,11 +32,33 @@ export class MemStorage implements IStorage {
     );
   }
 
+  async getUserByVerificationToken(token: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(
+      (user) => user.verificationToken === token,
+    );
+  }
+
   async createUser(user: InsertUser): Promise<User> {
     const id = this.currentId++;
-    const newUser = { id, ...user };
+    const newUser = { 
+      id, 
+      ...user,
+      verified: 0,
+      verificationToken: Math.random().toString(36).substring(2, 15),
+    };
     this.users.set(id, newUser);
     return newUser;
+  }
+
+  async verifyUser(userId: number): Promise<void> {
+    const user = await this.getUser(userId);
+    if (user) {
+      this.users.set(userId, {
+        ...user,
+        verified: 1,
+        verificationToken: null,
+      });
+    }
   }
 
   async createHealthData(userId: number, data: HealthData): Promise<HealthData> {
