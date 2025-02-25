@@ -64,3 +64,48 @@ export default function Achievements({ achievements }: AchievementsProps) {
     </Card>
   );
 }
+import { motion } from "framer-motion";
+import { Trophy, Target, Heart, Brain } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+export default function Achievements({ healthData }: { healthData: any[] }) {
+  const achievements = [
+    {
+      id: "consistent_tracking",
+      name: "Health Tracker",
+      icon: <Trophy className="h-8 w-8 text-yellow-500" />,
+      condition: healthData.length >= 5,
+      description: "Track health data for 5 consecutive days"
+    },
+    {
+      id: "goal_achiever",
+      name: "Goal Achiever",
+      icon: <Target className="h-8 w-8 text-blue-500" />,
+      condition: healthData[healthData.length - 1]?.prediction.level === "low",
+      description: "Achieve low risk status"
+    }
+  ];
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Your Achievements</CardTitle>
+      </CardHeader>
+      <CardContent className="grid grid-cols-2 gap-4">
+        {achievements.map((achievement) => (
+          <motion.div
+            key={achievement.id}
+            whileHover={{ scale: 1.05 }}
+            className={`p-4 rounded-lg ${
+              achievement.condition ? "bg-green-100" : "bg-gray-100"
+            }`}
+          >
+            {achievement.icon}
+            <h3 className="font-semibold mt-2">{achievement.name}</h3>
+            <p className="text-sm text-gray-600">{achievement.description}</p>
+          </motion.div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
