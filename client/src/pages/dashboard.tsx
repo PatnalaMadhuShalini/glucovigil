@@ -5,6 +5,7 @@ import RiskDisplay from "@/components/risk-display";
 import Recommendations from "@/components/recommendations";
 import HealthTrends from "@/components/health-trends";
 import MedicalRecordsUpload from "@/components/medical-records-upload";
+import HealthRecommendations from "@/components/health-recommendations";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/hooks/use-auth";
