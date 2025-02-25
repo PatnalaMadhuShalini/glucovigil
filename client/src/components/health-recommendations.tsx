@@ -163,20 +163,48 @@ export default function HealthRecommendations({ nutritionPlan, exercisePlan }: H
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import type { HealthDataWithPrediction } from "@shared/schema";
-
+import { Alert, AlertDescription } from "./ui/alert";
+import { Progress } from "./ui/progress";
+import { Download, Bell } from "lucide-react";
+import * as tf from '@tensorflow/tfjs';
 
 export default function HealthRecommendations({ healthData }: { healthData: HealthDataWithPrediction }) {
   const [feedback, setFeedback] = useState("");
   const [mlRisk, setMlRisk] = useState(0);
+  const [model, setModel] = useState<tf.LayersModel | null>(null);
 
-  // ML-based risk assessment (This part is placeholder and needs a real ML model)
+  // Load TensorFlow model
+  useEffect(() => {
+    async function loadModel() {
+      try {
+        const loadedModel = await tf.loadLayersModel('/models/diabetes_risk.json');
+        setModel(loadedModel);
+      } catch (err) {
+        console.error("Error loading model:", err);
+      }
+    }
+    loadModel();
+  }, []);
+
+  // ML-based risk assessment
   const assessRisk = async () => {
-    // Replace this with your actual ML model prediction logic
-    const randomRisk = Math.random();
-    setMlRisk(randomRisk);
+    if (!model || !healthData) return;
+
+    const input = tf.tensor2d([[
+      healthData.bloodSugar || 0,
+      healthData.bloodPressure?.systolic || 0,
+      healthData.weight || 0,
+      healthData.age || 0,
+    ]]);
+
+    const prediction = model.predict(input) as tf.Tensor;
+    const risk = (await prediction.data())[0];
+    setMlRisk(risk);
+    input.dispose();
+    prediction.dispose();
   };
 
   // Submit feedback
@@ -185,28 +213,44 @@ export default function HealthRecommendations({ healthData }: { healthData: Heal
       const response = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ rating: 5, comment: feedback })
+        body: JSON.stringify({ 
+          rating: 5, 
+          comment: feedback,
+          healthData: healthData.id
+        })
       });
       if (!response.ok) throw new Error("Failed to submit feedback");
       return response.json();
     }
   });
 
+  const riskLevel = mlRisk > 0.7 ? "High" : mlRisk > 0.4 ? "Medium" : "Low";
+  const riskColor = riskLevel === "High" ? "red" : riskLevel === "Medium" ? "yellow" : "green";
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Health Recommendations & Feedback</CardTitle>
+        <CardTitle>Health Risk Assessment & Recommendations</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <h3 className="font-medium">Risk Assessment</h3>
-          <p>Diabetes Risk Level: <span className="font-bold text-red-500">{healthData.prediction.level}</span></p>
-          <p>ML Risk Score: <span className="font-bold">{(mlRisk * 100).toFixed(1)}%</span></p>
-          <Button onClick={assessRisk} className="mt-2">Calculate ML Risk</Button>
+          <h3 className="font-medium">Instant Risk Assessment</h3>
+          <Progress value={mlRisk * 100} className={`bg-${riskColor}-100`} />
+          <p>Risk Level: <span className={`font-bold text-${riskColor}-500`}>{riskLevel}</span></p>
+          <Button onClick={assessRisk} className="mt-2">Calculate Risk</Button>
         </div>
 
+        {riskLevel === "High" && (
+          <Alert className="bg-red-50 border-red-200">
+            <Bell className="h-4 w-4 text-red-500" />
+            <AlertDescription>
+              High risk detected. Please consult with a healthcare provider.
+            </AlertDescription>
+          </Alert>
+        )}
+
         <div className="space-y-2 border-t pt-4">
-          <h3 className="font-medium">Key Recommendations</h3>
+          <h3 className="font-medium">Personalized Recommendations</h3>
           <ul className="list-disc pl-4 space-y-1">
             {healthData.prediction.recommendations.map((rec, i) => (
               <li key={i} className="text-sm">{rec}</li>
@@ -215,7 +259,7 @@ export default function HealthRecommendations({ healthData }: { healthData: Heal
         </div>
 
         <div className="space-y-2 border-t pt-4">
-          <h3 className="font-medium">Share Your Feedback</h3>
+          <h3 className="font-medium">Track Your Progress</h3>
           <Textarea
             placeholder="How are these recommendations working for you?"
             value={feedback}
@@ -228,6 +272,11 @@ export default function HealthRecommendations({ healthData }: { healthData: Heal
             Submit Feedback
           </Button>
         </div>
+
+        <Button className="w-full" onClick={() => window.print()}>
+          <Download className="mr-2 h-4 w-4" />
+          Download Summary Report
+        </Button>
       </CardContent>
     </Card>
   );
