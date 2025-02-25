@@ -12,9 +12,10 @@ import {
 } from "recharts";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import type { HealthDataWithPrediction } from "@shared/schema";
 
 export default function HealthTrends() {
-  const { data: healthData, isLoading } = useQuery({
+  const { data: healthData, isLoading } = useQuery<HealthDataWithPrediction[]>({
     queryKey: ["/api/health-data"],
   });
 
@@ -26,13 +27,28 @@ export default function HealthTrends() {
     );
   }
 
+  if (!healthData?.length) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Health Trends</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-center text-muted-foreground">
+            No health data available yet. Complete your health assessment to see trends.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   // Process data for charts
-  const processedData = healthData?.map((entry: any) => ({
+  const processedData = healthData.map((entry) => ({
     date: new Date(entry.createdAt).toLocaleDateString(),
     bloodSugar: entry.physiological.bloodSugar,
     systolic: entry.physiological.bloodPressure.systolic,
     diastolic: entry.physiological.bloodPressure.diastolic,
-    riskScore: entry.prediction.score
+    riskScore: entry.prediction?.score || 0
   }));
 
   return (
@@ -57,8 +73,20 @@ export default function HealthTrends() {
               />
               <Line 
                 type="monotone" 
-                dataKey="riskScore" 
+                dataKey="systolic" 
                 stroke="#82ca9d" 
+                name="Blood Pressure (Systolic)"
+              />
+              <Line 
+                type="monotone" 
+                dataKey="diastolic" 
+                stroke="#ffc658" 
+                name="Blood Pressure (Diastolic)"
+              />
+              <Line 
+                type="monotone" 
+                dataKey="riskScore" 
+                stroke="#ff7300" 
                 name="Risk Score"
               />
             </LineChart>

@@ -7,7 +7,7 @@ const MemoryStore = createMemoryStore(session);
 
 export class MemStorage implements IStorage {
   private users: Map<number, User>;
-  private healthData: Map<number, HealthData>;
+  private healthData: Map<number, HealthData[]>;
   private feedback: Map<number, Feedback>;
   sessionStore: session.Store;
   currentId: number;
@@ -32,57 +32,47 @@ export class MemStorage implements IStorage {
     );
   }
 
-  async getUserByPhone(phone: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.phone === phone,
-    );
+  async getUserByVerificationToken(token: string): Promise<User | undefined> {
+    return undefined; // Verification removed as requested
+  }
+
+  async verifyUser(userId: number): Promise<void> {
+    // Verification removed as requested
   }
 
   async createUser(user: InsertUser): Promise<User> {
     const id = this.currentId++;
-    const newUser = { 
-      id, 
+    const newUser: User = {
+      id,
       ...user,
-      verified: 0,
-      phoneVerificationCode: Math.floor(100000 + Math.random() * 900000).toString(), // 6-digit code
+      achievements: [],
+      preferredLanguage: "en",
+      healthGoals: []
     };
     this.users.set(id, newUser);
     return newUser;
   }
 
-  async verifyUserPhone(userId: number, code: string): Promise<boolean> {
-    const user = await this.getUser(userId);
-    if (user && user.phoneVerificationCode === code) {
-      this.users.set(userId, {
-        ...user,
-        verified: 1,
-        phoneVerificationCode: null,
-      });
-      return true;
-    }
-    return false;
-  }
-
   async createHealthData(userId: number, data: HealthData): Promise<HealthData> {
     const id = this.currentId++;
     const newData = {
-      id,
-      userId,
       ...data,
       createdAt: new Date().toISOString(),
     };
-    this.healthData.set(id, newData);
+
+    const userHealthData = this.healthData.get(userId) || [];
+    userHealthData.push(newData);
+    this.healthData.set(userId, userHealthData);
+
     return newData;
   }
 
   async getHealthDataByUserId(userId: number): Promise<HealthData[]> {
-    return Array.from(this.healthData.values()).filter(
-      (data) => data.userId === userId,
-    );
+    return this.healthData.get(userId) || [];
   }
 
   async updateHealthData(userId: number, data: Partial<HealthData>): Promise<HealthData | undefined> {
-    const userHealthData = await this.getHealthDataByUserId(userId);
+    const userHealthData = this.healthData.get(userId) || [];
     const latestData = userHealthData[userHealthData.length - 1];
 
     if (latestData) {
@@ -94,7 +84,8 @@ export class MemStorage implements IStorage {
           ...(data.physiological || {})
         }
       };
-      this.healthData.set(latestData.id, updatedData);
+      userHealthData[userHealthData.length - 1] = updatedData;
+      this.healthData.set(userId, userHealthData);
       return updatedData;
     }
 
