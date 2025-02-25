@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import NavMenu from "@/components/nav-menu";
 import HealthForm from "@/components/health-form";
 import RiskDisplay from "@/components/risk-display";
 import Recommendations from "@/components/recommendations";
@@ -45,7 +46,9 @@ export default function Dashboard() {
   const showRiskAlert = latestData?.prediction?.level === "high";
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gray-50">
+      <NavMenu />
+      <div className="py-12">
       <div className="container mx-auto px-4">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">

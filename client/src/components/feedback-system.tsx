@@ -4,10 +4,12 @@ import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { Input } from "./ui/input";
 
 export default function FeedbackSystem() {
   const [feedback, setFeedback] = useState("");
   const [rating, setRating] = useState(0);
+  const [category, setCategory] = useState("");
   const { toast } = useToast();
 
   const handleSubmit = async () => {
@@ -17,7 +19,7 @@ export default function FeedbackSystem() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ rating, comment: feedback }),
+        body: JSON.stringify({ rating, category, comment: feedback }),
       });
 
       if (response.ok) {
@@ -27,6 +29,7 @@ export default function FeedbackSystem() {
         });
         setFeedback("");
         setRating(0);
+        setCategory("");
       }
     } catch (error) {
       toast({
@@ -43,13 +46,22 @@ export default function FeedbackSystem() {
         <CardTitle>Your Feedback</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <form className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-2">Category</label>
+            <Input
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              placeholder="e.g., UI, Features, Performance"
+            />
+          </div>
           <div>
             <label className="block text-sm font-medium mb-2">Rating</label>
             <div className="flex gap-2">
               {[1, 2, 3, 4, 5].map((value) => (
                 <Button
                   key={value}
+                  type="button"
                   variant={rating === value ? "default" : "outline"}
                   onClick={() => setRating(value)}
                   className="w-10 h-10"
@@ -69,13 +81,14 @@ export default function FeedbackSystem() {
             />
           </div>
           <Button 
+            type="button"
             onClick={handleSubmit}
-            disabled={!rating || !feedback}
+            disabled={!rating || !feedback || !category}
             className="w-full"
           >
             Submit Feedback
           </Button>
-        </div>
+        </form>
       </CardContent>
     </Card>
   );
