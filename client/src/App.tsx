@@ -9,6 +9,7 @@ import AuthPage from "@/pages/auth-page";
 import ProfilePage from "@/pages/profile-page";
 import NotFound from "@/pages/not-found";
 import { ProtectedRoute } from "./lib/protected-route";
+import ChatAssistant from "@/components/chat-assistant";
 
 function Router() {
   return (
@@ -27,6 +28,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Router />
+        <ChatAssistant />
         <Toaster />
       </AuthProvider>
     </QueryClientProvider>

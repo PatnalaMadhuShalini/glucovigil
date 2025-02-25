@@ -19,23 +19,19 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
         <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
       </div>
     );
   }
 
-  const handleLogout = () => {
-    logoutMutation.mutate();
-  };
-
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
       <NavMenu />
       <div className="container mx-auto px-4 py-8">
         <div className="grid gap-6">
           {/* User Profile Section */}
-          <Card>
+          <Card className="shadow-lg hover:shadow-xl transition-shadow">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Activity className="h-5 w-5" />
@@ -45,27 +41,27 @@ export default function ProfilePage() {
             <CardContent>
               <div className="grid gap-4">
                 <div>
-                  <label className="font-medium">Username</label>
-                  <p>{user?.username}</p>
+                  <label className="font-medium text-gray-700">Username</label>
+                  <p className="mt-1">{user?.username}</p>
                 </div>
                 <div>
-                  <label className="font-medium">Full Name</label>
-                  <p>{user?.fullName}</p>
+                  <label className="font-medium text-gray-700">Full Name</label>
+                  <p className="mt-1">{user?.fullName}</p>
                 </div>
                 <div>
-                  <label className="font-medium">Email</label>
-                  <p>{user?.email}</p>
+                  <label className="font-medium text-gray-700">Email</label>
+                  <p className="mt-1">{user?.email}</p>
                 </div>
                 <div>
-                  <label className="font-medium">Phone</label>
-                  <p>{user?.phone}</p>
+                  <label className="font-medium text-gray-700">Phone</label>
+                  <p className="mt-1">{user?.phone}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           {/* Health Data and Reports Section */}
-          <Card>
+          <Card className="shadow-lg hover:shadow-xl transition-shadow">
             <CardHeader>
               <CardTitle>Health Reports & History</CardTitle>
             </CardHeader>
@@ -85,7 +81,7 @@ export default function ProfilePage() {
                 <TabsContent value="history">
                   <div className="space-y-4">
                     {healthData?.map((entry, index) => (
-                      <div key={index} className="p-4 bg-white rounded-lg shadow-sm">
+                      <div key={index} className="p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-gray-500">
                             {new Date(entry.createdAt).toLocaleDateString()}
@@ -115,7 +111,7 @@ export default function ProfilePage() {
                   <div className="space-y-4">
                     {healthData?.length ? (
                       <div className="grid gap-4">
-                        <div className="p-4 bg-white rounded-lg shadow-sm">
+                        <div className="p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
                           <h3 className="font-medium mb-2">Latest Report</h3>
                           <div className="space-y-2">
                             <p className="text-sm text-gray-600">
@@ -154,7 +150,7 @@ export default function ProfilePage() {
           </Card>
 
           {showHealthForm && (
-            <Card>
+            <Card className="shadow-lg">
               <CardHeader>
                 <CardTitle>Update Health Information</CardTitle>
               </CardHeader>

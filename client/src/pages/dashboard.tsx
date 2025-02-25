@@ -35,7 +35,7 @@ export default function Dashboard() {
   const showRiskAlert = latestData?.prediction?.level === "high";
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
       <NavMenu />
       <div className="py-12">
         <div className="container mx-auto px-4">
