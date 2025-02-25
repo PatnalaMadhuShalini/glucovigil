@@ -61,10 +61,12 @@ export const healthDataSchema = z.object({
     bloodSugar: z.number().min(50, "Blood sugar must be at least 50 mg/dL").max(300, "Blood sugar must be less than 300 mg/dL"),
   }),
   lifestyle: z.object({
-    smoking: z.boolean(),
-    alcohol: z.boolean(),
     exercise: z.enum(["none", "light", "moderate", "heavy"]),
     diet: z.enum(["poor", "fair", "good", "excellent"]),
+    stressLevel: z.enum(["low", "moderate", "high", "severe"]),
+    workStyle: z.enum(["sedentary", "light", "moderate", "active"]),
+    alcohol: z.boolean(),
+    smoking: z.boolean()
   })
 });
 
