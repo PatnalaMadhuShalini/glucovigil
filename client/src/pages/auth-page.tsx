@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { insertUserSchema, type InsertUser } from "@shared/schema";
-import { Loader2, Phone } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -24,15 +24,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function AuthPage() {
   const [, setLocation] = useLocation();
   const { user, loginMutation, registerMutation } = useAuth();
-  const [pendingVerification, setPendingVerification] = useState(false);
-  const [userId, setUserId] = useState<number | null>(null);
-  const [verificationCode, setVerificationCode] = useState("");
-  const [displayOTP, setDisplayOTP] = useState<string>("");
 
   const form = useForm<InsertUser>({
     resolver: zodResolver(insertUserSchema),
@@ -47,26 +42,6 @@ export default function AuthPage() {
     },
   });
 
-  const handleVerificationSubmit = async () => {
-    try {
-      const response = await fetch("/api/verify-phone", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, code: verificationCode }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        window.location.reload(); // Refresh to update auth state
-      } else {
-        const error = await response.text();
-        throw new Error(error);
-      }
-    } catch (error) {
-      console.error("Verification error:", error);
-    }
-  };
-
   if (user) {
     setLocation("/");
     return null;
@@ -79,7 +54,7 @@ export default function AuthPage() {
           <CardHeader>
             <div className="flex justify-center mb-6">
               <img
-                src="/attached_assets/logo_1740475848749.png"
+                src="/attached_assets/logo_1740479346130.png"
                 alt="GlucoSmart Logo"
                 className="h-16 w-auto"
               />
@@ -89,230 +64,181 @@ export default function AuthPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {pendingVerification ? (
-              <div className="space-y-4">
-                <Alert className="bg-blue-50 border-blue-200">
-                  <Phone className="h-4 w-4 text-blue-500" />
-                  <AlertDescription className="text-blue-700">
-                    Your OTP code is: <span className="font-bold">{displayOTP}</span>
-                    <br />
-                    Please enter this code below to verify your phone number.
-                  </AlertDescription>
-                </Alert>
-                <Input
-                  type="text"
-                  placeholder="Enter verification code"
-                  value={verificationCode}
-                  onChange={(e) => setVerificationCode(e.target.value)}
-                  className="text-center text-2xl tracking-widest"
-                  maxLength={6}
-                />
-                <Button
-                  onClick={handleVerificationSubmit}
-                  className="w-full bg-gradient-to-r from-blue-600 to-cyan-600"
-                >
-                  Verify Phone Number
-                </Button>
-              </div>
-            ) : (
-              <Tabs defaultValue="login">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="login">Login</TabsTrigger>
-                  <TabsTrigger value="register">Register</TabsTrigger>
-                </TabsList>
+            <Tabs defaultValue="login">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="login">Login</TabsTrigger>
+                <TabsTrigger value="register">Register</TabsTrigger>
+              </TabsList>
 
-                <TabsContent value="login">
-                  <Form {...form}>
-                    <form
-                      onSubmit={form.handleSubmit((data) =>
-                        loginMutation.mutate(data)
+              <TabsContent value="login">
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit((data) => loginMutation.mutate(data))}
+                    className="space-y-4"
+                  >
+                    <FormField
+                      control={form.control}
+                      name="username"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Username</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
                       )}
-                      className="space-y-4"
+                    />
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Password</FormLabel>
+                          <FormControl>
+                            <Input type="password" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button
+                      type="submit"
+                      className="w-full bg-gradient-to-r from-blue-600 to-cyan-600"
+                      disabled={loginMutation.isPending}
                     >
-                      <FormField
-                        control={form.control}
-                        name="username"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Username</FormLabel>
-                            <FormControl>
-                              <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="password"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Password</FormLabel>
-                            <FormControl>
-                              <Input type="password" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <Button
-                        type="submit"
-                        className="w-full bg-gradient-to-r from-blue-600 to-cyan-600"
-                        disabled={loginMutation.isPending}
-                      >
-                        {loginMutation.isPending && (
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        )}
-                        Login
-                      </Button>
-                    </form>
-                  </Form>
-                </TabsContent>
+                      {loginMutation.isPending && (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      )}
+                      Login
+                    </Button>
+                  </form>
+                </Form>
+              </TabsContent>
 
-                <TabsContent value="register">
-                  <Form {...form}>
-                    <form
-                      onSubmit={form.handleSubmit(async (data) => {
-                        try {
-                          const response = await fetch("/api/register", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(data),
-                          });
-
-                          if (response.ok) {
-                            const result = await response.json();
-                            setUserId(result.user.id);
-                            setDisplayOTP(result.verificationCode);
-                            setPendingVerification(true);
-                          } else {
-                            const error = await response.text();
-                            throw new Error(error);
-                          }
-                        } catch (error) {
-                          console.error("Registration error:", error);
-                        }
-                      })}
-                      className="space-y-4"
+              <TabsContent value="register">
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit((data) => registerMutation.mutate(data))}
+                    className="space-y-4"
+                  >
+                    <FormField
+                      control={form.control}
+                      name="username"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Username</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="fullName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Full Name</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input type="email" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Phone Number</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="+91XXXXXXXXXX" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="gender"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Gender</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select gender" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="male">Male</SelectItem>
+                              <SelectItem value="female">Female</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="place"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Place</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Password</FormLabel>
+                          <FormControl>
+                            <Input type="password" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button
+                      type="submit"
+                      className="w-full bg-gradient-to-r from-blue-600 to-cyan-600"
+                      disabled={registerMutation.isPending}
                     >
-                      <FormField
-                        control={form.control}
-                        name="username"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Username</FormLabel>
-                            <FormControl>
-                              <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="fullName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Full Name</FormLabel>
-                            <FormControl>
-                              <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Email</FormLabel>
-                            <FormControl>
-                              <Input type="email" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="phone"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Phone Number</FormLabel>
-                            <FormControl>
-                              <Input {...field} placeholder="+91XXXXXXXXXX" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="gender"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Gender</FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select gender" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="male">Male</SelectItem>
-                                <SelectItem value="female">Female</SelectItem>
-                                <SelectItem value="other">Other</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="place"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Place</FormLabel>
-                            <FormControl>
-                              <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="password"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Password</FormLabel>
-                            <FormControl>
-                              <Input type="password" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <Button
-                        type="submit"
-                        className="w-full bg-gradient-to-r from-blue-600 to-cyan-600"
-                        disabled={registerMutation.isPending}
-                      >
-                        {registerMutation.isPending && (
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        )}
-                        Register
-                      </Button>
-                    </form>
-                  </Form>
-                </TabsContent>
-              </Tabs>
-            )}
+                      {registerMutation.isPending && (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      )}
+                      Register
+                    </Button>
+                  </form>
+                </Form>
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
       </div>

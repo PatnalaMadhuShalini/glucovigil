@@ -8,7 +8,7 @@ import fileUpload from 'express-fileupload';
 import crypto from 'crypto';
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  app.post("/api/register", async (req, res, next) => {
+  app.post("/api/register", async (req, res) => {
     try {
       const existingUser = await storage.getUserByUsername(req.body.username);
       if (existingUser) {
@@ -20,43 +20,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         password: await hashPassword(req.body.password),
       });
 
-      // Return the user with verification code (in production, this would be sent via SMS)
-      res.status(201).json({
-        user,
-        verificationCode: user.phoneVerificationCode,
-        message: "Please verify your phone number with the code"
+      req.login(user, (err) => {
+        if (err) return res.status(500).send("Error logging in"); //Improved error handling
+        res.status(201).json(user);
       });
     } catch (err) {
       console.error("Registration error:", err);
       res.status(500).send("Error during registration");
     }
   });
-
-  // Phone verification endpoint
-  app.post("/api/verify-phone", async (req, res) => {
-    try {
-      const { userId, code } = req.body;
-      const verified = await storage.verifyUserPhone(userId, code);
-
-      if (!verified) {
-        return res.status(400).send("Invalid verification code");
-      }
-
-      const user = await storage.getUser(userId);
-      if (!user) {
-        return res.status(404).send("User not found");
-      }
-
-      req.login(user, (err) => {
-        if (err) return next(err);
-        res.json({ success: true, user });
-      });
-    } catch (err) {
-      console.error("Error verifying phone:", err);
-      res.status(500).send("Error verifying phone");
-    }
-  });
-
 
   setupAuth(app);
 
@@ -66,7 +38,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     debug: process.env.NODE_ENV === 'development'
   }));
 
-  // Health data submission
+  // Health data submission and predictions
   app.post("/api/health-data", async (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);
 
@@ -116,7 +88,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     }
   });
-
 
   // Medical records upload and processing
   app.post("/api/medical-records", async (req, res) => {
