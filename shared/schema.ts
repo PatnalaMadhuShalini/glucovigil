@@ -13,6 +13,9 @@ export const users = pgTable("users", {
   place: text("place").notNull(),
   verified: integer("verified").default(0),
   verificationToken: text("verification_token"),
+  achievements: json("achievements").default([]),
+  preferredLanguage: text("preferred_language").default("en"),
+  healthGoals: json("health_goals").default([]),
 });
 
 export const insertUserSchema = createInsertSchema(users)
@@ -39,6 +42,9 @@ export const healthData = pgTable("health_data", {
   lifestyle: json("lifestyle").notNull(),
   prediction: json("prediction"),
   createdAt: text("created_at").notNull(),
+  nutritionPlan: json("nutrition_plan"),
+  exercisePlan: json("exercise_plan"),
+  achievements: json("achievements"),
 });
 
 export const healthDataSchema = z.object({
@@ -74,6 +80,49 @@ export type User = typeof users.$inferSelect;
 export type HealthData = z.infer<typeof healthDataSchema>;
 export type Feedback = z.infer<typeof feedbackSchema>;
 
+// Achievement types
+export type Achievement = {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  unlockedAt?: string;
+};
+
+// Nutrition and Exercise Plan types
+export type NutritionPlan = {
+  recommendations: string[];
+  mealPlan: {
+    breakfast: string[];
+    lunch: string[];
+    dinner: string[];
+    snacks: string[];
+  };
+  calories: number;
+  macros: {
+    protein: number;
+    carbs: number;
+    fats: number;
+  };
+};
+
+export type ExercisePlan = {
+  recommendations: string[];
+  weeklyPlan: {
+    [key: string]: {
+      type: string;
+      duration: number;
+      intensity: string;
+      exercises: string[];
+    }[];
+  };
+  goals: {
+    steps: number;
+    duration: number;
+    intensity: string;
+  };
+};
+
 // Add prediction types
 export type Prediction = {
   score: number;
@@ -83,4 +132,7 @@ export type Prediction = {
 
 export type HealthDataWithPrediction = HealthData & {
   prediction: Prediction;
+  nutritionPlan?: NutritionPlan;
+  exercisePlan?: ExercisePlan;
+  achievements?: Achievement[];
 };
