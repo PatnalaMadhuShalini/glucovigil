@@ -1,31 +1,49 @@
-
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "./ui/button";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 
 export default function NavMenu() {
-  const { user, logout } = useAuth();
-  
+  const { user, logoutMutation } = useAuth();
+  const [, setLocation] = useLocation();
+
+  const handleLogout = () => {
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        setLocation('/auth');
+      }
+    });
+  };
+
   return (
     <nav className="bg-white shadow-sm">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <Link href="/">
           <img 
-            src="/attached_assets/logo_1740475848749.png" 
+            src="/attached_assets/logo_1740495461101.png"
             alt="GlucoSmart Logo" 
             className="h-10 w-auto cursor-pointer"
           />
         </Link>
-        
+
         <div className="flex items-center gap-4">
           {user ? (
             <>
-              <Link href="/dashboard">Dashboard</Link>
-              <Button onClick={logout} variant="outline">Logout</Button>
+              <Link href="/dashboard" className="text-gray-600 hover:text-gray-900">
+                Dashboard
+              </Link>
+              <Button 
+                onClick={handleLogout} 
+                variant="outline" 
+                disabled={logoutMutation.isPending}
+              >
+                {logoutMutation.isPending ? "Logging out..." : "Logout"}
+              </Button>
             </>
           ) : (
             <Link href="/auth">
-              <Button>Login</Button>
+              <Button className="bg-gradient-to-r from-blue-600 to-cyan-600">
+                Login
+              </Button>
             </Link>
           )}
         </div>

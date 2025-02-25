@@ -45,7 +45,7 @@ export default function AuthPage() {
 
   // Redirect logged-in users
   if (user) {
-    setLocation("/");
+    setLocation("/dashboard");
     return null;
   }
 
@@ -61,9 +61,9 @@ export default function AuthPage() {
           <CardHeader>
             <div className="flex justify-center mb-6">
               <img
-                src="/attached_assets/logo_1740479346130.png"
+                src="/attached_assets/logo_1740495461101.png"
                 alt="GlucoSmart Logo"
-                className="h-16 w-auto"
+                className="h-20 w-auto object-contain"
               />
             </div>
             <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
@@ -80,7 +80,17 @@ export default function AuthPage() {
               <TabsContent value="login">
                 <Form {...form}>
                   <form
-                    onSubmit={form.handleSubmit((data) => loginMutation.mutate(data))}
+                    onSubmit={form.handleSubmit((data) => {
+                      loginMutation.mutate(
+                        {
+                          username: data.username,
+                          password: data.password,
+                        },
+                        {
+                          onSuccess: () => setLocation("/dashboard"),
+                        }
+                      );
+                    })}
                     className="space-y-4"
                   >
                     <FormField
