@@ -92,6 +92,44 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
     },
   });
 
+  const mutation = useMutation({
+    mutationFn: async (data: HealthData) => {
+      const res = await apiRequest("POST", "/api/health-data", data);
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Failed to submit health data");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/health-data"] });
+      toast({
+        title: "Success",
+        description: "Your health data has been saved successfully",
+      });
+      onComplete();
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to submit health data",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const onSubmit = (data: HealthData) => {
+    try {
+      mutation.mutate(data);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to submit health data. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
 
@@ -147,28 +185,6 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
     maxFiles: 1,
   });
 
-  const mutation = useMutation({
-    mutationFn: async (data: HealthData) => {
-      const res = await apiRequest("POST", "/api/health-data", data);
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/health-data"] });
-      toast({
-        title: "Success",
-        description: "Your health data has been saved",
-      });
-      onComplete();
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-
   const parseNumberInput = (value: string) => {
     const parsed = parseFloat(value);
     return isNaN(parsed) ? 0 : parsed;
@@ -176,10 +192,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit((data) => mutation.mutate(data))}
-        className="space-y-6"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         {/* Demographics Section */}
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Demographics</h2>
@@ -670,12 +683,16 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
         <Button
           type="submit"
           className="w-full bg-gradient-to-r from-blue-600 to-cyan-600"
-          disabled={mutation.isPending}
+          disabled={mutation.isPending || !form.formState.isValid}
         >
-          {mutation.isPending && (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          {mutation.isPending ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Submitting...
+            </>
+          ) : (
+            "Submit Health Data"
           )}
-          Submit Health Data
         </Button>
 
         {/* AI Assistant Tip */}
