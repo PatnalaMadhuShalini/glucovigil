@@ -24,25 +24,30 @@ export default function NavMenu() {
   `;
 
   return (
-    <nav className="bg-white shadow-sm">
+    <nav className="bg-white shadow-sm border-b border-gray-200">
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <Link href="/">
-              <img 
-                src="/logo.svg"
-                alt="GlucoSmart Logo" 
-                className="h-12 w-auto cursor-pointer"
-              />
+              <a className="flex items-center">
+                <img 
+                  src="/logo.svg"
+                  alt="GlucoSmart Logo" 
+                  className="h-10 w-auto cursor-pointer"
+                />
+                <span className="ml-2 text-xl font-semibold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                  GlucoSmart
+                </span>
+              </a>
             </Link>
 
             {user && (
               <div className="ml-8 flex items-center space-x-4">
                 <Link href="/">
-                  <span className={linkClass('/')}>Home</span>
+                  <a className={linkClass('/')}>Home</a>
                 </Link>
                 <Link href="/dashboard">
-                  <span className={linkClass('/dashboard')}>Dashboard</span>
+                  <a className={linkClass('/dashboard')}>Dashboard</a>
                 </Link>
               </div>
             )}
@@ -54,13 +59,13 @@ export default function NavMenu() {
                 onClick={handleLogout} 
                 variant="outline" 
                 disabled={logoutMutation.isPending}
-                className="ml-4"
+                className="ml-4 border-blue-200 hover:bg-blue-50"
               >
                 {logoutMutation.isPending ? "Logging out..." : "Logout"}
               </Button>
             ) : (
               <Link href="/auth">
-                <Button className="bg-gradient-to-r from-blue-600 to-cyan-600">
+                <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
                   Login
                 </Button>
               </Link>

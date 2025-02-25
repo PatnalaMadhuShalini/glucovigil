@@ -25,7 +25,7 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
       </div>
     );
@@ -35,7 +35,7 @@ export default function Dashboard() {
   const showRiskAlert = latestData?.prediction?.level === "high";
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-100">
       <NavMenu />
       <div className="py-12">
         <div className="container mx-auto px-4">
