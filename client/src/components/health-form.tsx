@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import MedicalRecordsUpload from "./medical-records-upload";
 
 export default function HealthForm({ onComplete }: { onComplete: () => void }) {
   const { toast } = useToast();
@@ -447,6 +448,15 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
               )}
             />
           </div>
+        </div>
+
+        {/* Add Medical Records Upload Section */}
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold">Medical Records (Optional)</h2>
+          <p className="text-sm text-gray-600 mb-4">
+            Upload your medical records for AI-powered analysis and more accurate health predictions.
+          </p>
+          <MedicalRecordsUpload />
         </div>
 
         <Button
