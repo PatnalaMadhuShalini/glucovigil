@@ -32,9 +32,9 @@ export class MemStorage implements IStorage {
     );
   }
 
-  async getUserByVerificationToken(token: string): Promise<User | undefined> {
+  async getUserByPhone(phone: string): Promise<User | undefined> {
     return Array.from(this.users.values()).find(
-      (user) => user.verificationToken === token,
+      (user) => user.phone === phone,
     );
   }
 
@@ -44,21 +44,23 @@ export class MemStorage implements IStorage {
       id, 
       ...user,
       verified: 0,
-      verificationToken: Math.random().toString(36).substring(2, 15),
+      phoneVerificationCode: Math.floor(100000 + Math.random() * 900000).toString(), // 6-digit code
     };
     this.users.set(id, newUser);
     return newUser;
   }
 
-  async verifyUser(userId: number): Promise<void> {
+  async verifyUserPhone(userId: number, code: string): Promise<boolean> {
     const user = await this.getUser(userId);
-    if (user) {
+    if (user && user.phoneVerificationCode === code) {
       this.users.set(userId, {
         ...user,
         verified: 1,
-        verificationToken: null,
+        phoneVerificationCode: null,
       });
+      return true;
     }
+    return false;
   }
 
   async createHealthData(userId: number, data: HealthData): Promise<HealthData> {

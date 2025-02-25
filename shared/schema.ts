@@ -12,7 +12,7 @@ export const users = pgTable("users", {
   gender: text("gender").notNull(),
   place: text("place").notNull(),
   verified: integer("verified").default(0),
-  verificationToken: text("verification_token"),
+  phoneVerificationCode: text("phone_verification_code"),
   achievements: json("achievements").default([]),
   preferredLanguage: text("preferred_language").default("en"),
   healthGoals: json("health_goals").default([]),

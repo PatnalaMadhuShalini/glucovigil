@@ -6,20 +6,8 @@ import { healthDataSchema, feedbackSchema } from "@shared/schema";
 import { ZodError } from "zod";
 import fileUpload from 'express-fileupload';
 import crypto from 'crypto';
-import { createTransport } from 'nodemailer';
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Configure email transport
-  const transporter = createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASSWORD,
-    },
-  });
-
   app.post("/api/register", async (req, res, next) => {
     try {
       const existingUser = await storage.getUserByUsername(req.body.username);
@@ -32,22 +20,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         password: await hashPassword(req.body.password),
       });
 
-      // Send verification email
-      const verificationLink = `${process.env.REPL_SLUG}.replit.dev/api/verify-email/${user.verificationToken}`;
-      await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: user.email,
-        subject: "Verify your GlucoSmart account",
-        html: `
-          <h1>Welcome to GlucoSmart!</h1>
-          <p>Thank you for registering. Please click the link below to verify your email:</p>
-          <a href="${verificationLink}">Verify Email</a>
-        `,
-      });
-
-      req.login(user, (err) => {
-        if (err) return next(err);
-        res.status(201).json(user);
+      // Return the user with verification code (in production, this would be sent via SMS)
+      res.status(201).json({
+        user,
+        verificationCode: user.phoneVerificationCode,
+        message: "Please verify your phone number with the code"
       });
     } catch (err) {
       console.error("Registration error:", err);
@@ -55,21 +32,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Email verification endpoint
-  app.get("/api/verify-email/:token", async (req, res) => {
+  // Phone verification endpoint
+  app.post("/api/verify-phone", async (req, res) => {
     try {
-      const token = req.params.token;
-      const user = await storage.getUserByVerificationToken(token);
+      const { userId, code } = req.body;
+      const verified = await storage.verifyUserPhone(userId, code);
 
-      if (!user) {
-        return res.status(400).send("Invalid or expired verification token");
+      if (!verified) {
+        return res.status(400).send("Invalid verification code");
       }
 
-      await storage.verifyUser(user.id);
-      res.redirect("/auth?verified=true");
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).send("User not found");
+      }
+
+      req.login(user, (err) => {
+        if (err) return next(err);
+        res.json({ success: true, user });
+      });
     } catch (err) {
-      console.error("Error verifying email:", err);
-      res.status(500).send("Error verifying email");
+      console.error("Error verifying phone:", err);
+      res.status(500).send("Error verifying phone");
     }
   });
 
