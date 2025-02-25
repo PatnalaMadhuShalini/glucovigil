@@ -28,6 +28,7 @@ import {
 export default function AuthPage() {
   const [, setLocation] = useLocation();
   const { user, loginMutation, registerMutation } = useAuth();
+  const [activeTab, setActiveTab] = useState("login");
 
   const form = useForm<InsertUser>({
     resolver: zodResolver(insertUserSchema),
@@ -42,10 +43,16 @@ export default function AuthPage() {
     },
   });
 
+  // Redirect logged-in users
   if (user) {
     setLocation("/");
     return null;
   }
+
+  const handleRegisterSuccess = () => {
+    form.reset();
+    setActiveTab("login");
+  };
 
   return (
     <div className="min-h-screen flex">
@@ -64,7 +71,7 @@ export default function AuthPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="login">
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="login">Login</TabsTrigger>
                 <TabsTrigger value="register">Register</TabsTrigger>
@@ -119,7 +126,11 @@ export default function AuthPage() {
               <TabsContent value="register">
                 <Form {...form}>
                   <form
-                    onSubmit={form.handleSubmit((data) => registerMutation.mutate(data))}
+                    onSubmit={form.handleSubmit((data) => {
+                      registerMutation.mutate(data, {
+                        onSuccess: handleRegisterSuccess,
+                      });
+                    })}
                     className="space-y-4"
                   >
                     <FormField

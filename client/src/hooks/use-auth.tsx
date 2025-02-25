@@ -34,10 +34,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loginMutation = useMutation({
     mutationFn: async (credentials: LoginData) => {
       const res = await apiRequest("POST", "/api/login", credentials);
-      return await res.json();
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Login failed");
+      }
+      return res.json();
     },
     onSuccess: (user: SelectUser) => {
       queryClient.setQueryData(["/api/user"], user);
+      toast({
+        title: "Success",
+        description: "Logged in successfully",
+      });
     },
     onError: (error: Error) => {
       toast({
@@ -51,10 +59,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const registerMutation = useMutation({
     mutationFn: async (credentials: InsertUser) => {
       const res = await apiRequest("POST", "/api/register", credentials);
-      return await res.json();
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Registration failed");
+      }
+      return res.json();
     },
-    onSuccess: (user: SelectUser) => {
-      queryClient.setQueryData(["/api/user"], user);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+      toast({
+        title: "Success",
+        description: "Registration successful. Please log in.",
+      });
+      // Clear any cached user data to force a fresh login
+      queryClient.setQueryData(["/api/user"], null);
     },
     onError: (error: Error) => {
       toast({
@@ -67,10 +85,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      await apiRequest("POST", "/api/logout");
+      const res = await apiRequest("POST", "/api/logout");
+      if (!res.ok) {
+        throw new Error("Logout failed");
+      }
     },
     onSuccess: () => {
-      queryClient.setQueryData(["/api/user"], null);
+      // Clear all queries from the cache to ensure a clean slate
+      queryClient.clear();
+      toast({
+        title: "Success",
+        description: "Logged out successfully",
+      });
     },
     onError: (error: Error) => {
       toast({
