@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, json } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, json } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -55,3 +55,14 @@ export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type HealthData = z.infer<typeof healthDataSchema>;
 export type Feedback = z.infer<typeof feedbackSchema>;
+
+// Add prediction types
+export type Prediction = {
+  score: number;
+  level: "low" | "moderate" | "high";
+  recommendations: string[];
+};
+
+export type HealthDataWithPrediction = HealthData & {
+  prediction: Prediction;
+};

@@ -14,7 +14,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     try {
       const data = healthDataSchema.parse(req.body);
-      const healthData = await storage.createHealthData(req.user!.id, data);
+
+      // Calculate prediction and recommendations
+      const prediction = calculateDiabetesRisk(data);
+      const healthData = await storage.createHealthData(req.user!.id, {
+        ...data,
+        prediction
+      });
+
       res.status(201).json(healthData);
     } catch (err) {
       if (err instanceof ZodError) {
@@ -59,33 +66,100 @@ export async function registerRoutes(app: Express): Promise<Server> {
 }
 
 function calculateDiabetesRisk(data: any) {
-  // Simple risk calculation logic
+  // More comprehensive risk calculation logic
   let riskScore = 0;
 
-  if (data.physiological.bloodSugar > 100) riskScore += 2;
-  if (data.physiological.weight / (data.physiological.height * data.physiological.height) > 25) riskScore += 1;
+  // Age factor
+  if (data.demographics.age > 45) riskScore += 2;
+  if (data.demographics.age > 65) riskScore += 1;
+
+  // BMI calculation
+  const heightInMeters = data.physiological.height / 100;
+  const bmi = data.physiological.weight / (heightInMeters * heightInMeters);
+  if (bmi > 30) riskScore += 2;
+  else if (bmi > 25) riskScore += 1;
+
+  // Blood sugar
+  if (data.physiological.bloodSugar > 126) riskScore += 2;
+  else if (data.physiological.bloodSugar > 100) riskScore += 1;
+
+  // Blood pressure
+  if (data.physiological.bloodPressure.systolic > 140 || 
+      data.physiological.bloodPressure.diastolic > 90) {
+    riskScore += 1;
+  }
+
+  // Lifestyle factors
   if (data.lifestyle.smoking) riskScore += 1;
+  if (data.lifestyle.alcohol) riskScore += 1;
   if (data.lifestyle.exercise === "none") riskScore += 1;
+  if (data.lifestyle.diet === "poor") riskScore += 1;
 
   return {
     score: riskScore,
-    level: riskScore <= 1 ? "low" : riskScore <= 3 ? "moderate" : "high",
-    recommendations: generateRecommendations(riskScore)
+    level: riskScore <= 2 ? "low" : riskScore <= 5 ? "moderate" : "high",
+    recommendations: generateRecommendations(riskScore, data)
   };
 }
 
-function generateRecommendations(riskScore: number) {
-  const recommendations = [
-    "Maintain a balanced diet rich in whole grains, lean proteins, and vegetables",
-    "Exercise regularly - aim for at least 150 minutes of moderate activity per week",
-    "Monitor blood sugar levels regularly",
-    "Stay hydrated and limit sugary beverages",
-  ];
+function generateRecommendations(riskScore: number, data: any) {
+  const recommendations = [];
 
-  if (riskScore > 3) {
+  // Diet recommendations
+  if (data.lifestyle.diet === "poor" || data.lifestyle.diet === "fair") {
     recommendations.push(
-      "Consider consulting with a healthcare provider for personalized advice",
-      "Take steps to reduce stress through meditation or other relaxation techniques"
+      "Improve your diet by including more whole grains, lean proteins, and vegetables",
+      "Limit processed foods and sugary beverages"
+    );
+  }
+
+  // Exercise recommendations
+  if (data.lifestyle.exercise === "none" || data.lifestyle.exercise === "light") {
+    recommendations.push(
+      "Increase physical activity - aim for at least 150 minutes of moderate exercise per week",
+      "Consider activities like brisk walking, swimming, or cycling"
+    );
+  }
+
+  // Blood sugar recommendations
+  if (data.physiological.bloodSugar > 100) {
+    recommendations.push(
+      "Monitor your blood sugar levels regularly",
+      "Consider consulting with a healthcare provider about glucose management"
+    );
+  }
+
+  // BMI-based recommendations
+  const heightInMeters = data.physiological.height / 100;
+  const bmi = data.physiological.weight / (heightInMeters * heightInMeters);
+  if (bmi > 25) {
+    recommendations.push(
+      "Work on achieving a healthy weight through diet and exercise",
+      "Consider consulting with a nutritionist for personalized meal planning"
+    );
+  }
+
+  // Lifestyle recommendations
+  if (data.lifestyle.smoking) {
+    recommendations.push(
+      "Consider smoking cessation programs or nicotine replacement therapy",
+      "Consult your healthcare provider about smoking cessation options"
+    );
+  }
+
+  if (data.lifestyle.alcohol) {
+    recommendations.push(
+      "Limit alcohol consumption",
+      "Consider tracking your drinks and setting weekly limits"
+    );
+  }
+
+  // Additional recommendations for high risk
+  if (riskScore > 5) {
+    recommendations.push(
+      "Schedule regular check-ups with your healthcare provider",
+      "Consider getting a comprehensive diabetes screening",
+      "Look into diabetes prevention programs in your area"
     );
   }
 
