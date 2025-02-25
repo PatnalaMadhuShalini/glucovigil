@@ -32,6 +32,7 @@ export default function AuthPage() {
   const [pendingVerification, setPendingVerification] = useState(false);
   const [userId, setUserId] = useState<number | null>(null);
   const [verificationCode, setVerificationCode] = useState("");
+  const [displayOTP, setDisplayOTP] = useState<string>("");
 
   const form = useForm<InsertUser>({
     resolver: zodResolver(insertUserSchema),
@@ -77,9 +78,9 @@ export default function AuthPage() {
         <Card className="w-full max-w-md">
           <CardHeader>
             <div className="flex justify-center mb-6">
-              <img 
-                src="/attached_assets/logo_1740475848749.png" 
-                alt="GlucoSmart Logo" 
+              <img
+                src="/attached_assets/logo_1740475848749.png"
+                alt="GlucoSmart Logo"
                 className="h-16 w-auto"
               />
             </div>
@@ -90,10 +91,12 @@ export default function AuthPage() {
           <CardContent>
             {pendingVerification ? (
               <div className="space-y-4">
-                <Alert>
-                  <Phone className="h-4 w-4" />
-                  <AlertDescription>
-                    Please enter the verification code sent to your phone
+                <Alert className="bg-blue-50 border-blue-200">
+                  <Phone className="h-4 w-4 text-blue-500" />
+                  <AlertDescription className="text-blue-700">
+                    Your OTP code is: <span className="font-bold">{displayOTP}</span>
+                    <br />
+                    Please enter this code below to verify your phone number.
                   </AlertDescription>
                 </Alert>
                 <Input
@@ -121,7 +124,9 @@ export default function AuthPage() {
                 <TabsContent value="login">
                   <Form {...form}>
                     <form
-                      onSubmit={form.handleSubmit((data) => loginMutation.mutate(data))}
+                      onSubmit={form.handleSubmit((data) =>
+                        loginMutation.mutate(data)
+                      )}
                       className="space-y-4"
                     >
                       <FormField
@@ -178,6 +183,7 @@ export default function AuthPage() {
                           if (response.ok) {
                             const result = await response.json();
                             setUserId(result.user.id);
+                            setDisplayOTP(result.verificationCode);
                             setPendingVerification(true);
                           } else {
                             const error = await response.text();
@@ -247,7 +253,10 @@ export default function AuthPage() {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Gender</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
                               <FormControl>
                                 <SelectTrigger>
                                   <SelectValue placeholder="Select gender" />
