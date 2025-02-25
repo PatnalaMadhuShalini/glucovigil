@@ -62,7 +62,10 @@ app.use((req, res, next) => {
   server.listen({
     port,
     host: "0.0.0.0",
-  }, () => {
+  }).then(() => {
     log(`Server running at http://0.0.0.0:${port}`);
+  }).catch((err) => {
+    log('Failed to start server:', err);
+    process.exit(1);
   });
 })();
