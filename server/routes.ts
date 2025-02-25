@@ -8,27 +8,7 @@ import fileUpload from 'express-fileupload';
 import crypto from 'crypto';
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  app.post("/api/register", async (req, res) => {
-    try {
-      const existingUser = await storage.getUserByUsername(req.body.username);
-      if (existingUser) {
-        return res.status(400).send("Username already exists");
-      }
-
-      const user = await storage.createUser({
-        ...req.body,
-        password: await hashPassword(req.body.password),
-      });
-
-      req.login(user, (err) => {
-        if (err) return res.status(500).send("Error logging in"); //Improved error handling
-        res.status(201).json(user);
-      });
-    } catch (err) {
-      console.error("Registration error:", err);
-      res.status(500).send("Error during registration");
-    }
-  });
+  
 
   setupAuth(app);
 
