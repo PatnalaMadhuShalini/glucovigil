@@ -13,6 +13,18 @@ import { Loader2, Download } from "lucide-react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
+// Added FeedbackSystem component
+function FeedbackSystem() {
+  // Add your feedback form logic here
+  return (
+    <div>
+      <h2>Provide Feedback</h2>
+      {/* Add feedback form elements here */}
+    </div>
+  );
+}
+
+
 export default function Dashboard() {
   const { user } = useAuth();
   const [showForm, setShowForm] = useState(false);
@@ -82,7 +94,10 @@ export default function Dashboard() {
 
             <div className="grid md:grid-cols-2 gap-8 mb-8">
               <MedicalRecordsUpload />
-              <HealthRecommendations healthData={latestData} />
+              <div className="space-y-4"> {/*Added div for spacing*/}
+                <HealthRecommendations healthData={latestData} />
+                <FeedbackSystem />
+              </div>
             </div>
           </>
         )}
