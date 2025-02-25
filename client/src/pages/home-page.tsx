@@ -13,9 +13,9 @@ export default function HomePage() {
         <div className="text-center mb-12">
           <div className="flex justify-center mb-6">
             <img 
-              src="/attached_assets/logo_1740475848749.png" 
+              src="/logo.svg" 
               alt="GlucoSmart Logo" 
-              className="h-16 w-auto"
+              className="h-20 w-auto"
             />
           </div>
           <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
@@ -70,7 +70,7 @@ export default function HomePage() {
 
         <div className="text-center">
           <Link href={user ? "/dashboard" : "/auth"}>
-            <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-8 py-2 rounded-lg text-lg">
+            <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-8 py-2 rounded-lg text-lg hover:from-blue-700 hover:to-cyan-700">
               {user ? "Go to Dashboard" : "Get Started"}
             </Button>
           </Link>

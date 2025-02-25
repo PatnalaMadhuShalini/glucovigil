@@ -1,6 +1,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "./ui/button";
 import { Link, useLocation } from "wouter";
+import { User } from "lucide-react";
 
 export default function NavMenu() {
   const { user, logoutMutation } = useAuth();
@@ -48,6 +49,14 @@ export default function NavMenu() {
                 </Link>
                 <Link href="/dashboard">
                   <a className={linkClass('/dashboard')}>Dashboard</a>
+                </Link>
+                <Link href="/profile">
+                  <a className={linkClass('/profile')}>
+                    <span className="flex items-center">
+                      <User className="h-4 w-4 mr-1" />
+                      Profile
+                    </span>
+                  </a>
                 </Link>
               </div>
             )}
