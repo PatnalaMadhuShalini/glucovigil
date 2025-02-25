@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -11,6 +12,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -21,11 +23,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, AlertTriangle, FileUp } from "lucide-react";
+import { Loader2, AlertTriangle, FileUp, HelpCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { Slider } from "@/components/ui/slider";
+
+function InfoTooltip({ content }: { content: string }) {
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <HelpCircle className="h-4 w-4 ml-1 inline-block text-gray-400" />
+        </TooltipTrigger>
+        <TooltipContent>
+          <p className="max-w-xs text-sm">{content}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
 
 export default function HealthForm({ onComplete }: { onComplete: () => void }) {
   const { toast } = useToast();
@@ -167,6 +190,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Age</FormLabel>
+                  <InfoTooltip content="Your current age in years" />
                   <FormControl>
                     <Input
                       type="number"
@@ -184,6 +208,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Gender</FormLabel>
+                  <InfoTooltip content="Your biological sex assigned at birth" />
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -209,6 +234,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Ethnicity</FormLabel>
+                  <InfoTooltip content="Your self-identified ethnicity or racial background" />
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -221,7 +247,10 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
 
         {/* Medical Records Upload Section */}
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Medical Records (Optional)</h2>
+          <h2 className="text-xl font-semibold">
+            Medical Records (Optional)
+            <InfoTooltip content="Upload your recent medical records in PDF format. This helps us extract relevant health data automatically." />
+          </h2>
           <div
             {...getRootProps()}
             className={`border-2 border-dashed rounded-lg p-6 cursor-pointer transition-colors
@@ -252,6 +281,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Height (cm)</FormLabel>
+                  <InfoTooltip content="Your height in centimeters. To convert from feet: multiply feet by 30.48 and inches by 2.54" />
                   <FormControl>
                     <Input
                       type="number"
@@ -260,15 +290,18 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                     />
                   </FormControl>
                   <FormMessage />
+                  <FormDescription>Normal range: 150-200 cm for adults</FormDescription>
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="physiological.weight"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Weight (kg)</FormLabel>
+                  <InfoTooltip content="Your current weight in kilograms. To convert from pounds, divide by 2.205" />
                   <FormControl>
                     <Input
                       type="number"
@@ -280,12 +313,14 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="physiological.bloodPressure.systolic"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Systolic BP</FormLabel>
+                  <InfoTooltip content="The top number in your blood pressure reading, measured when your heart beats" />
                   <FormControl>
                     <Input
                       type="number"
@@ -294,15 +329,18 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                     />
                   </FormControl>
                   <FormMessage />
+                  <FormDescription>Normal range: 90-120 mmHg</FormDescription>
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="physiological.bloodPressure.diastolic"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Diastolic BP</FormLabel>
+                  <InfoTooltip content="The bottom number in your blood pressure reading, measured between heartbeats" />
                   <FormControl>
                     <Input
                       type="number"
@@ -311,15 +349,18 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                     />
                   </FormControl>
                   <FormMessage />
+                  <FormDescription>Normal range: 60-80 mmHg</FormDescription>
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="physiological.bloodSugar"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Blood Sugar (mg/dL)</FormLabel>
+                  <InfoTooltip content="Your fasting blood glucose level. Measure after 8 hours of fasting" />
                   <FormControl>
                     <Input
                       type="number"
@@ -328,16 +369,18 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                     />
                   </FormControl>
                   <FormMessage />
+                  <FormDescription>Normal range: 70-100 mg/dL (fasting)</FormDescription>
                 </FormItem>
               )}
             />
-            {/* New Cholesterol Fields */}
+
             <FormField
               control={form.control}
               name="physiological.cholesterol.total"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Total Cholesterol (mg/dL)</FormLabel>
+                  <InfoTooltip content="Your total cholesterol level from a lipid panel blood test" />
                   <FormControl>
                     <Input
                       type="number"
@@ -346,15 +389,18 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                     />
                   </FormControl>
                   <FormMessage />
+                  <FormDescription>Desirable: Less than 200 mg/dL</FormDescription>
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="physiological.cholesterol.hdl"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>HDL Cholesterol (mg/dL)</FormLabel>
+                  <InfoTooltip content="'Good' cholesterol - Higher levels are better" />
                   <FormControl>
                     <Input
                       type="number"
@@ -363,15 +409,18 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                     />
                   </FormControl>
                   <FormMessage />
+                  <FormDescription>Optimal: 60 mg/dL or higher</FormDescription>
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="physiological.cholesterol.ldl"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>LDL Cholesterol (mg/dL)</FormLabel>
+                  <InfoTooltip content="'Bad' cholesterol - Lower levels are better" />
                   <FormControl>
                     <Input
                       type="number"
@@ -380,6 +429,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                     />
                   </FormControl>
                   <FormMessage />
+                  <FormDescription>Optimal: Less than 100 mg/dL</FormDescription>
                 </FormItem>
               )}
             />
@@ -407,6 +457,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Exercise Level</FormLabel>
+                  <InfoTooltip content="How often you engage in physical activity" />
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -417,22 +468,24 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="none">None</SelectItem>
-                      <SelectItem value="light">Light</SelectItem>
-                      <SelectItem value="moderate">Moderate</SelectItem>
-                      <SelectItem value="heavy">Heavy</SelectItem>
+                      <SelectItem value="none">None (No exercise)</SelectItem>
+                      <SelectItem value="light">Light (1-2 days/week)</SelectItem>
+                      <SelectItem value="moderate">Moderate (3-5 days/week)</SelectItem>
+                      <SelectItem value="heavy">Heavy (6-7 days/week)</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="lifestyle.diet"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Diet Quality</FormLabel>
+                  <InfoTooltip content="How would you rate the overall healthiness of your diet?" />
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -460,6 +513,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Sleep Hours per Night</FormLabel>
+                  <InfoTooltip content="Average hours of sleep you get per night" />
                   <FormControl>
                     <div className="pt-2">
                       <Slider
@@ -472,6 +526,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       <div className="text-center mt-2">{field.value} hours</div>
                     </div>
                   </FormControl>
+                  <FormDescription>Recommended: 7-9 hours for adults</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -482,6 +537,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Sleep Quality</FormLabel>
+                  <InfoTooltip content="How would you rate the quality of your sleep?" />
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -510,6 +566,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Alcohol Consumption</FormLabel>
+                  <InfoTooltip content="Your typical alcohol consumption pattern" />
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -521,9 +578,9 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                     </FormControl>
                     <SelectContent>
                       <SelectItem value="none">None</SelectItem>
-                      <SelectItem value="occasional">Occasional</SelectItem>
-                      <SelectItem value="moderate">Moderate</SelectItem>
-                      <SelectItem value="frequent">Frequent</SelectItem>
+                      <SelectItem value="occasional">Occasional (Few times/month)</SelectItem>
+                      <SelectItem value="moderate">Moderate (1-2 drinks/day)</SelectItem>
+                      <SelectItem value="frequent">Frequent (3+ drinks/day)</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -536,6 +593,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Drinks per Week</FormLabel>
+                  <InfoTooltip content="Average number of alcoholic drinks consumed per week" />
                   <FormControl>
                     <Input
                       type="number"
@@ -543,6 +601,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       onChange={(e) => field.onChange(parseNumberInput(e.target.value))}
                     />
                   </FormControl>
+                  <FormDescription>Moderate: ≤14 drinks/week for men, ≤7 for women</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -555,6 +614,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Stress Level</FormLabel>
+                  <InfoTooltip content="Your perceived level of daily stress" />
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -565,10 +625,10 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="low">Low</SelectItem>
-                      <SelectItem value="moderate">Moderate</SelectItem>
-                      <SelectItem value="high">High</SelectItem>
-                      <SelectItem value="severe">Severe</SelectItem>
+                      <SelectItem value="low">Low (Rarely stressed)</SelectItem>
+                      <SelectItem value="moderate">Moderate (Sometimes stressed)</SelectItem>
+                      <SelectItem value="high">High (Often stressed)</SelectItem>
+                      <SelectItem value="severe">Severe (Constantly stressed)</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -583,6 +643,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Work Style</FormLabel>
+                  <InfoTooltip content="Your typical daily activity level at work" />
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -593,10 +654,10 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="sedentary">Sedentary</SelectItem>
-                      <SelectItem value="light">Light Activity</SelectItem>
-                      <SelectItem value="moderate">Moderate Activity</SelectItem>
-                      <SelectItem value="active">Very Active</SelectItem>
+                      <SelectItem value="sedentary">Sedentary (Mostly sitting)</SelectItem>
+                      <SelectItem value="light">Light Activity (Some walking)</SelectItem>
+                      <SelectItem value="moderate">Moderate Activity (Regular movement)</SelectItem>
+                      <SelectItem value="active">Very Active (Constant movement)</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
