@@ -79,8 +79,9 @@ export default function Dashboard() {
               <HealthTrends />
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid md:grid-cols-2 gap-8 mb-8">
               <MedicalRecordsUpload />
+              <HealthRecommendations healthData={latestData} />
             </div>
           </>
         )}

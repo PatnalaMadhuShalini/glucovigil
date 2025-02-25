@@ -1,7 +1,42 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
+import * as tf from '@tensorflow/tfjs';
+import { useState, useEffect } from 'react';
+
 export default function RiskDisplay({ data }: { data: any }) {
+  const [mlPrediction, setMlPrediction] = useState<number>(0);
+
+  useEffect(() => {
+    // Simple neural network for risk prediction
+    const predictRisk = async () => {
+      const model = tf.sequential({
+        layers: [
+          tf.layers.dense({ units: 16, inputShape: [6], activation: 'relu' }),
+          tf.layers.dense({ units: 8, activation: 'relu' }),
+          tf.layers.dense({ units: 1, activation: 'sigmoid' })
+        ]
+      });
+
+      const inputFeatures = [
+        data.physiological.bloodSugar / 200,
+        data.physiological.bloodPressure.systolic / 200,
+        data.physiological.bloodPressure.diastolic / 100,
+        data.physiological.weight / 100,
+        data.demographics.age / 100,
+        data.lifestyle.exercise === 'none' ? 0 : 
+          data.lifestyle.exercise === 'light' ? 0.33 : 
+          data.lifestyle.exercise === 'moderate' ? 0.66 : 1
+      ];
+
+      const prediction = model.predict(tf.tensor2d([inputFeatures])) as tf.Tensor;
+      const score = await prediction.data();
+      setMlPrediction(score[0]);
+    };
+
+    predictRisk();
+  }, [data]);
+
   const riskColor = data.prediction.level === "high" 
     ? "bg-red-500" 
     : data.prediction.level === "moderate" 
