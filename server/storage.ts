@@ -18,7 +18,7 @@ export class MemStorage implements IStorage {
     this.feedback = new Map();
     this.currentId = 1;
     this.sessionStore = new MemoryStore({
-      checkPeriod: 86400000,
+      checkPeriod: 86400000, // 24 hours
     });
   }
 
@@ -30,14 +30,6 @@ export class MemStorage implements IStorage {
     return Array.from(this.users.values()).find(
       (user) => user.username === username,
     );
-  }
-
-  async getUserByVerificationToken(token: string): Promise<User | undefined> {
-    return undefined; // Verification removed as requested
-  }
-
-  async verifyUser(userId: number): Promise<void> {
-    // Verification removed as requested
   }
 
   async createUser(user: InsertUser): Promise<User> {
@@ -54,7 +46,6 @@ export class MemStorage implements IStorage {
   }
 
   async createHealthData(userId: number, data: HealthData): Promise<HealthData> {
-    const id = this.currentId++;
     const newData = {
       ...data,
       createdAt: new Date().toISOString(),
