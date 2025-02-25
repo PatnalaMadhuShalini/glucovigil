@@ -21,7 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertTriangle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function HealthForm({ onComplete }: { onComplete: () => void }) {
   const { toast } = useToast();
@@ -73,6 +74,12 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
     },
   });
 
+  // Function to parse number inputs
+  const parseNumberInput = (value: string) => {
+    const parsed = parseFloat(value);
+    return isNaN(parsed) ? 0 : parsed;
+  };
+
   return (
     <Form {...form}>
       <form
@@ -89,7 +96,11 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                 <FormItem>
                   <FormLabel>Age</FormLabel>
                   <FormControl>
-                    <Input type="number" {...field} />
+                    <Input 
+                      type="number"
+                      {...field}
+                      onChange={(e) => field.onChange(parseNumberInput(e.target.value))}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -146,7 +157,11 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                 <FormItem>
                   <FormLabel>Height (cm)</FormLabel>
                   <FormControl>
-                    <Input type="number" {...field} />
+                    <Input 
+                      type="number"
+                      {...field}
+                      onChange={(e) => field.onChange(parseNumberInput(e.target.value))}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -159,7 +174,11 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                 <FormItem>
                   <FormLabel>Weight (kg)</FormLabel>
                   <FormControl>
-                    <Input type="number" {...field} />
+                    <Input 
+                      type="number"
+                      {...field}
+                      onChange={(e) => field.onChange(parseNumberInput(e.target.value))}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -172,7 +191,11 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                 <FormItem>
                   <FormLabel>Systolic BP</FormLabel>
                   <FormControl>
-                    <Input type="number" {...field} />
+                    <Input 
+                      type="number"
+                      {...field}
+                      onChange={(e) => field.onChange(parseNumberInput(e.target.value))}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -185,7 +208,11 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                 <FormItem>
                   <FormLabel>Diastolic BP</FormLabel>
                   <FormControl>
-                    <Input type="number" {...field} />
+                    <Input 
+                      type="number"
+                      {...field}
+                      onChange={(e) => field.onChange(parseNumberInput(e.target.value))}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -198,13 +225,28 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                 <FormItem>
                   <FormLabel>Blood Sugar (mg/dL)</FormLabel>
                   <FormControl>
-                    <Input type="number" {...field} />
+                    <Input 
+                      type="number"
+                      {...field}
+                      onChange={(e) => field.onChange(parseNumberInput(e.target.value))}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
+
+          {/* Risk Alert */}
+          {form.watch("physiological.bloodSugar") > 100 && (
+            <Alert className="mt-4 border-yellow-500 bg-yellow-50">
+              <AlertTriangle className="h-4 w-4 text-yellow-500" />
+              <AlertTitle>Elevated Blood Sugar</AlertTitle>
+              <AlertDescription>
+                Your blood sugar level is above the normal range. Consider consulting with a healthcare professional.
+              </AlertDescription>
+            </Alert>
+          )}
         </div>
 
         <div className="space-y-4">
@@ -267,7 +309,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
 
         <Button
           type="submit"
-          className="w-full"
+          className="w-full bg-gradient-to-r from-blue-600 to-cyan-600"
           disabled={mutation.isPending}
         >
           {mutation.isPending && (
@@ -275,6 +317,14 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
           )}
           Submit Health Data
         </Button>
+
+        {/* AI Assistant Tip */}
+        <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <h3 className="text-sm font-medium text-blue-800">AI Health Assistant</h3>
+          <p className="text-sm text-blue-600 mt-1">
+            Fill in your health data accurately to receive personalized recommendations. Our AI will analyze your data and provide tailored insights for better health management.
+          </p>
+        </div>
       </form>
     </Form>
   );
