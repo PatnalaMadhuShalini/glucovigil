@@ -21,7 +21,7 @@ export default function NavMenu() {
           <img 
             src="/logo.svg"
             alt="GlucoSmart Logo" 
-            className="h-10 w-auto cursor-pointer"
+            className="h-12 w-auto cursor-pointer"
           />
         </Link>
 
