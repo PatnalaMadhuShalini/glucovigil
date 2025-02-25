@@ -159,7 +159,6 @@ export default function HealthRecommendations({ nutritionPlan, exercisePlan }: H
 }
 
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Button } from "./ui/button";
 import { Progress } from "./ui/progress";
 import { Alert, AlertDescription } from "./ui/alert";
 import { Bell } from "lucide-react";
@@ -172,7 +171,6 @@ interface HealthRecommendationsProps {
 
 export default function HealthRecommendations({ healthData }: HealthRecommendationsProps) {
   const [mlRisk, setMlRisk] = useState(0);
-  const [feedback, setFeedback] = useState("");
 
   useEffect(() => {
     if (healthData) {
