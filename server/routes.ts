@@ -31,9 +31,19 @@ export async function registerRoutes(router: Router): Promise<void> {
     try {
       const data = healthDataSchema.parse(req.body);
       const prediction = calculateDiabetesRisk(data);
+
+      // Get existing health data to check for existing achievements
+      const existingData = await storage.getHealthDataByUserId(req.user!.id);
+      const existingAchievements = existingData.length > 0 ? existingData[0].achievements : [];
+
+      // Check and award new achievements
+      const achievements = checkAndAwardAchievements(data, existingAchievements);
+
       const healthData = await storage.createHealthData(req.user!.id, {
         ...data,
-        prediction
+        prediction,
+        achievements,
+        createdAt: new Date().toISOString()
       });
 
       res.status(201).json(healthData);
@@ -92,9 +102,9 @@ export async function registerRoutes(router: Router): Promise<void> {
           const pdfData = await pdfParse.default(file.data);
           const extractedData = await extractHealthData(pdfData.text);
 
-          res.json({ 
+          res.json({
             message: 'Medical records processed successfully',
-            extractedData 
+            extractedData
           });
         } catch (parseError) {
           console.error('Error parsing PDF:', parseError);
@@ -119,7 +129,7 @@ export async function registerRoutes(router: Router): Promise<void> {
 
     if (!req.isAuthenticated()) {
       console.log("Authentication failed");
-      return res.status(401).json({ 
+      return res.status(401).json({
         message: "Please login to submit symptoms",
         status: "error"
       });
@@ -142,7 +152,7 @@ export async function registerRoutes(router: Router): Promise<void> {
 
       if (!latestData) {
         console.log("No existing health data found");
-        const response = { 
+        const response = {
           message: "Please complete health assessment first",
           status: "error"
         };
@@ -161,7 +171,7 @@ export async function registerRoutes(router: Router): Promise<void> {
       // Save the updated health data
       await storage.updateHealthData(userId, updatedData);
 
-      const successResponse = { 
+      const successResponse = {
         message: "Symptoms recorded successfully",
         status: "success",
         data: updatedData
@@ -170,7 +180,7 @@ export async function registerRoutes(router: Router): Promise<void> {
       return res.status(200).json(successResponse);
     } catch (err) {
       console.error("Error processing symptoms:", err);
-      const errorResponse = { 
+      const errorResponse = {
         message: err instanceof Error ? err.message : "Failed to process symptoms",
         status: "error"
       };
@@ -199,8 +209,8 @@ function calculateDiabetesRisk(data: any) {
   else if (data.physiological.bloodSugar > 100) riskScore += 1;
 
   // Blood pressure
-  if (data.physiological.bloodPressure.systolic > 140 || 
-      data.physiological.bloodPressure.diastolic > 90) {
+  if (data.physiological.bloodPressure.systolic > 140 ||
+    data.physiological.bloodPressure.diastolic > 90) {
     riskScore += 1;
   }
 
@@ -284,6 +294,82 @@ function generateRecommendations(riskScore: number, data: any) {
   return recommendations;
 }
 
+function checkAndAwardAchievements(data: any, existingAchievements: any[] = []): Achievement[] {
+  const achievements: Achievement[] = [...(existingAchievements || [])];
+  const now = new Date().toISOString();
+
+  // First Time Health Check Achievement
+  if (!existingAchievements?.length) {
+    achievements.push({
+      id: "first_check",
+      name: "Health Pioneer",
+      description: "Completed your first health assessment",
+      icon: "🎯",
+      unlockedAt: now
+    });
+  }
+
+  // Blood Sugar Control Achievement
+  if (data.physiological.bloodSugar >= 70 && data.physiological.bloodSugar <= 100) {
+    const hasAchievement = achievements.some(a => a.id === "blood_sugar_control");
+    if (!hasAchievement) {
+      achievements.push({
+        id: "blood_sugar_control",
+        name: "Blood Sugar Master",
+        description: "Maintained healthy blood sugar levels",
+        icon: "🎯",
+        unlockedAt: now
+      });
+    }
+  }
+
+  // Healthy BMI Achievement
+  const heightInMeters = data.physiological.height / 100;
+  const bmi = data.physiological.weight / (heightInMeters * heightInMeters);
+  if (bmi >= 18.5 && bmi <= 24.9) {
+    const hasAchievement = achievements.some(a => a.id === "healthy_bmi");
+    if (!hasAchievement) {
+      achievements.push({
+        id: "healthy_bmi",
+        name: "BMI Champion",
+        description: "Maintained a healthy BMI",
+        icon: "⭐",
+        unlockedAt: now
+      });
+    }
+  }
+
+  // Lifestyle Achievement
+  if (data.lifestyle.exercise !== "none" && data.lifestyle.diet === "good") {
+    const hasAchievement = achievements.some(a => a.id === "healthy_lifestyle");
+    if (!hasAchievement) {
+      achievements.push({
+        id: "healthy_lifestyle",
+        name: "Wellness Warrior",
+        description: "Maintained a healthy lifestyle with regular exercise and good diet",
+        icon: "🏃",
+        unlockedAt: now
+      });
+    }
+  }
+
+  // Symptom Tracking Achievement
+  if (data.symptoms) {
+    const hasAchievement = achievements.some(a => a.id === "symptom_tracker");
+    if (!hasAchievement) {
+      achievements.push({
+        id: "symptom_tracker",
+        name: "Health Monitor",
+        description: "Started tracking your symptoms",
+        icon: "📋",
+        unlockedAt: now
+      });
+    }
+  }
+
+  return achievements;
+}
+
 async function extractHealthData(text: string) {
   // Example patterns to extract health data
   const bloodSugarPattern = /blood sugar[:\s]+(\d+)/i;
@@ -317,4 +403,12 @@ async function extractHealthData(text: string) {
   }
 
   return Object.keys(extractedData).length > 0 ? extractedData : null;
+}
+
+interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  unlockedAt: string;
 }
