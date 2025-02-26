@@ -5,7 +5,7 @@ import session from "express-session";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { storage } from "./storage";
-import { User as SelectUser } from "@shared/schema";
+import { User as SelectUser, insertUserSchema } from "@shared/schema";
 
 declare global {
   namespace Express {
@@ -90,25 +90,19 @@ export function setupAuth(app: Express) {
 
   app.post("/api/register", async (req, res) => {
     try {
-      // Validate required fields
-      const { username, password, email, fullName } = req.body;
-      if (!username || !password || !email || !fullName) {
-        return res.status(400).json({ 
-          message: "Missing required fields",
-          required: ["username", "password", "email", "fullName"]
-        });
-      }
+      // Validate the request body using Zod schema
+      const validatedData = insertUserSchema.parse(req.body);
 
       // Check if user already exists
-      const existingUser = await storage.getUserByUsername(username);
+      const existingUser = await storage.getUserByUsername(validatedData.username);
       if (existingUser) {
         return res.status(400).json({ message: "Username already exists" });
       }
 
       // Hash password and create user
-      const hashedPassword = await hashPassword(password);
+      const hashedPassword = await hashPassword(validatedData.password);
       const user = await storage.createUser({
-        ...req.body,
+        ...validatedData,
         password: hashedPassword,
       });
 
@@ -127,6 +121,9 @@ export function setupAuth(app: Express) {
       });
     } catch (err) {
       console.error("Registration error:", err);
+      if (err.errors) {
+        return res.status(400).json({ message: "Validation error", errors: err.errors });
+      }
       res.status(500).json({ message: "Error during registration" });
     }
   });

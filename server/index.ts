@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Logging middleware
+// Enhanced logging middleware
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -36,6 +36,7 @@ app.use((req, res, next) => {
 
 (async () => {
   try {
+    log('Starting server initialization...');
     const server = await registerRoutes(app);
 
     // Error handling middleware
@@ -47,22 +48,26 @@ app.use((req, res, next) => {
     });
 
     if (app.get("env") === "development") {
+      log('Setting up Vite development server...');
       await setupVite(app, server);
     } else {
+      log('Setting up static file serving...');
       serveStatic(app);
     }
 
-    // Try different ports if 5000 is in use
+    // Try different ports if default is in use
     const ports = [5000, 5001, 5002, 5003];
     let port: number | undefined;
 
     for (const p of ports) {
       try {
+        log(`Attempting to start server on port ${p}...`);
         await server.listen({
           port: p,
           host: "0.0.0.0",
         });
         port = p;
+        log(`Successfully bound to port ${p}`);
         break;
       } catch (error) {
         if (error instanceof Error && 'code' in error && error.code === 'EADDRINUSE') {
@@ -82,7 +87,7 @@ app.use((req, res, next) => {
     if (error instanceof Error) {
       log('Failed to start server:', error.message);
     } else {
-      log('Failed to start server:', error);
+      log('Failed to start server:', String(error));
     }
     process.exit(1);
   }
