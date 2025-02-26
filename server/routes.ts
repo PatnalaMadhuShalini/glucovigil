@@ -127,6 +127,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Inside registerRoutes function, add the new endpoint
+  app.post("/api/symptoms", async (req, res) => {
+    console.log("Received symptom submission request");
+    console.log("Auth status:", req.isAuthenticated());
+    console.log("Request body:", req.body);
+
+    if (!req.isAuthenticated()) {
+      console.log("Authentication failed");
+      return res.sendStatus(401);
+    }
+
+    try {
+      const userId = req.user!.id;
+      const symptomData = req.body;
+      console.log("Processing symptoms for user:", userId);
+
+      // Get the latest health data for the user
+      const healthData = await storage.getHealthDataByUserId(userId);
+      const latestData = healthData[healthData.length - 1];
+
+      if (!latestData) {
+        console.log("No existing health data found");
+        return res.status(400).json({ message: "Please complete health assessment first" });
+      }
+
+      // Update the latest health data with new symptoms
+      const updatedData = {
+        ...latestData,
+        symptoms: {
+          ...latestData.symptoms,
+          ...symptomData,
+          recordedAt: new Date().toISOString()
+        }
+      };
+
+      console.log("Updating health data with symptoms:", updatedData);
+
+      // Save the updated health data
+      await storage.updateHealthData(userId, updatedData);
+
+      res.status(200).json({ message: "Symptoms recorded successfully" });
+    } catch (err) {
+      console.error("Error processing symptoms:", err);
+      res.status(500).json({ message: "Failed to process symptoms" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

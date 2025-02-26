@@ -11,6 +11,9 @@ import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { AlertCircle, ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 const symptomSchema = z.object({
   primarySymptom: z.string().min(1, "Please select a primary symptom"),
@@ -42,22 +45,54 @@ const steps = [
   },
 ];
 
-export default function SymptomWizard() {
+interface SymptomWizardProps {
+  onComplete?: () => void;
+}
+
+export default function SymptomWizard({ onComplete }: SymptomWizardProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const progress = ((currentStep + 1) / steps.length) * 100;
+  const { toast } = useToast();
 
   const form = useForm<SymptomForm>({
     resolver: zodResolver(symptomSchema),
     defaultValues: {
       severity: 5,
       timeOfDay: "variable",
+      triggers: "",
+      additionalNotes: "",
     },
   });
 
-  const onSubmit = (data: SymptomForm) => {
-    console.log("Symptom data:", data);
-    // TODO: Submit to backend
-  };
+  const mutation = useMutation({
+    mutationFn: async (data: SymptomForm) => {
+      console.log("Submitting data to API:", data);
+      const res = await apiRequest("POST", "/api/symptoms", data);
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Failed to save symptoms");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/health-data"] });
+      toast({
+        title: "Success",
+        description: "Symptoms recorded successfully",
+      });
+      if (onComplete) {
+        onComplete();
+      }
+    },
+    onError: (error: Error) => {
+      console.error("Mutation error:", error);
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
 
   const commonSymptoms = [
     "Fatigue",
@@ -69,6 +104,30 @@ export default function SymptomWizard() {
     "Chest Pain",
     "Shortness of Breath",
   ];
+
+  const onSubmit = async (data: SymptomForm) => {
+    try {
+      console.log("Form submission data:", data);
+      await mutation.mutateAsync(data);
+    } catch (error) {
+      console.error("Submit error:", error);
+    }
+  };
+
+  const nextStep = () => {
+    const fields = [
+      ["primarySymptom"],
+      ["severity"],
+      ["duration", "timeOfDay"],
+      ["triggers", "additionalNotes"],
+    ][currentStep];
+
+    form.trigger(fields as Array<keyof SymptomForm>).then((isValid) => {
+      if (isValid) {
+        setCurrentStep((step) => Math.min(steps.length - 1, step + 1));
+      }
+    });
+  };
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
@@ -88,6 +147,7 @@ export default function SymptomWizard() {
               <div className="space-y-4">
                 <Label>Select your primary symptom</Label>
                 <RadioGroup
+                  value={form.getValues("primarySymptom")}
                   onValueChange={(value) => form.setValue("primarySymptom", value)}
                   className="grid grid-cols-2 gap-4"
                 >
@@ -98,6 +158,11 @@ export default function SymptomWizard() {
                     </div>
                   ))}
                 </RadioGroup>
+                {form.formState.errors.primarySymptom && (
+                  <p className="text-sm text-red-500">
+                    {form.formState.errors.primarySymptom.message}
+                  </p>
+                )}
               </div>
             )}
 
@@ -129,12 +194,17 @@ export default function SymptomWizard() {
                     placeholder="e.g., 2 days, 1 week"
                     className="mt-2"
                   />
+                  {form.formState.errors.duration && (
+                    <p className="text-sm text-red-500">
+                      {form.formState.errors.duration.message}
+                    </p>
+                  )}
                 </div>
                 <div className="mt-4">
                   <Label>When does it typically occur?</Label>
                   <RadioGroup
+                    value={form.getValues("timeOfDay")}
                     onValueChange={(value) => form.setValue("timeOfDay", value as any)}
-                    defaultValue={form.getValues("timeOfDay")}
                     className="grid grid-cols-2 gap-4 mt-2"
                   >
                     {["morning", "afternoon", "evening", "night", "variable"].map((time) => (
@@ -186,15 +256,24 @@ export default function SymptomWizard() {
             {currentStep < steps.length - 1 ? (
               <Button
                 type="button"
-                onClick={() => setCurrentStep((step) => Math.min(steps.length - 1, step + 1))}
+                onClick={nextStep}
               >
                 Next
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             ) : (
-              <Button type="submit">
-                Submit
-                <Check className="w-4 h-4 ml-2" />
+              <Button 
+                type="submit"
+                disabled={mutation.isPending}
+              >
+                {mutation.isPending ? (
+                  <>Submitting...</>
+                ) : (
+                  <>
+                    Submit
+                    <Check className="w-4 h-4 ml-2" />
+                  </>
+                )}
               </Button>
             )}
           </div>

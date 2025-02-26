@@ -125,7 +125,7 @@ export default function Dashboard() {
                     Close
                   </Button>
                 </div>
-                <SymptomWizard />
+                <SymptomWizard onComplete={() => setShowSymptomWizard(false)} />
               </CardContent>
             </Card>
           )}
