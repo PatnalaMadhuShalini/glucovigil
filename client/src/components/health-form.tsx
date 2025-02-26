@@ -12,6 +12,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -22,15 +23,33 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
+import { Loader2, HelpCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import MedicalRecordsUpload from "./medical-records-upload";
+
+const InfoTooltip = ({ content }: { content: string }) => (
+  <TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <HelpCircle className="h-4 w-4 ml-2 text-muted-foreground inline-block cursor-help" />
+      </TooltipTrigger>
+      <TooltipContent>
+        <p className="max-w-xs text-sm">{content}</p>
+      </TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
+);
 
 export default function HealthForm({ onComplete }: { onComplete: () => void }) {
   const { toast } = useToast();
   const [error, setError] = useState<string | null>(null);
 
-  // Define strict default values with explicit booleans
   const defaultValues: HealthData = {
     demographics: {
       age: 0,
@@ -91,7 +110,6 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
 
   const onSubmit = (formData: HealthData) => {
     try {
-      // Transform and validate all fields
       const transformedData: HealthData = {
         demographics: {
           age: Number(formData.demographics.age),
@@ -112,13 +130,11 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
           diet: formData.lifestyle.diet,
           stressLevel: formData.lifestyle.stressLevel,
           workStyle: formData.lifestyle.workStyle,
-          // Explicitly cast to boolean
           alcohol: formData.lifestyle.alcohol === true,
           smoking: formData.lifestyle.smoking === true
         }
       };
 
-      console.log("Form data before submission:", transformedData);
       mutation.mutate(transformedData);
     } catch (error) {
       console.error("Form submission error:", error);
@@ -128,7 +144,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         {error && (
           <Alert variant="destructive">
             <AlertDescription>{error}</AlertDescription>
@@ -136,8 +152,11 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
         )}
 
         {/* Demographics Section */}
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Demographics</h2>
+        <div className="space-y-6">
+          <div className="flex items-center">
+            <h2 className="text-xl font-semibold">Personal Information</h2>
+            <InfoTooltip content="Basic information about you that helps us provide more accurate health insights." />
+          </div>
           <div className="grid md:grid-cols-3 gap-4">
             <FormField
               control={form.control}
@@ -191,6 +210,9 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
+                  <FormDescription>
+                    This helps assess specific health risk factors.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -198,10 +220,13 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
           </div>
         </div>
 
-        {/* Physiological Section */}
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Physiological Data</h2>
-          <div className="grid md:grid-cols-2 gap-4">
+        {/* Physical Measurements Section */}
+        <div className="space-y-6">
+          <div className="flex items-center">
+            <h2 className="text-xl font-semibold">Physical Measurements</h2>
+            <InfoTooltip content="Your physical measurements help us calculate important health indicators like BMI." />
+          </div>
+          <div className="grid md:grid-cols-2 gap-6">
             <FormField
               control={form.control}
               name="physiological.height"
@@ -217,6 +242,9 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       onChange={(e) => field.onChange(Number(e.target.value))}
                     />
                   </FormControl>
+                  <FormDescription>
+                    Enter your height in centimeters (e.g., 170 cm = 5'7")
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -237,11 +265,34 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       onChange={(e) => field.onChange(Number(e.target.value))}
                     />
                   </FormControl>
+                  <FormDescription>
+                    Enter your weight in kilograms (e.g., 70 kg = 154 lbs)
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
+          </div>
+        </div>
 
+        {/* Blood Pressure and Sugar Section */}
+        <div className="space-y-6">
+          <div className="flex items-center">
+            <h2 className="text-xl font-semibold">Blood Pressure & Sugar</h2>
+            <InfoTooltip content="These vital measurements help assess your cardiovascular health and diabetes risk." />
+          </div>
+
+          <div className="bg-blue-50 p-4 rounded-lg mb-4">
+            <h3 className="font-medium mb-2">Where to find these numbers?</h3>
+            <ul className="list-disc pl-4 space-y-2 text-sm">
+              <li>Blood pressure can be measured at home with a blood pressure monitor, at a pharmacy, or during your last doctor's visit</li>
+              <li>Blood sugar (glucose) can be measured using a glucose meter, from a recent lab test, or from your last doctor's visit</li>
+              <li>Normal blood sugar range: 70-100 mg/dL (fasting)</li>
+              <li>Normal blood pressure range: below 120/80 mmHg</li>
+            </ul>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
             <FormField
               control={form.control}
               name="physiological.bloodPressure.systolic"
@@ -257,6 +308,9 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       onChange={(e) => field.onChange(Number(e.target.value))}
                     />
                   </FormControl>
+                  <FormDescription>
+                    The top number in blood pressure reading (e.g., 120 in 120/80)
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -277,6 +331,9 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       onChange={(e) => field.onChange(Number(e.target.value))}
                     />
                   </FormControl>
+                  <FormDescription>
+                    The bottom number in blood pressure reading (e.g., 80 in 120/80)
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -287,7 +344,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
               name="physiological.bloodSugar"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Blood Sugar</FormLabel>
+                  <FormLabel>Blood Sugar (mg/dL)</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -297,6 +354,9 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       onChange={(e) => field.onChange(Number(e.target.value))}
                     />
                   </FormControl>
+                  <FormDescription>
+                    Your fasting blood glucose level
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -305,9 +365,12 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
         </div>
 
         {/* Lifestyle Section */}
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Lifestyle</h2>
-          <div className="grid md:grid-cols-2 gap-4">
+        <div className="space-y-6">
+          <div className="flex items-center">
+            <h2 className="text-xl font-semibold">Lifestyle Factors</h2>
+            <InfoTooltip content="Your daily habits and lifestyle choices significantly impact your health risk factors." />
+          </div>
+          <div className="grid md:grid-cols-2 gap-6">
             <FormField
               control={form.control}
               name="lifestyle.exercise"
@@ -321,10 +384,10 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="none">None</SelectItem>
-                      <SelectItem value="light">Light</SelectItem>
-                      <SelectItem value="moderate">Moderate</SelectItem>
-                      <SelectItem value="heavy">Heavy</SelectItem>
+                      <SelectItem value="none">None (No regular exercise)</SelectItem>
+                      <SelectItem value="light">Light (1-2 days/week)</SelectItem>
+                      <SelectItem value="moderate">Moderate (3-5 days/week)</SelectItem>
+                      <SelectItem value="heavy">Heavy (6-7 days/week)</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -345,10 +408,10 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="poor">Poor</SelectItem>
-                      <SelectItem value="fair">Fair</SelectItem>
-                      <SelectItem value="good">Good</SelectItem>
-                      <SelectItem value="excellent">Excellent</SelectItem>
+                      <SelectItem value="poor">Poor (Mostly processed foods)</SelectItem>
+                      <SelectItem value="fair">Fair (Mix of healthy and processed)</SelectItem>
+                      <SelectItem value="good">Good (Mostly whole foods)</SelectItem>
+                      <SelectItem value="excellent">Excellent (Well-balanced, whole foods)</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -369,10 +432,10 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="low">Low</SelectItem>
-                      <SelectItem value="moderate">Moderate</SelectItem>
-                      <SelectItem value="high">High</SelectItem>
-                      <SelectItem value="severe">Severe</SelectItem>
+                      <SelectItem value="low">Low (Rarely feel stressed)</SelectItem>
+                      <SelectItem value="moderate">Moderate (Sometimes stressed)</SelectItem>
+                      <SelectItem value="high">High (Often stressed)</SelectItem>
+                      <SelectItem value="severe">Severe (Constantly stressed)</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -393,10 +456,10 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="sedentary">Sedentary</SelectItem>
-                      <SelectItem value="light">Light Activity</SelectItem>
-                      <SelectItem value="moderate">Moderate Activity</SelectItem>
-                      <SelectItem value="active">Very Active</SelectItem>
+                      <SelectItem value="sedentary">Sedentary (Mostly sitting)</SelectItem>
+                      <SelectItem value="light">Light Activity (Some walking)</SelectItem>
+                      <SelectItem value="moderate">Moderate Activity (Regular movement)</SelectItem>
+                      <SelectItem value="active">Very Active (Constant movement)</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -450,9 +513,12 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
           </div>
         </div>
 
-        {/* Add Medical Records Upload Section */}
+        {/* Medical Records Upload Section */}
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Medical Records (Optional)</h2>
+          <div className="flex items-center">
+            <h2 className="text-xl font-semibold">Medical Records (Optional)</h2>
+            <InfoTooltip content="Upload your medical records for more accurate health predictions and personalized recommendations." />
+          </div>
           <p className="text-sm text-gray-600 mb-4">
             Upload your medical records for AI-powered analysis and more accurate health predictions.
           </p>
