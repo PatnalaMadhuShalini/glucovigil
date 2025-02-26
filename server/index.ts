@@ -34,12 +34,26 @@ app.use((req, res, next) => {
   next();
 });
 
+// API response headers middleware
+app.use('/api', (req, res, next) => {
+  res.setHeader('Content-Type', 'application/json');
+  next();
+});
+
 (async () => {
   try {
     log('Starting server initialization...');
     const server = await registerRoutes(app);
 
-    // Error handling middleware
+    // Ensure all API routes return JSON responses, even for errors
+    app.use('/api', (err: any, _req: Request, res: Response, _next: NextFunction) => {
+      const status = err.status || err.statusCode || 500;
+      const message = err.message || "Internal Server Error";
+      log('API Error:', err.message);
+      res.status(status).json({ message });
+    });
+
+    // Add a catch-all error handler for non-API routes
     app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       const status = err.status || err.statusCode || 500;
       const message = err.message || "Internal Server Error";

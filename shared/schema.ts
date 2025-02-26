@@ -57,6 +57,20 @@ export const insertUserSchema = createInsertSchema(users)
     phone: z.string().regex(/^\+?[1-9]\d{9,11}$/, "Invalid phone number"),
   });
 
+// Add Symptom types
+export const symptomSchema = z.object({
+  primarySymptom: z.string().min(1, "Please select a primary symptom"),
+  severity: z.number().min(0).max(10),
+  duration: z.string().min(1, "Please specify the duration"),
+  timeOfDay: z.enum(["morning", "afternoon", "evening", "night", "variable"]),
+  triggers: z.string().optional(),
+  additionalNotes: z.string().optional(),
+  recordedAt: z.string().optional(),
+});
+
+export type Symptom = z.infer<typeof symptomSchema>;
+
+// Update HealthData schema to include symptoms
 export const healthDataSchema = z.object({
   demographics: z.object({
     age: z.number().int().min(0).max(120),
@@ -79,7 +93,8 @@ export const healthDataSchema = z.object({
     workStyle: z.enum(["sedentary", "light", "moderate", "active"]),
     alcohol: z.boolean(),
     smoking: z.boolean()
-  })
+  }),
+  symptoms: symptomSchema.optional(),
 });
 
 export const feedbackSchema = z.object({
@@ -148,4 +163,6 @@ export type HealthDataWithPrediction = HealthData & {
   nutritionPlan?: NutritionPlan;
   exercisePlan?: ExercisePlan;
   achievements?: Achievement[];
+  symptoms?: Symptom;
+  createdAt: string;
 };

@@ -135,12 +135,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     if (!req.isAuthenticated()) {
       console.log("Authentication failed");
-      return res.sendStatus(401);
+      return res.status(401).json({ message: "Unauthorized" });
     }
 
     try {
       const userId = req.user!.id;
-      const symptomData = req.body;
+      const symptomData = {
+        ...req.body,
+        recordedAt: new Date().toISOString()
+      };
       console.log("Processing symptoms for user:", userId);
 
       // Get the latest health data for the user
@@ -155,11 +158,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Update the latest health data with new symptoms
       const updatedData = {
         ...latestData,
-        symptoms: {
-          ...latestData.symptoms,
-          ...symptomData,
-          recordedAt: new Date().toISOString()
-        }
+        symptoms: symptomData
       };
 
       console.log("Updating health data with symptoms:", updatedData);
