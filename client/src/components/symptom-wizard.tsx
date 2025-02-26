@@ -21,8 +21,55 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
-import { AlertCircle, ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
+import { 
+  AlertCircle, 
+  ArrowLeft, 
+  ArrowRight, 
+  Check, 
+  Loader2,
+  Thermometer,
+  Stethoscope,
+  Brain,
+  Heart,
+  Wind,
+  Grape,
+  Activity
+} from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+
+// Organize symptoms by category
+const symptomCategories = {
+  general: {
+    title: "General",
+    icon: Thermometer,
+    symptoms: ["Fatigue", "Fever", "Weakness", "Chills"]
+  },
+  head: {
+    title: "Head & Neurological",
+    icon: Brain,
+    symptoms: ["Headache", "Dizziness", "Confusion", "Blurred Vision"]
+  },
+  chest: {
+    title: "Chest & Heart",
+    icon: Heart,
+    symptoms: ["Chest Pain", "Palpitations", "Shortness of Breath"]
+  },
+  respiratory: {
+    title: "Respiratory",
+    icon: Wind,
+    symptoms: ["Cough", "Wheezing", "Difficulty Breathing"]
+  },
+  digestive: {
+    title: "Digestive",
+    icon: Grape,
+    symptoms: ["Nausea", "Vomiting", "Abdominal Pain", "Diarrhea"]
+  },
+  musculoskeletal: {
+    title: "Muscles & Joints",
+    icon: Activity,
+    symptoms: ["Joint Pain", "Muscle Ache", "Back Pain", "Stiffness"]
+  }
+};
 
 const steps = [
   {
@@ -30,17 +77,17 @@ const steps = [
     description: "What's your main symptom?",
   },
   {
-    title: "Severity",
-    description: "How severe is your symptom?",
+    title: "Severity & Pattern",
+    description: "How severe is it and what's the pattern?",
   },
   {
     title: "Duration & Timing",
     description: "When did it start and what time of day does it occur?",
   },
   {
-    title: "Additional Details",
-    description: "Any triggers or additional notes?",
-  },
+    title: "Associated Factors",
+    description: "What makes it better or worse?",
+  }
 ];
 
 interface SymptomWizardProps {
@@ -49,10 +96,10 @@ interface SymptomWizardProps {
 
 export default function SymptomWizard({ onComplete }: SymptomWizardProps) {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const progress = ((currentStep + 1) / steps.length) * 100;
-  const { toast } = useToast();
 
   // If not authenticated, show message
   if (!user) {
@@ -70,6 +117,7 @@ export default function SymptomWizard({ onComplete }: SymptomWizardProps) {
     resolver: zodResolver(symptomSchema),
     defaultValues: {
       severity: 5,
+      pattern: "Constant", // Added default value for pattern
       timeOfDay: "variable",
       triggers: "",
       additionalNotes: "",
@@ -78,45 +126,14 @@ export default function SymptomWizard({ onComplete }: SymptomWizardProps) {
 
   const mutation = useMutation({
     mutationFn: async (data: Symptom) => {
-      setError(null);
-      try {
-        // Transform dates to ISO strings
-        const formattedData = {
-          ...data,
-          recordedAt: new Date().toISOString(),
-        };
-
-        // Make three attempts to submit
-        let attempt = 0;
-        let lastError: Error | null = null;
-
-        while (attempt < 3) {
-          try {
-            const res = await apiRequest("POST", "/symptoms", formattedData);
-            const responseData = await res.json();
-
-            if (!res.ok) {
-              throw new Error(responseData.message || "Failed to submit symptoms");
-            }
-
-            return responseData;
-          } catch (err) {
-            lastError = err as Error;
-            attempt++;
-            if (attempt < 3) {
-              await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-            }
-          }
-        }
-
-        throw lastError || new Error("Failed to submit symptoms after multiple attempts");
-      } catch (error) {
-        console.error("Mutation error:", error);
-        throw error instanceof Error ? error : new Error("Failed to submit symptoms");
-      }
+      const res = await apiRequest("POST", "/api/symptoms", {
+        ...data,
+        recordedAt: new Date().toISOString(),
+      });
+      return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/health-data"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/health-data"] });
       toast({
         title: "Success",
         description: "Your symptoms have been recorded successfully",
@@ -126,7 +143,6 @@ export default function SymptomWizard({ onComplete }: SymptomWizardProps) {
       }
     },
     onError: (error: Error) => {
-      console.error("Submit error:", error);
       setError(error.message);
       toast({
         title: "Error",
@@ -138,7 +154,6 @@ export default function SymptomWizard({ onComplete }: SymptomWizardProps) {
 
   const onSubmit = async (data: Symptom) => {
     try {
-      console.log("Form submission data:", data);
       await mutation.mutateAsync(data);
     } catch (error) {
       console.error("Submit error:", error);
@@ -148,7 +163,7 @@ export default function SymptomWizard({ onComplete }: SymptomWizardProps) {
   const nextStep = () => {
     const fields = [
       ["primarySymptom"],
-      ["severity"],
+      ["severity", "pattern"],
       ["duration", "timeOfDay"],
       ["triggers", "additionalNotes"],
     ][currentStep];
@@ -170,79 +185,117 @@ export default function SymptomWizard({ onComplete }: SymptomWizardProps) {
           </Alert>
         )}
 
-        <div className="text-center mb-4">
-          <h2 className="text-lg font-semibold">{steps[currentStep].title}</h2>
+        <div className="text-center mb-6">
+          <h2 className="text-xl font-semibold">{steps[currentStep].title}</h2>
           <p className="text-muted-foreground">{steps[currentStep].description}</p>
-          <Progress value={progress} className="mt-2" />
+          <Progress value={progress} className="mt-4" />
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           {currentStep === 0 && (
-            <FormField
-              control={form.control}
-              name="primarySymptom"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Select your primary symptom</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      className="grid md:grid-cols-2 gap-4"
-                    >
-                      {[
-                        "Fatigue",
-                        "Headache",
-                        "Dizziness",
-                        "Nausea",
-                        "Blurred Vision",
-                        "Numbness",
-                        "Chest Pain",
-                        "Shortness of Breath",
-                      ].map((symptom) => (
-                        <div key={symptom} className="flex items-center space-x-2">
-                          <RadioGroupItem value={symptom} id={symptom} />
-                          <Label htmlFor={symptom}>{symptom}</Label>
+            <div className="space-y-6">
+              {Object.entries(symptomCategories).map(([key, category]) => {
+                const Icon = category.icon;
+                return (
+                  <FormField
+                    key={key}
+                    control={form.control}
+                    name="primarySymptom"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex items-center gap-2 mb-2">
+                          <Icon className="h-5 w-5 text-muted-foreground" />
+                          <FormLabel className="text-lg font-medium">
+                            {category.title}
+                          </FormLabel>
                         </div>
-                      ))}
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            value={field.value}
+                            className="grid md:grid-cols-2 gap-2"
+                          >
+                            {category.symptoms.map((symptom) => (
+                              <div key={symptom} className="flex items-center space-x-2">
+                                <RadioGroupItem value={symptom} id={symptom} />
+                                <Label htmlFor={symptom}>{symptom}</Label>
+                              </div>
+                            ))}
+                          </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                );
+              })}
+            </div>
           )}
 
           {currentStep === 1 && (
-            <FormField
-              control={form.control}
-              name="severity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Rate the severity (0-10)</FormLabel>
-                  <FormControl>
-                    <Slider
-                      min={0}
-                      max={10}
-                      step={1}
-                      value={[field.value]}
-                      onValueChange={([value]) => field.onChange(value)}
-                      className="py-4"
-                    />
-                  </FormControl>
-                  <div className="flex justify-between text-sm text-muted-foreground">
-                    <span>Mild</span>
-                    <span>Moderate</span>
-                    <span>Severe</span>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="space-y-6">
+              <FormField
+                control={form.control}
+                name="severity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>How severe is your symptom? (0-10)</FormLabel>
+                    <FormControl>
+                      <div className="space-y-3">
+                        <Slider
+                          min={0}
+                          max={10}
+                          step={1}
+                          value={[field.value]}
+                          onValueChange={([value]) => field.onChange(value)}
+                          className="py-4"
+                        />
+                        <div className="flex justify-between text-sm text-muted-foreground">
+                          <span>Mild</span>
+                          <span>Moderate</span>
+                          <span>Severe</span>
+                        </div>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="pattern"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>What's the pattern of your symptom?</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        className="grid md:grid-cols-2 gap-2"
+                      >
+                        {[
+                          "Constant",
+                          "Intermittent",
+                          "Progressive",
+                          "Cyclical",
+                        ].map((pattern) => (
+                          <div key={pattern} className="flex items-center space-x-2">
+                            <RadioGroupItem value={pattern} id={pattern} />
+                            <Label htmlFor={pattern}>{pattern}</Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           )}
 
           {currentStep === 2 && (
-            <>
+            <div className="space-y-6">
               <FormField
                 control={form.control}
                 name="duration"
@@ -267,12 +320,20 @@ export default function SymptomWizard({ onComplete }: SymptomWizardProps) {
                       <RadioGroup
                         onValueChange={field.onChange}
                         value={field.value}
-                        className="grid md:grid-cols-2 gap-4"
+                        className="grid md:grid-cols-2 gap-2"
                       >
-                        {["morning", "afternoon", "evening", "night", "variable"].map((time) => (
+                        {[
+                          "morning",
+                          "afternoon",
+                          "evening",
+                          "night",
+                          "variable",
+                        ].map((time) => (
                           <div key={time} className="flex items-center space-x-2">
                             <RadioGroupItem value={time} id={time} />
-                            <Label htmlFor={time} className="capitalize">{time}</Label>
+                            <Label htmlFor={time} className="capitalize">
+                              {time}
+                            </Label>
                           </div>
                         ))}
                       </RadioGroup>
@@ -281,19 +342,19 @@ export default function SymptomWizard({ onComplete }: SymptomWizardProps) {
                   </FormItem>
                 )}
               />
-            </>
+            </div>
           )}
 
           {currentStep === 3 && (
-            <>
+            <div className="space-y-6">
               <FormField
                 control={form.control}
                 name="triggers"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Any known triggers?</FormLabel>
+                    <FormLabel>What triggers or worsens your symptom?</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="e.g., stress, certain foods" />
+                      <Input {...field} placeholder="e.g., physical activity, certain foods" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -305,7 +366,7 @@ export default function SymptomWizard({ onComplete }: SymptomWizardProps) {
                 name="additionalNotes"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Additional Notes</FormLabel>
+                    <FormLabel>Additional Notes or Observations</FormLabel>
                     <FormControl>
                       <Input {...field} placeholder="Any other relevant information" />
                     </FormControl>
@@ -313,11 +374,11 @@ export default function SymptomWizard({ onComplete }: SymptomWizardProps) {
                   </FormItem>
                 )}
               />
-            </>
+            </div>
           )}
         </div>
 
-        <Separator />
+        <Separator className="my-6" />
 
         <div className="flex justify-between">
           <Button
@@ -331,18 +392,12 @@ export default function SymptomWizard({ onComplete }: SymptomWizardProps) {
           </Button>
 
           {currentStep < steps.length - 1 ? (
-            <Button
-              type="button"
-              onClick={nextStep}
-            >
+            <Button type="button" onClick={nextStep}>
               Next
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           ) : (
-            <Button
-              type="submit"
-              disabled={mutation.isPending}
-            >
+            <Button type="submit" disabled={mutation.isPending}>
               {mutation.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />

@@ -57,10 +57,11 @@ export const insertUserSchema = createInsertSchema(users)
     phone: z.string().regex(/^\+?[1-9]\d{9,11}$/, "Invalid phone number"),
   });
 
-// Add Symptom types
+// Update the symptom schema with new fields
 export const symptomSchema = z.object({
   primarySymptom: z.string().min(1, "Please select a primary symptom"),
   severity: z.number().min(0).max(10),
+  pattern: z.enum(["Constant", "Intermittent", "Progressive", "Cyclical"]),
   duration: z.string().min(1, "Please specify the duration"),
   timeOfDay: z.enum(["morning", "afternoon", "evening", "night", "variable"]),
   triggers: z.string().optional(),
