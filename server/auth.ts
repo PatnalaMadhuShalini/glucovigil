@@ -1,6 +1,6 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-import { Express } from "express";
+import { Express, Router } from "express";
 import session from "express-session";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
@@ -87,8 +87,10 @@ export function setupAuth(app: Express) {
       done(err);
     }
   });
+}
 
-  app.post("/api/register", async (req, res) => {
+export function setupAuthRoutes(router: Router) {
+  router.post("/register", async (req, res) => {
     try {
       // Validate the request body using Zod schema
       const validatedData = insertUserSchema.parse(req.body);
@@ -128,7 +130,7 @@ export function setupAuth(app: Express) {
     }
   });
 
-  app.post("/api/login", (req, res, next) => {
+  router.post("/login", (req, res, next) => {
     passport.authenticate("local", (err, user, info) => {
       if (err) {
         console.error("Login error:", err);
@@ -152,7 +154,7 @@ export function setupAuth(app: Express) {
     })(req, res, next);
   });
 
-  app.post("/api/logout", (req, res) => {
+  router.post("/logout", (req, res) => {
     const sessionId = req.sessionID;
     req.logout((err) => {
       if (err) {
@@ -176,7 +178,7 @@ export function setupAuth(app: Express) {
     });
   });
 
-  app.get("/api/user", (req, res) => {
+  router.get("/user", (req, res) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "Not authenticated" });
     }

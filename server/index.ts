@@ -1,19 +1,26 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import {createServer} from 'http';
+import { setupAuth, setupAuthRoutes } from "./auth";
 
 const app = express();
+const apiRouter = express.Router();
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// API response headers middleware - must come before routes
-app.use('/api', (req, res, next) => {
+// Setup core auth (session, passport) on main app
+setupAuth(app);
+
+// Ensure JSON content-type for API routes
+apiRouter.use((req, res, next) => {
   res.setHeader('Content-Type', 'application/json');
   next();
 });
 
-// Enhanced logging middleware
-app.use((req, res, next) => {
+// Enhanced logging middleware for API routes
+apiRouter.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
   let capturedJsonResponse: Record<string, any> | undefined = undefined;
@@ -26,34 +33,59 @@ app.use((req, res, next) => {
 
   res.on("finish", () => {
     const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
-      }
-      log(logLine);
+    let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
+    if (capturedJsonResponse) {
+      logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
     }
+    if (logLine.length > 80) {
+      logLine = logLine.slice(0, 79) + "…";
+    }
+    log(logLine);
   });
   next();
 });
 
+// API error handling middleware
+apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+  const status = err.status || err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+  log('API Error:', err.message);
+  res.status(status).json({ message });
+});
+
+// Mount API router before any other middleware
+app.use('/api', apiRouter);
+
 (async () => {
   try {
     log('Starting server initialization...');
-    const server = await registerRoutes(app);
 
-    // API error handling middleware - must come after routes but before static files
-    app.use('/api', (err: any, _req: Request, res: Response, _next: NextFunction) => {
-      const status = err.status || err.statusCode || 500;
-      const message = err.message || "Internal Server Error";
-      log('API Error:', err.message);
-      res.status(status).json({ message });
+    // Setup auth routes and register API routes on the router
+    setupAuthRoutes(apiRouter);
+    await registerRoutes(apiRouter);
+
+    // Create HTTP server
+    const server = createServer(app);
+
+    // Add middleware to skip Vite/static for API routes
+    app.use((req, res, next) => {
+      if (req.path.startsWith('/api')) {
+        return next('route');
+      }
+      next();
     });
 
-    // Only setup Vite/static files after API routes and error handling
+    // Catch-all handler for unmatched API routes - must come after route registration
+    app.all("/api/*", (req, res) => {
+      log(`Unmatched API route: ${req.method} ${req.path}`);
+      return res.status(404).json({ 
+        message: "API endpoint not found",
+        path: req.path,
+        method: req.method 
+      });
+    });
+
+    // Only setup Vite/static files after API routes
     if (app.get("env") === "development") {
       log('Setting up Vite development server...');
       await setupVite(app, server);

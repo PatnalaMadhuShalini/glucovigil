@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import { Router } from "express";
 import { setupAuth } from "./auth";
 import { storage } from "./storage";
 import { healthDataSchema, feedbackSchema } from "@shared/schema";
@@ -7,18 +8,19 @@ import { ZodError } from "zod";
 import fileUpload from 'express-fileupload';
 import crypto from 'crypto';
 
-export async function registerRoutes(app: Express): Promise<Server> {
-  setupAuth(app);
+export async function registerRoutes(router: Router): Promise<void> {
+  // Setup auth on the router
+  setupAuth(router);
 
   // Add file upload middleware
-  app.use(fileUpload({
+  router.use(fileUpload({
     limits: { fileSize: 50 * 1024 * 1024 }, // 50MB max file size
     debug: process.env.NODE_ENV === 'development'
   }));
 
   // Health data submission and predictions
-  app.post("/api/health-data", async (req, res) => {
-    if (!req.isAuthenticated()) return res.sendStatus(401);
+  router.post("/health-data", async (req, res) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
 
     try {
       const data = healthDataSchema.parse(req.body);
@@ -33,26 +35,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (err instanceof ZodError) {
         res.status(400).json(err.errors);
       } else {
-        res.status(500).json({ message: "Internal server error" }); // Changed to JSON response
+        res.status(500).json({ message: "Internal server error" });
       }
     }
   });
 
   // Get user's health data history
-  app.get("/api/health-data", async (req, res) => {
-    if (!req.isAuthenticated()) return res.sendStatus(401);
+  router.get("/health-data", async (req, res) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
 
     try {
       const data = await storage.getHealthDataByUserId(req.user!.id);
       res.json(data);
     } catch (err) {
-      res.status(500).json({ message: "Internal server error" }); // Changed to JSON response
+      res.status(500).json({ message: "Internal server error" });
     }
   });
 
   // Submit feedback
-  app.post("/api/feedback", async (req, res) => {
-    if (!req.isAuthenticated()) return res.sendStatus(401);
+  router.post("/feedback", async (req, res) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
 
     try {
       const feedback = feedbackSchema.parse(req.body);
@@ -62,25 +64,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (err instanceof ZodError) {
         res.status(400).json(err.errors);
       } else {
-        res.status(500).json({ message: "Internal server error" }); // Changed to JSON response
+        res.status(500).json({ message: "Internal server error" });
       }
     }
   });
 
   // Medical records upload and processing
-  app.post("/api/medical-records", async (req, res) => {
-    if (!req.isAuthenticated()) return res.sendStatus(401);
+  router.post("/medical-records", async (req, res) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
 
     try {
       if (!req.files || !req.files.file) {
-        return res.status(400).json({ message: 'No file uploaded' }); // Changed to JSON response
+        return res.status(400).json({ message: 'No file uploaded' });
       }
 
       const file = req.files.file;
 
       // Validate file type
       if (file.mimetype !== 'application/pdf') {
-        return res.status(400).json({ message: 'Only PDF files are supported' }); // Changed to JSON response
+        return res.status(400).json({ message: 'Only PDF files are supported' });
       }
 
       try {
@@ -89,46 +91,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const pdfData = await pdfParse.default(file.data);
         const extractedData = await extractHealthData(pdfData.text);
 
-        if (extractedData) {
-          // Update the latest health data entry with extracted information
-          const healthData = await storage.getHealthDataByUserId(req.user!.id);
-          const latestData = healthData[healthData.length - 1];
-
-          if (latestData) {
-            // Merge extracted data with existing data
-            const updatedData = {
-              ...latestData,
-              physiological: {
-                ...latestData.physiological,
-                ...extractedData
-              }
-            };
-
-            // Calculate new prediction with updated data
-            const prediction = calculateDiabetesRisk(updatedData);
-            await storage.createHealthData(req.user!.id, {
-              ...updatedData,
-              prediction
-            });
-          }
-        }
-
         res.json({ 
           message: 'Medical records processed successfully',
           extractedData 
         });
       } catch (parseError) {
         console.error('Error parsing PDF:', parseError);
-        res.status(422).json({ message: 'Could not process the PDF file' }); // Changed to JSON response
+        res.status(422).json({ message: 'Could not process the PDF file' });
       }
     } catch (err) {
       console.error('Error processing medical records:', err);
-      res.status(500).json({ message: 'Error processing medical records' }); // Changed to JSON response
+      res.status(500).json({ message: 'Error processing medical records' });
     }
   });
 
   // Update the symptoms endpoint
-  app.post("/api/symptoms", async (req, res) => {
+  router.post("/symptoms", async (req, res) => {
     console.log("=== Symptom Submission Debug ===");
     console.log("Request URL:", req.url);
     console.log("Request Headers:", req.headers);
@@ -197,11 +175,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.status(500).json(errorResponse);
     }
   });
-
-  const httpServer = createServer(app);
-  return httpServer;
 }
 
+// Helper functions remain unchanged
 async function hashPassword(password: string): Promise<string> {
   return new Promise((resolve, reject) => {
     crypto.scrypt(password, 'salt', 64, (err, derivedKey) => {
