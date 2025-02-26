@@ -4,34 +4,56 @@ import { Progress } from "@/components/ui/progress";
 import * as tf from '@tensorflow/tfjs';
 import { useState, useEffect } from 'react';
 
+// Create model outside component to prevent recreation
+const createModel = () => {
+  return tf.sequential({
+    layers: [
+      tf.layers.dense({ units: 16, inputShape: [6], activation: 'relu' }),
+      tf.layers.dense({ units: 8, activation: 'relu' }),
+      tf.layers.dense({ units: 1, activation: 'sigmoid' })
+    ]
+  });
+};
+
+// Memoized model instance
+const model = createModel();
+
+// Preprocess features outside component
+const preprocessFeatures = (data: any) => {
+  return [
+    data.physiological.bloodSugar / 200,
+    data.physiological.bloodPressure.systolic / 200,
+    data.physiological.bloodPressure.diastolic / 100,
+    data.physiological.weight / 100,
+    data.demographics.age / 100,
+    data.lifestyle.exercise === 'none' ? 0 : 
+      data.lifestyle.exercise === 'light' ? 0.33 : 
+      data.lifestyle.exercise === 'moderate' ? 0.66 : 1
+  ];
+};
+
 export default function RiskDisplay({ data }: { data: any }) {
   const [mlPrediction, setMlPrediction] = useState<number>(0);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    // Simple neural network for risk prediction
     const predictRisk = async () => {
-      const model = tf.sequential({
-        layers: [
-          tf.layers.dense({ units: 16, inputShape: [6], activation: 'relu' }),
-          tf.layers.dense({ units: 8, activation: 'relu' }),
-          tf.layers.dense({ units: 1, activation: 'sigmoid' })
-        ]
-      });
-
-      const inputFeatures = [
-        data.physiological.bloodSugar / 200,
-        data.physiological.bloodPressure.systolic / 200,
-        data.physiological.bloodPressure.diastolic / 100,
-        data.physiological.weight / 100,
-        data.demographics.age / 100,
-        data.lifestyle.exercise === 'none' ? 0 : 
-          data.lifestyle.exercise === 'light' ? 0.33 : 
-          data.lifestyle.exercise === 'moderate' ? 0.66 : 1
-      ];
-
-      const prediction = model.predict(tf.tensor2d([inputFeatures])) as tf.Tensor;
-      const score = await prediction.data();
-      setMlPrediction(score[0]);
+      try {
+        // Use tf.tidy to clean up tensors automatically
+        const prediction = tf.tidy(() => {
+          const inputFeatures = preprocessFeatures(data);
+          const inputTensor = tf.tensor2d([inputFeatures]);
+          return model.predict(inputTensor) as tf.Tensor;
+        });
+        
+        const score = await prediction.data();
+        prediction.dispose(); // Clean up the prediction tensor
+        setMlPrediction(score[0]);
+        setError('');
+      } catch (err) {
+        setError('Failed to calculate risk prediction');
+        console.error('Prediction error:', err);
+      }
     };
 
     predictRisk();
