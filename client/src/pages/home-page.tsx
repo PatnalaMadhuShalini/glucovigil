@@ -62,7 +62,7 @@ export default function HomePage() {
               <Shield className="h-12 w-12 text-blue-500 mb-4" />
               <h2 className="text-xl font-semibold mb-2">AI Assistant</h2>
               <p className="text-gray-600 mb-4">
-                Voice-enabled health companion at your service
+                Smart health companion powered by AI
               </p>
             </CardContent>
           </Card>

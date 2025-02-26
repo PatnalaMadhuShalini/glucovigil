@@ -95,7 +95,6 @@ export default function Dashboard() {
                         <h2 className="text-xl font-semibold">Symptom Tracking</h2>
                         <Button
                           onClick={() => setShowSymptomWizard(true)}
-                          variant="outline"
                           className="flex items-center gap-2"
                         >
                           <ActivitySquare className="h-4 w-4" />
@@ -115,19 +114,21 @@ export default function Dashboard() {
           )}
 
           {showSymptomWizard && (
-            <Card className="fixed inset-4 z-50 overflow-auto bg-background">
-              <CardContent className="p-6">
-                <div className="flex justify-end mb-4">
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowSymptomWizard(false)}
-                  >
-                    Close
-                  </Button>
-                </div>
-                <SymptomWizard onComplete={() => setShowSymptomWizard(false)} />
-              </CardContent>
-            </Card>
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+              <Card className="w-full max-w-2xl max-h-[90vh] overflow-auto m-4">
+                <CardContent className="p-6">
+                  <div className="flex justify-end mb-4">
+                    <Button
+                      variant="outline"
+                      onClick={() => setShowSymptomWizard(false)}
+                    >
+                      Close
+                    </Button>
+                  </div>
+                  <SymptomWizard onComplete={() => setShowSymptomWizard(false)} />
+                </CardContent>
+              </Card>
+            </div>
           )}
         </div>
       </div>
