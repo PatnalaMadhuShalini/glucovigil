@@ -5,6 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { symptomSchema, type Symptom } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth"; // Add auth hook
 import {
   Form,
   FormControl,
@@ -47,10 +48,23 @@ interface SymptomWizardProps {
 }
 
 export default function SymptomWizard({ onComplete }: SymptomWizardProps) {
+  const { user } = useAuth(); // Get auth state
   const [currentStep, setCurrentStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const progress = ((currentStep + 1) / steps.length) * 100;
   const { toast } = useToast();
+
+  // If not authenticated, show message
+  if (!user) {
+    return (
+      <Alert>
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>
+          Please login to track your symptoms.
+        </AlertDescription>
+      </Alert>
+    );
+  }
 
   const form = useForm<Symptom>({
     resolver: zodResolver(symptomSchema),
@@ -66,18 +80,36 @@ export default function SymptomWizard({ onComplete }: SymptomWizardProps) {
     mutationFn: async (data: Symptom) => {
       setError(null);
       console.log("Submitting data to API:", data);
-      const res = await apiRequest("POST", "/api/symptoms", data);
+      try {
+        const res = await apiRequest("POST", "/api/symptoms", data);
 
-      const contentType = res.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        throw new Error("Server error: Invalid response format");
-      }
+        // First check if we got a response
+        if (!res) {
+          throw new Error("No response from server");
+        }
 
-      const responseData = await res.json();
-      if (!res.ok) {
-        throw new Error(responseData.message || "Failed to submit symptoms");
+        // Try to parse JSON response
+        const responseData = await res.json().catch(() => {
+          console.error("Failed to parse response as JSON");
+          return null;
+        });
+
+        // Check if we got valid JSON
+        if (!responseData) {
+          throw new Error("Invalid response format from server");
+        }
+
+        // Check response status
+        if (!res.ok) {
+          throw new Error(responseData.message || "Failed to submit symptoms");
+        }
+
+        return responseData;
+      } catch (error) {
+        console.error("Mutation error:", error);
+        // Re-throw with clear message
+        throw new Error(error instanceof Error ? error.message : "Failed to submit symptoms");
       }
-      return responseData;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/health-data"] });

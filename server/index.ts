@@ -6,6 +6,12 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// API response headers middleware - must come before routes
+app.use('/api', (req, res, next) => {
+  res.setHeader('Content-Type', 'application/json');
+  next();
+});
+
 // Enhanced logging middleware
 app.use((req, res, next) => {
   const start = Date.now();
@@ -34,18 +40,12 @@ app.use((req, res, next) => {
   next();
 });
 
-// API response headers middleware
-app.use('/api', (req, res, next) => {
-  res.setHeader('Content-Type', 'application/json');
-  next();
-});
-
 (async () => {
   try {
     log('Starting server initialization...');
     const server = await registerRoutes(app);
 
-    // Ensure all API routes return JSON responses, even for errors
+    // API error handling middleware - must come after routes but before static files
     app.use('/api', (err: any, _req: Request, res: Response, _next: NextFunction) => {
       const status = err.status || err.statusCode || 500;
       const message = err.message || "Internal Server Error";
@@ -53,7 +53,16 @@ app.use('/api', (req, res, next) => {
       res.status(status).json({ message });
     });
 
-    // Add a catch-all error handler for non-API routes
+    // Only setup Vite/static files after API routes and error handling
+    if (app.get("env") === "development") {
+      log('Setting up Vite development server...');
+      await setupVite(app, server);
+    } else {
+      log('Setting up static file serving...');
+      serveStatic(app);
+    }
+
+    // Generic error handler comes last
     app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       const status = err.status || err.statusCode || 500;
       const message = err.message || "Internal Server Error";
@@ -86,15 +95,6 @@ app.use('/api', (req, res, next) => {
 
     if (!port) {
       throw new Error('All ports are in use');
-    }
-
-    // Only setup Vite after server is bound to port
-    if (app.get("env") === "development") {
-      log('Setting up Vite development server...');
-      await setupVite(app, server);
-    } else {
-      log('Setting up static file serving...');
-      serveStatic(app);
     }
 
     log(`Server running at http://0.0.0.0:${port}`);
