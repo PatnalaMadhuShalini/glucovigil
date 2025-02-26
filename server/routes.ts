@@ -160,21 +160,23 @@ export async function registerRoutes(router: Router): Promise<void> {
         return res.status(400).json(response);
       }
 
-      // Update the latest health data with new symptoms
+      // Create a new health data entry instead of updating the existing one
       const updatedData = {
         ...latestData,
-        symptoms: symptomData
+        id: undefined, // Remove the id to create a new entry
+        symptoms: symptomData,
+        createdAt: new Date().toISOString()
       };
 
-      console.log("Updating health data with symptoms:", updatedData);
+      console.log("Creating new health data entry with symptoms:", updatedData);
 
-      // Save the updated health data
-      await storage.updateHealthData(userId, updatedData);
+      // Create a new health data entry
+      const result = await storage.createHealthData(userId, updatedData);
 
       const successResponse = {
         message: "Symptoms recorded successfully",
         status: "success",
-        data: updatedData
+        data: result
       };
       console.log("Sending success response:", successResponse);
       return res.status(200).json(successResponse);
@@ -221,19 +223,21 @@ export async function registerRoutes(router: Router): Promise<void> {
         });
       }
 
-      // Update health data with mood
+      // Create a new health data entry with mood
       const updatedData = {
         ...latestData,
+        id: undefined, // Remove the id to create a new entry
         mood: moodData,
-        moodBasedRecommendations: generateMoodBasedRecommendations(moodData, latestData)
+        moodBasedRecommendations: generateMoodBasedRecommendations(moodData, latestData),
+        createdAt: new Date().toISOString()
       };
 
-      await storage.updateHealthData(userId, updatedData);
+      const result = await storage.createHealthData(userId, updatedData);
 
       return res.status(200).json({
         message: "Mood recorded successfully",
         status: "success",
-        data: updatedData
+        data: result
       });
     } catch (err) {
       console.error("Error processing mood data:", err);
