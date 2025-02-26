@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   LineChart,
@@ -9,15 +10,24 @@ import {
   Legend,
   ResponsiveContainer
 } from "recharts";
+import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import type { HealthDataWithPrediction } from "@shared/schema";
 
-interface HealthTrendsProps {
-  data: HealthDataWithPrediction[];
-}
+export default function HealthTrends() {
+  const { data: healthData, isLoading } = useQuery<HealthDataWithPrediction[]>({
+    queryKey: ["/api/health-data"],
+  });
 
-export default function HealthTrends({ data }: HealthTrendsProps) {
-  if (!data?.length) {
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!healthData?.length) {
     return (
       <Card>
         <CardHeader>
@@ -33,7 +43,7 @@ export default function HealthTrends({ data }: HealthTrendsProps) {
   }
 
   // Process data for charts
-  const processedData = data.map((entry) => ({
+  const processedData = healthData.map((entry) => ({
     date: new Date(entry.createdAt).toLocaleDateString(),
     bloodSugar: entry.physiological.bloodSugar,
     systolic: entry.physiological.bloodPressure.systolic,

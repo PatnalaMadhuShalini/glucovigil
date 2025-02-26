@@ -21,7 +21,6 @@ export default function Dashboard() {
 
   const { data: healthData, isLoading } = useQuery<HealthDataWithPrediction[]>({
     queryKey: ["/api/health-data"],
-    select: (data) => data || [],
   });
 
   if (isLoading) {
@@ -32,7 +31,7 @@ export default function Dashboard() {
     );
   }
 
-  const latestData = healthData?.length ? healthData[healthData.length - 1] : undefined;
+  const latestData = healthData?.[healthData.length - 1];
   const showRiskAlert = latestData?.prediction?.level === "high";
 
   return (
@@ -82,7 +81,7 @@ export default function Dashboard() {
               </div>
 
               <div className="mb-8">
-                <HealthTrends data={healthData} />
+                <HealthTrends />
               </div>
 
               <div className="grid md:grid-cols-2 gap-8 mb-8">

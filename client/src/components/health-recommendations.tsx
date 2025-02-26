@@ -4,27 +4,12 @@ import { Alert, AlertDescription } from "./ui/alert";
 import type { HealthDataWithPrediction } from "@shared/schema";
 
 interface HealthRecommendationsProps {
-  healthData?: HealthDataWithPrediction;
+  healthData: HealthDataWithPrediction;
 }
 
 export default function HealthRecommendations({ healthData }: HealthRecommendationsProps) {
-  if (!healthData) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Health Assessment</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">
-            No health data available. Complete your health assessment to see recommendations.
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  const riskLevel = healthData.prediction?.level || "low";
-  const riskScore = healthData.prediction?.score || 0;
+  const riskLevel = healthData?.prediction?.level || "low";
+  const riskScore = healthData?.prediction?.score || 0;
 
   const getRiskColor = () => {
     switch (riskLevel) {
@@ -54,17 +39,11 @@ export default function HealthRecommendations({ healthData }: HealthRecommendati
 
           <div className="space-y-2">
             <h3 className="font-medium">Recommendations</h3>
-            {healthData.prediction?.recommendations?.length ? (
-              <ul className="list-disc pl-4 space-y-1">
-                {healthData.prediction.recommendations.map((rec, i) => (
-                  <li key={i} className="text-sm">{rec}</li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                Complete your health assessment to receive personalized recommendations.
-              </p>
-            )}
+            <ul className="list-disc pl-4 space-y-1">
+              {healthData?.prediction?.recommendations?.map((rec, i) => (
+                <li key={i} className="text-sm">{rec}</li>
+              ))}
+            </ul>
           </div>
 
           <Alert>
