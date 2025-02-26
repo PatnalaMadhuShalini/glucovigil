@@ -38,8 +38,10 @@ export function setupAuth(app: Express) {
       secure: process.env.NODE_ENV === "production",
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
       httpOnly: true,
-      sameSite: 'lax'
-    }
+      sameSite: 'lax',
+      path: '/'
+    },
+    name: 'gluco.sid' // Custom session ID name
   };
 
   app.set("trust proxy", 1);
@@ -62,6 +64,7 @@ export function setupAuth(app: Express) {
 
         return done(null, user);
       } catch (err) {
+        console.error('Authentication error:', err);
         return done(err);
       }
     }),
@@ -75,24 +78,35 @@ export function setupAuth(app: Express) {
     try {
       const user = await storage.getUser(id);
       if (!user) {
+        console.warn(`User ${id} not found during deserialization`);
         return done(null, false);
       }
       done(null, user);
     } catch (err) {
+      console.error('Deserialization error:', err);
       done(err);
     }
   });
 
   app.post("/api/register", async (req, res) => {
     try {
+      // Validate required fields
+      const { username, password, email, fullName } = req.body;
+      if (!username || !password || !email || !fullName) {
+        return res.status(400).json({ 
+          message: "Missing required fields",
+          required: ["username", "password", "email", "fullName"]
+        });
+      }
+
       // Check if user already exists
-      const existingUser = await storage.getUserByUsername(req.body.username);
+      const existingUser = await storage.getUserByUsername(username);
       if (existingUser) {
         return res.status(400).json({ message: "Username already exists" });
       }
 
       // Hash password and create user
-      const hashedPassword = await hashPassword(req.body.password);
+      const hashedPassword = await hashPassword(password);
       const user = await storage.createUser({
         ...req.body,
         password: hashedPassword,
@@ -142,6 +156,7 @@ export function setupAuth(app: Express) {
   });
 
   app.post("/api/logout", (req, res) => {
+    const sessionId = req.sessionID;
     req.logout((err) => {
       if (err) {
         console.error("Logout error:", err);
@@ -152,7 +167,13 @@ export function setupAuth(app: Express) {
           console.error("Session destruction error:", err);
           return res.status(500).json({ message: "Error clearing session" });
         }
-        res.clearCookie('connect.sid');
+        res.clearCookie('gluco.sid', {
+          path: '/',
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: 'lax'
+        });
+        console.info(`Session ${sessionId} destroyed successfully`);
         res.sendStatus(200);
       });
     });
