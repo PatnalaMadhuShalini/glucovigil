@@ -6,10 +6,11 @@ import RiskDisplay from "@/components/risk-display";
 import Recommendations from "@/components/recommendations";
 import HealthTrends from "@/components/health-trends";
 import HealthRecommendations from "@/components/health-recommendations";
+import SymptomWizard from "@/components/symptom-wizard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/hooks/use-auth";
-import { Loader2 } from "lucide-react";
+import { Loader2, ActivitySquare } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { HealthDataWithPrediction } from "@shared/schema";
 import Achievements from "@/components/achievements";
@@ -18,6 +19,7 @@ import FeedbackSystem from "@/components/feedback-system";
 export default function Dashboard() {
   const { user } = useAuth();
   const [showForm, setShowForm] = useState(false);
+  const [showSymptomWizard, setShowSymptomWizard] = useState(false);
 
   const { data: healthData, isLoading } = useQuery<HealthDataWithPrediction[]>({
     queryKey: ["/api/health-data"],
@@ -87,11 +89,45 @@ export default function Dashboard() {
               <div className="grid md:grid-cols-2 gap-8 mb-8">
                 <div className="space-y-8">
                   <HealthRecommendations healthData={latestData} />
+                  <Card>
+                    <CardContent className="p-6">
+                      <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl font-semibold">Symptom Tracking</h2>
+                        <Button
+                          onClick={() => setShowSymptomWizard(true)}
+                          variant="outline"
+                          className="flex items-center gap-2"
+                        >
+                          <ActivitySquare className="h-4 w-4" />
+                          Track Symptoms
+                        </Button>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Use our intuitive wizard to track your symptoms and get personalized insights.
+                      </p>
+                    </CardContent>
+                  </Card>
                   <FeedbackSystem />
                 </div>
                 <Achievements achievements={latestData?.achievements || []} />
               </div>
             </>
+          )}
+
+          {showSymptomWizard && (
+            <Card className="fixed inset-4 z-50 overflow-auto bg-background">
+              <CardContent className="p-6">
+                <div className="flex justify-end mb-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowSymptomWizard(false)}
+                  >
+                    Close
+                  </Button>
+                </div>
+                <SymptomWizard />
+              </CardContent>
+            </Card>
           )}
         </div>
       </div>
