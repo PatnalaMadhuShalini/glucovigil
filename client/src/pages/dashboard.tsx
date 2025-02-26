@@ -15,7 +15,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { HealthDataWithPrediction } from "@shared/schema";
 import Achievements from "@/components/achievements";
 import FeedbackSystem from "@/components/feedback-system";
-import MoodTracker from "@/components/mood-tracker";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -80,7 +79,7 @@ export default function Dashboard() {
             <>
               <div className="grid md:grid-cols-2 gap-8 mb-8">
                 <RiskDisplay data={latestData} />
-                <MoodTracker />
+                <Recommendations data={latestData} />
               </div>
 
               <div className="mb-8">
