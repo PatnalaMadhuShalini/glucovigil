@@ -188,6 +188,57 @@ export async function registerRoutes(router: Router): Promise<void> {
       return res.status(500).json(errorResponse);
     }
   });
+
+  // Mood tracking endpoint
+  router.post("/mood", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({
+        message: "Please login to track your mood",
+        status: "error"
+      });
+    }
+
+    try {
+      const userId = req.user!.id;
+      const moodData = {
+        ...req.body,
+        recordedAt: new Date().toISOString()
+      };
+
+      // Get latest health data
+      const healthData = await storage.getHealthDataByUserId(userId);
+      const latestData = healthData[healthData.length - 1];
+
+      if (!latestData) {
+        return res.status(400).json({
+          message: "Please complete health assessment first",
+          status: "error"
+        });
+      }
+
+      // Update health data with mood
+      const updatedData = {
+        ...latestData,
+        mood: moodData,
+        moodBasedRecommendations: generateMoodBasedRecommendations(moodData, latestData)
+      };
+
+      await storage.updateHealthData(userId, updatedData);
+
+      return res.status(200).json({
+        message: "Mood recorded successfully",
+        status: "success",
+        data: updatedData
+      });
+    } catch (err) {
+      console.error("Error processing mood data:", err);
+      return res.status(500).json({
+        message: err instanceof Error ? err.message : "Failed to process mood data",
+        status: "error"
+      });
+    }
+  });
+
 }
 
 // Helper functions for risk calculation and data extraction...
@@ -411,4 +462,79 @@ interface Achievement {
   description: string;
   icon: string;
   unlockedAt: string;
+}
+
+function generateMoodBasedRecommendations(mood: any, healthData: any): string[] {
+  const recommendations: string[] = [];
+  const { currentMood, intensity, sleepQuality } = mood;
+
+  // Stress and Anxiety Management
+  if (currentMood === "stressed" || currentMood === "anxious") {
+    recommendations.push(
+      "Practice deep breathing exercises for 5 minutes",
+      "Take short breaks for mindfulness meditation",
+      "Consider reducing caffeine intake"
+    );
+
+    if (intensity > 3) {
+      recommendations.push(
+        "Schedule time for relaxation activities",
+        "Try progressive muscle relaxation before bed"
+      );
+    }
+  }
+
+  // Energy and Mood Boosting
+  if (currentMood === "tired" || currentMood === "sad") {
+    recommendations.push(
+      "Get some natural sunlight or light therapy",
+      "Take a short walk outside",
+      "Stay hydrated throughout the day"
+    );
+
+    if (sleepQuality === "poor") {
+      recommendations.push(
+        "Establish a consistent sleep schedule",
+        "Create a relaxing bedtime routine",
+        "Limit screen time before bed"
+      );
+    }
+  }
+
+  // Positive Mood Maintenance
+  if (currentMood === "happy" || currentMood === "energetic") {
+    recommendations.push(
+      "Channel your energy into productive activities",
+      "Share your positive mood through social connections",
+      "Plan activities that maintain your momentum"
+    );
+  }
+
+  // Calm State Optimization
+  if (currentMood === "calm") {
+    recommendations.push(
+      "Practice gratitude journaling",
+      "Maintain this balanced state through gentle exercise",
+      "Consider yoga or light stretching"
+    );
+  }
+
+  // Physical Health Integration
+  if (healthData.lifestyle.exercise === "none") {
+    recommendations.push(
+      "Start with gentle exercises suitable for your current mood",
+      "Try mood-boosting activities like dancing or walking"
+    );
+  }
+
+  // Stress Level Adjustments
+  if (healthData.lifestyle.stressLevel === "high") {
+    recommendations.push(
+      "Consider stress-management techniques",
+      "Take regular breaks during work",
+      "Practice time management"
+    );
+  }
+
+  return recommendations;
 }

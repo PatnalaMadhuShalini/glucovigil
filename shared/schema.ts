@@ -70,7 +70,21 @@ export const symptomSchema = z.object({
 
 export type Symptom = z.infer<typeof symptomSchema>;
 
-// Update HealthData schema to include symptoms
+// Add after the symptom types
+// Mood types
+export const moodSchema = z.object({
+  currentMood: z.enum(["happy", "calm", "stressed", "anxious", "sad", "energetic", "tired"]),
+  intensity: z.number().min(1).max(5),
+  notes: z.string().optional(),
+  recordedAt: z.string(),
+  triggers: z.array(z.string()).optional(),
+  sleepQuality: z.enum(["poor", "fair", "good", "excellent"]).optional(),
+  energyLevel: z.enum(["low", "moderate", "high"]).optional()
+});
+
+export type Mood = z.infer<typeof moodSchema>;
+
+// Update HealthData schema to include moods
 export const healthDataSchema = z.object({
   demographics: z.object({
     age: z.number().int().min(0).max(120),
@@ -95,6 +109,7 @@ export const healthDataSchema = z.object({
     smoking: z.boolean()
   }),
   symptoms: symptomSchema.optional(),
+  mood: moodSchema.optional()
 });
 
 export const feedbackSchema = z.object({
@@ -164,5 +179,7 @@ export type HealthDataWithPrediction = HealthData & {
   exercisePlan?: ExercisePlan;
   achievements?: Achievement[];
   symptoms?: Symptom;
+  mood?: Mood;
   createdAt: string;
+  moodBasedRecommendations?: string[];
 };
