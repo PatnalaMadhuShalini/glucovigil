@@ -30,13 +30,15 @@ async function comparePasswords(supplied: string, stored: string) {
 
 export function setupAuth(app: Express) {
   const sessionSettings: session.SessionOptions = {
-    secret: process.env.SESSION_SECRET || 'your-secret-key',
+    secret: process.env.SESSION_SECRET || 'gluco-smart-secret-key',
     resave: false,
     saveUninitialized: false,
     store: storage.sessionStore,
     cookie: {
       secure: process.env.NODE_ENV === "production",
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      httpOnly: true,
+      sameSite: 'lax'
     }
   };
 
@@ -50,12 +52,12 @@ export function setupAuth(app: Express) {
       try {
         const user = await storage.getUserByUsername(username);
         if (!user) {
-          return done(null, false, { message: "Incorrect username" });
+          return done(null, false, { message: "Invalid username or password" });
         }
 
         const isValid = await comparePasswords(password, user.password);
         if (!isValid) {
-          return done(null, false, { message: "Incorrect password" });
+          return done(null, false, { message: "Invalid username or password" });
         }
 
         return done(null, user);
@@ -72,6 +74,9 @@ export function setupAuth(app: Express) {
   passport.deserializeUser(async (id: number, done) => {
     try {
       const user = await storage.getUser(id);
+      if (!user) {
+        return done(null, false);
+      }
       done(null, user);
     } catch (err) {
       done(err);
@@ -80,22 +85,31 @@ export function setupAuth(app: Express) {
 
   app.post("/api/register", async (req, res) => {
     try {
+      // Check if user already exists
       const existingUser = await storage.getUserByUsername(req.body.username);
       if (existingUser) {
         return res.status(400).json({ message: "Username already exists" });
       }
 
+      // Hash password and create user
       const hashedPassword = await hashPassword(req.body.password);
       const user = await storage.createUser({
         ...req.body,
         password: hashedPassword,
       });
 
+      // Log the user in after registration
       req.login(user, (err) => {
         if (err) {
+          console.error("Login error after registration:", err);
           return res.status(500).json({ message: "Error during login after registration" });
         }
-        res.status(201).json(user);
+        return res.status(201).json({
+          id: user.id,
+          username: user.username,
+          fullName: user.fullName,
+          email: user.email
+        });
       });
     } catch (err) {
       console.error("Registration error:", err);
@@ -106,6 +120,7 @@ export function setupAuth(app: Express) {
   app.post("/api/login", (req, res, next) => {
     passport.authenticate("local", (err, user, info) => {
       if (err) {
+        console.error("Login error:", err);
         return res.status(500).json({ message: "Internal server error" });
       }
       if (!user) {
@@ -113,9 +128,15 @@ export function setupAuth(app: Express) {
       }
       req.login(user, (err) => {
         if (err) {
+          console.error("Session creation error:", err);
           return res.status(500).json({ message: "Error during login" });
         }
-        return res.json(user);
+        return res.json({
+          id: user.id,
+          username: user.username,
+          fullName: user.fullName,
+          email: user.email
+        });
       });
     })(req, res, next);
   });
@@ -123,16 +144,30 @@ export function setupAuth(app: Express) {
   app.post("/api/logout", (req, res) => {
     req.logout((err) => {
       if (err) {
+        console.error("Logout error:", err);
         return res.status(500).json({ message: "Error during logout" });
       }
-      res.sendStatus(200);
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("Session destruction error:", err);
+          return res.status(500).json({ message: "Error clearing session" });
+        }
+        res.clearCookie('connect.sid');
+        res.sendStatus(200);
+      });
     });
   });
 
   app.get("/api/user", (req, res) => {
     if (!req.isAuthenticated()) {
-      return res.sendStatus(401);
+      return res.status(401).json({ message: "Not authenticated" });
     }
-    res.json(req.user);
+    const user = req.user as SelectUser;
+    res.json({
+      id: user.id,
+      username: user.username,
+      fullName: user.fullName,
+      email: user.email
+    });
   });
 }
