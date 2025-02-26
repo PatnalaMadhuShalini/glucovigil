@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, json } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, json, timestamp, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -14,6 +14,31 @@ export const users = pgTable("users", {
   achievements: json("achievements").default([]),
   preferredLanguage: text("preferred_language").default("en"),
   healthGoals: json("health_goals").default([]),
+  verificationToken: text("verification_token"),
+  verified: boolean("verified").default(false)
+});
+
+export const healthData = pgTable("health_data", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  demographics: json("demographics").notNull(),
+  physiological: json("physiological").notNull(),
+  lifestyle: json("lifestyle").notNull(),
+  prediction: json("prediction"),
+  createdAt: text("created_at").notNull(),
+  nutritionPlan: json("nutrition_plan"),
+  exercisePlan: json("exercise_plan"),
+  achievements: json("achievements"),
+  medicalRecords: json("medical_records")
+});
+
+export const feedback = pgTable("feedback", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  rating: integer("rating").notNull(),
+  category: text("category").notNull(),
+  comment: text("comment").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow()
 });
 
 export const insertUserSchema = createInsertSchema(users)
@@ -31,19 +56,6 @@ export const insertUserSchema = createInsertSchema(users)
     email: z.string().email("Invalid email address"),
     phone: z.string().regex(/^\+?[1-9]\d{9,11}$/, "Invalid phone number"),
   });
-
-export const healthData = pgTable("health_data", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
-  demographics: json("demographics").notNull(),
-  physiological: json("physiological").notNull(),
-  lifestyle: json("lifestyle").notNull(),
-  prediction: json("prediction"),
-  createdAt: text("created_at").notNull(),
-  nutritionPlan: json("nutrition_plan"),
-  exercisePlan: json("exercise_plan"),
-  achievements: json("achievements"),
-});
 
 export const healthDataSchema = z.object({
   demographics: z.object({
@@ -72,6 +84,7 @@ export const healthDataSchema = z.object({
 
 export const feedbackSchema = z.object({
   rating: z.number().min(1).max(5),
+  category: z.string(),
   comment: z.string(),
 });
 
