@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
+import { 
   Brain,
   Sun,
   Moon,
@@ -41,9 +41,81 @@ const moodIcons = {
   tired: Coffee,
 };
 
+interface MoodRecommendation {
+  mood: string;
+  recommendations: string[];
+}
+
+const moodRecommendations: Record<string, MoodRecommendation> = {
+  happy: {
+    mood: "happy",
+    recommendations: [
+      "Channel your positive energy into productive activities",
+      "Share your good mood with others through social connections",
+      "Document what made you happy to reference on harder days",
+      "Use this motivation to tackle challenging tasks"
+    ]
+  },
+  calm: {
+    mood: "calm",
+    recommendations: [
+      "Practice mindfulness to maintain this balanced state",
+      "Consider gentle yoga or stretching exercises",
+      "Use this time for planning and reflection",
+      "Focus on creative activities"
+    ]
+  },
+  stressed: {
+    mood: "stressed",
+    recommendations: [
+      "Take deep breathing exercises (4-7-8 breathing)",
+      "Step away for a short walk outside",
+      "Practice progressive muscle relaxation",
+      "Consider limiting caffeine intake"
+    ]
+  },
+  anxious: {
+    mood: "anxious",
+    recommendations: [
+      "Ground yourself using the 5-4-3-2-1 senses technique",
+      "Write down your worries to gain perspective",
+      "Engage in light physical activity",
+      "Reach out to a trusted friend or professional"
+    ]
+  },
+  sad: {
+    mood: "sad",
+    recommendations: [
+      "Ensure you're getting enough sunlight and vitamin D",
+      "Maintain social connections, even if briefly",
+      "Practice self-care activities you enjoy",
+      "Consider talking to a mental health professional"
+    ]
+  },
+  energetic: {
+    mood: "energetic",
+    recommendations: [
+      "Channel energy into exercise or physical activity",
+      "Take on challenging tasks you've been postponing",
+      "Engage in creative projects",
+      "Balance activity with proper rest periods"
+    ]
+  },
+  tired: {
+    mood: "tired",
+    recommendations: [
+      "Review your sleep schedule and quality",
+      "Take short power naps (15-20 minutes)",
+      "Ensure proper hydration and nutrition",
+      "Consider gentle movement to boost energy"
+    ]
+  }
+};
+
 export default function MoodTracker() {
   const { toast } = useToast();
   const [showForm, setShowForm] = useState(false);
+  const [currentRecommendations, setCurrentRecommendations] = useState<string[]>([]);
 
   const form = useForm<Mood>({
     resolver: zodResolver(moodSchema),
@@ -80,6 +152,12 @@ export default function MoodTracker() {
     },
   });
 
+  const handleMoodSelection = (mood: string) => {
+    form.setValue("currentMood", mood as any);
+    const recommendations = moodRecommendations[mood]?.recommendations || [];
+    setCurrentRecommendations(recommendations);
+  };
+
   const onSubmit = (data: Mood) => {
     mutation.mutateAsync(data);
   };
@@ -95,11 +173,11 @@ export default function MoodTracker() {
   ];
 
   return (
-    <Card>
+    <Card className="bg-gradient-to-br from-blue-50 to-indigo-50">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Brain className="h-5 w-5" />
-          Mood Tracker
+          <Brain className="h-5 w-5 text-blue-500" />
+          Mood Tracker & Recommendations
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -108,7 +186,12 @@ export default function MoodTracker() {
             <p className="mb-4 text-muted-foreground">
               Track your mood to get personalized health recommendations
             </p>
-            <Button onClick={() => setShowForm(true)}>Record Current Mood</Button>
+            <Button 
+              onClick={() => setShowForm(true)}
+              className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600"
+            >
+              Record Current Mood
+            </Button>
           </div>
         ) : (
           <Form {...form}>
@@ -118,27 +201,31 @@ export default function MoodTracker() {
                 name="currentMood"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>How are you feeling right now?</FormLabel>
+                    <FormLabel className="text-lg font-medium">How are you feeling right now?</FormLabel>
                     <FormControl>
                       <RadioGroup
-                        onValueChange={field.onChange}
+                        onValueChange={(value) => handleMoodSelection(value)}
                         value={field.value}
-                        className="grid grid-cols-2 gap-4"
+                        className="grid grid-cols-2 md:grid-cols-3 gap-4"
                       >
                         {moodOptions.map((mood) => {
                           const Icon = moodIcons[mood.value as keyof typeof moodIcons];
                           return (
                             <div
                               key={mood.value}
-                              className="flex items-center space-x-2"
+                              className="relative"
                             >
-                              <RadioGroupItem value={mood.value} id={mood.value} />
+                              <RadioGroupItem
+                                value={mood.value}
+                                id={mood.value}
+                                className="peer sr-only"
+                              />
                               <label
                                 htmlFor={mood.value}
-                                className="flex items-center gap-2 cursor-pointer"
+                                className="flex flex-col items-center gap-2 p-4 rounded-lg border-2 cursor-pointer hover:bg-blue-50 peer-checked:border-blue-500 peer-checked:bg-blue-50 transition-all"
                               >
-                                <Icon className="h-4 w-4" />
-                                {mood.label}
+                                <Icon className="h-6 w-6" />
+                                <span>{mood.label}</span>
                               </label>
                             </div>
                           );
@@ -149,6 +236,20 @@ export default function MoodTracker() {
                   </FormItem>
                 )}
               />
+
+              {currentRecommendations.length > 0 && (
+                <div className="mt-6 p-4 bg-white rounded-lg shadow-sm">
+                  <h3 className="font-medium mb-3">Recommended Actions:</h3>
+                  <ul className="space-y-2">
+                    {currentRecommendations.map((rec, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <span className="text-blue-500">•</span>
+                        <span>{rec}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               <FormField
                 control={form.control}
@@ -163,43 +264,14 @@ export default function MoodTracker() {
                         step={1}
                         value={[field.value]}
                         onValueChange={([value]) => field.onChange(value)}
+                        className="py-4"
                       />
                     </FormControl>
                     <div className="flex justify-between text-sm text-muted-foreground">
                       <span>Mild</span>
                       <span>Moderate</span>
-                      <span>Intense</span>
+                      <span>Strong</span>
                     </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="sleepQuality"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>How did you sleep last night?</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        value={field.value}
-                        className="grid grid-cols-2 gap-2"
-                      >
-                        {["poor", "fair", "good", "excellent"].map((quality) => (
-                          <div key={quality} className="flex items-center space-x-2">
-                            <RadioGroupItem value={quality} id={quality} />
-                            <label
-                              htmlFor={quality}
-                              className="capitalize cursor-pointer"
-                            >
-                              {quality}
-                            </label>
-                          </div>
-                        ))}
-                      </RadioGroup>
-                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -227,7 +299,11 @@ export default function MoodTracker() {
                 >
                   Cancel
                 </Button>
-                <Button type="submit" disabled={mutation.isPending}>
+                <Button 
+                  type="submit" 
+                  disabled={mutation.isPending}
+                  className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600"
+                >
                   {mutation.isPending ? "Saving..." : "Save Mood"}
                 </Button>
               </div>
