@@ -4,10 +4,10 @@ import { Heart, Utensils, Trophy, Dumbbell, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 type RecommendationProps = {
-  data: {
-    prediction: {
-      recommendations: string[];
-      level: string;
+  data?: {
+    prediction?: {
+      recommendations?: string[];
+      level?: string;
     };
   };
 };
@@ -16,10 +16,19 @@ export default function Recommendations({ data }: RecommendationProps) {
   const { toast } = useToast();
 
   const handleDownload = () => {
+    if (!data?.prediction?.recommendations?.length) {
+      toast({
+        title: "Error",
+        description: "No recommendations available to download",
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Create recommendations text
     const recommendationsText = data.prediction.recommendations.join('\n- ');
-    const fullText = `Diabetes Risk Assessment Recommendations\n\nRisk Level: ${data.prediction.level}\n\nRecommendations:\n- ${recommendationsText}`;
-    
+    const fullText = `Diabetes Risk Assessment Recommendations\n\nRisk Level: ${data.prediction?.level || 'Unknown'}\n\nRecommendations:\n- ${recommendationsText}`;
+
     // Create blob and download
     const blob = new Blob([fullText], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -54,6 +63,22 @@ export default function Recommendations({ data }: RecommendationProps) {
     }
     return recommendationIcons.lifestyle;
   };
+
+  // Early return if no data or predictions
+  if (!data?.prediction?.recommendations?.length) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Personalized Recommendations</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground text-center">
+            Complete your health assessment to receive personalized recommendations.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>

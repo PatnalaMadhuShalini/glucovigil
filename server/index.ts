@@ -47,14 +47,6 @@ app.use((req, res, next) => {
       res.status(status).json({ message });
     });
 
-    if (app.get("env") === "development") {
-      log('Setting up Vite development server...');
-      await setupVite(app, server);
-    } else {
-      log('Setting up static file serving...');
-      serveStatic(app);
-    }
-
     // Try different ports if default is in use
     const ports = [5000, 5001, 5002, 5003];
     let port: number | undefined;
@@ -80,6 +72,15 @@ app.use((req, res, next) => {
 
     if (!port) {
       throw new Error('All ports are in use');
+    }
+
+    // Only setup Vite after server is bound to port
+    if (app.get("env") === "development") {
+      log('Setting up Vite development server...');
+      await setupVite(app, server);
+    } else {
+      log('Setting up static file serving...');
+      serveStatic(app);
     }
 
     log(`Server running at http://0.0.0.0:${port}`);
