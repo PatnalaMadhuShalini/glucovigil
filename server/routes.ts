@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { Router } from "express";
 import { setupAuth } from "./auth";
 import { storage } from "./storage";
-import { healthDataSchema, feedbackSchema } from "@shared/schema";
+import { healthDataSchema, feedbackSchema, moodSchema } from "@shared/schema"; // Added moodSchema import
 import { ZodError } from "zod";
 import fileUpload from 'express-fileupload';
 import crypto from 'crypto';
@@ -189,7 +189,7 @@ export async function registerRoutes(router: Router): Promise<void> {
     }
   });
 
-  // Mood tracking endpoint
+  // Update the mood endpoint to handle validation
   router.post("/mood", async (req, res) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({
@@ -200,10 +200,15 @@ export async function registerRoutes(router: Router): Promise<void> {
 
     try {
       const userId = req.user!.id;
-      const moodData = {
+      const moodData = moodSchema.parse({
         ...req.body,
         recordedAt: new Date().toISOString()
-      };
+      });
+
+      console.log("Processing mood data:", {
+        userId,
+        moodData
+      });
 
       // Get latest health data
       const healthData = await storage.getHealthDataByUserId(userId);
