@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { Router } from "express";
 import { setupAuth } from "./auth";
 import { storage } from "./storage";
-import { healthDataSchema, feedbackSchema, moodSchema } from "@shared/schema"; // Added moodSchema import
+import { healthDataSchema, feedbackSchema } from "@shared/schema";
 import { ZodError } from "zod";
 import fileUpload from 'express-fileupload';
 import crypto from 'crypto';
@@ -119,16 +119,9 @@ export async function registerRoutes(router: Router): Promise<void> {
     }
   });
 
-  // Update the symptoms endpoint
+  // Symptom tracking endpoint
   router.post("/symptoms", async (req, res) => {
-    console.log("=== Symptom Submission Debug ===");
-    console.log("Request URL:", req.url);
-    console.log("Request Headers:", req.headers);
-    console.log("Request Body:", req.body);
-    console.log("Auth Status:", req.isAuthenticated());
-
     if (!req.isAuthenticated()) {
-      console.log("Authentication failed");
       return res.status(401).json({
         message: "Please login to submit symptoms",
         status: "error"
@@ -141,76 +134,6 @@ export async function registerRoutes(router: Router): Promise<void> {
         ...req.body,
         recordedAt: new Date().toISOString()
       };
-      console.log("Processing symptoms for user:", userId);
-      console.log("Symptom data:", symptomData);
-
-      // Get the latest health data for the user
-      const healthData = await storage.getHealthDataByUserId(userId);
-      console.log("Retrieved health data:", healthData);
-
-      const latestData = healthData[healthData.length - 1];
-
-      if (!latestData) {
-        console.log("No existing health data found");
-        const response = {
-          message: "Please complete health assessment first",
-          status: "error"
-        };
-        console.log("Sending response:", response);
-        return res.status(400).json(response);
-      }
-
-      // Create a new health data entry instead of updating the existing one
-      const updatedData = {
-        ...latestData,
-        id: undefined, // Remove the id to create a new entry
-        symptoms: symptomData,
-        createdAt: new Date().toISOString()
-      };
-
-      console.log("Creating new health data entry with symptoms:", updatedData);
-
-      // Create a new health data entry
-      const result = await storage.createHealthData(userId, updatedData);
-
-      const successResponse = {
-        message: "Symptoms recorded successfully",
-        status: "success",
-        data: result
-      };
-      console.log("Sending success response:", successResponse);
-      return res.status(200).json(successResponse);
-    } catch (err) {
-      console.error("Error processing symptoms:", err);
-      const errorResponse = {
-        message: err instanceof Error ? err.message : "Failed to process symptoms",
-        status: "error"
-      };
-      console.log("Sending error response:", errorResponse);
-      return res.status(500).json(errorResponse);
-    }
-  });
-
-  // Update the mood endpoint to handle validation
-  router.post("/mood", async (req, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({
-        message: "Please login to track your mood",
-        status: "error"
-      });
-    }
-
-    try {
-      const userId = req.user!.id;
-      const moodData = moodSchema.parse({
-        ...req.body,
-        recordedAt: new Date().toISOString()
-      });
-
-      console.log("Processing mood data:", {
-        userId,
-        moodData
-      });
 
       // Get latest health data
       const healthData = await storage.getHealthDataByUserId(userId);
@@ -223,34 +146,31 @@ export async function registerRoutes(router: Router): Promise<void> {
         });
       }
 
-      // Create a new health data entry with mood
+      // Create a new health data entry with symptoms
       const updatedData = {
         ...latestData,
-        id: undefined, // Remove the id to create a new entry
-        mood: moodData,
-        moodBasedRecommendations: generateMoodBasedRecommendations(moodData, latestData),
+        id: undefined,
+        symptoms: symptomData,
         createdAt: new Date().toISOString()
       };
 
       const result = await storage.createHealthData(userId, updatedData);
 
       return res.status(200).json({
-        message: "Mood recorded successfully",
+        message: "Symptoms recorded successfully",
         status: "success",
         data: result
       });
     } catch (err) {
-      console.error("Error processing mood data:", err);
+      console.error("Error processing symptoms:", err);
       return res.status(500).json({
-        message: err instanceof Error ? err.message : "Failed to process mood data",
+        message: err instanceof Error ? err.message : "Failed to process symptoms",
         status: "error"
       });
     }
   });
-
 }
 
-// Helper functions for risk calculation and data extraction...
 function calculateDiabetesRisk(data: any) {
   let riskScore = 0;
 
@@ -471,79 +391,4 @@ interface Achievement {
   description: string;
   icon: string;
   unlockedAt: string;
-}
-
-function generateMoodBasedRecommendations(mood: any, healthData: any): string[] {
-  const recommendations: string[] = [];
-  const { currentMood, intensity, sleepQuality } = mood;
-
-  // Stress and Anxiety Management
-  if (currentMood === "stressed" || currentMood === "anxious") {
-    recommendations.push(
-      "Practice deep breathing exercises for 5 minutes",
-      "Take short breaks for mindfulness meditation",
-      "Consider reducing caffeine intake"
-    );
-
-    if (intensity > 3) {
-      recommendations.push(
-        "Schedule time for relaxation activities",
-        "Try progressive muscle relaxation before bed"
-      );
-    }
-  }
-
-  // Energy and Mood Boosting
-  if (currentMood === "tired" || currentMood === "sad") {
-    recommendations.push(
-      "Get some natural sunlight or light therapy",
-      "Take a short walk outside",
-      "Stay hydrated throughout the day"
-    );
-
-    if (sleepQuality === "poor") {
-      recommendations.push(
-        "Establish a consistent sleep schedule",
-        "Create a relaxing bedtime routine",
-        "Limit screen time before bed"
-      );
-    }
-  }
-
-  // Positive Mood Maintenance
-  if (currentMood === "happy" || currentMood === "energetic") {
-    recommendations.push(
-      "Channel your energy into productive activities",
-      "Share your positive mood through social connections",
-      "Plan activities that maintain your momentum"
-    );
-  }
-
-  // Calm State Optimization
-  if (currentMood === "calm") {
-    recommendations.push(
-      "Practice gratitude journaling",
-      "Maintain this balanced state through gentle exercise",
-      "Consider yoga or light stretching"
-    );
-  }
-
-  // Physical Health Integration
-  if (healthData.lifestyle.exercise === "none") {
-    recommendations.push(
-      "Start with gentle exercises suitable for your current mood",
-      "Try mood-boosting activities like dancing or walking"
-    );
-  }
-
-  // Stress Level Adjustments
-  if (healthData.lifestyle.stressLevel === "high") {
-    recommendations.push(
-      "Consider stress-management techniques",
-      "Take regular breaks during work",
-      "Practice time management"
-    );
-  }
-
-  return recommendations;
 }
