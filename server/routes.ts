@@ -1,5 +1,4 @@
 import type { Express } from "express";
-import { createServer, type Server } from "http";
 import { Router } from "express";
 import { setupAuth } from "./auth";
 import { storage } from "./storage";
@@ -18,9 +17,6 @@ export async function registerRoutes(router: Router): Promise<void> {
     });
     res.json({ status: "ok", timestamp: new Date().toISOString() });
   });
-
-  // Setup auth on the router
-  setupAuth(router);
 
   // Add file upload middleware
   router.use(fileUpload({
@@ -84,30 +80,28 @@ export async function registerRoutes(router: Router): Promise<void> {
     if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
 
     try {
-      if (!req.files || !req.files.file) {
+      if (!req.files || !('file' in req.files)) {
         return res.status(400).json({ message: 'No file uploaded' });
       }
 
       const file = req.files.file;
+      if (!Array.isArray(file) && file.mimetype === 'application/pdf') {
+        try {
+          // Dynamically import pdf-parse only when needed
+          const pdfParse = await import('pdf-parse');
+          const pdfData = await pdfParse.default(file.data);
+          const extractedData = await extractHealthData(pdfData.text);
 
-      // Validate file type
-      if (file.mimetype !== 'application/pdf') {
-        return res.status(400).json({ message: 'Only PDF files are supported' });
-      }
-
-      try {
-        // Dynamically import pdf-parse only when needed
-        const pdfParse = await import('pdf-parse');
-        const pdfData = await pdfParse.default(file.data);
-        const extractedData = await extractHealthData(pdfData.text);
-
-        res.json({ 
-          message: 'Medical records processed successfully',
-          extractedData 
-        });
-      } catch (parseError) {
-        console.error('Error parsing PDF:', parseError);
-        res.status(422).json({ message: 'Could not process the PDF file' });
+          res.json({ 
+            message: 'Medical records processed successfully',
+            extractedData 
+          });
+        } catch (parseError) {
+          console.error('Error parsing PDF:', parseError);
+          res.status(422).json({ message: 'Could not process the PDF file' });
+        }
+      } else {
+        res.status(400).json({ message: 'Only PDF files are supported' });
       }
     } catch (err) {
       console.error('Error processing medical records:', err);
@@ -123,17 +117,16 @@ export async function registerRoutes(router: Router): Promise<void> {
     console.log("Request Body:", req.body);
     console.log("Auth Status:", req.isAuthenticated());
 
-    // Temporarily bypass auth check for debugging
-    // if (!req.isAuthenticated()) {
-    //   console.log("Authentication failed");
-    //   return res.status(401).json({ 
-    //     message: "Please login to submit symptoms",
-    //     status: "error"
-    //   });
-    // }
+    if (!req.isAuthenticated()) {
+      console.log("Authentication failed");
+      return res.status(401).json({ 
+        message: "Please login to submit symptoms",
+        status: "error"
+      });
+    }
 
     try {
-      const userId = req.user?.id || 1; // Temporary default for debugging
+      const userId = req.user!.id;
       const symptomData = {
         ...req.body,
         recordedAt: new Date().toISOString()
@@ -187,18 +180,8 @@ export async function registerRoutes(router: Router): Promise<void> {
   });
 }
 
-// Helper functions remain unchanged
-async function hashPassword(password: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    crypto.scrypt(password, 'salt', 64, (err, derivedKey) => {
-      if (err) return reject(err);
-      resolve(derivedKey.toString('hex'));
-    })
-  })
-}
-
+// Helper functions for risk calculation and data extraction...
 function calculateDiabetesRisk(data: any) {
-  // More comprehensive risk calculation logic
   let riskScore = 0;
 
   // Age factor
@@ -227,13 +210,16 @@ function calculateDiabetesRisk(data: any) {
   if (data.lifestyle.exercise === "none") riskScore += 1;
   if (data.lifestyle.diet === "poor") riskScore += 1;
 
+  const level = riskScore <= 2 ? "low" : riskScore <= 5 ? "moderate" : "high";
+
   return {
     score: riskScore,
-    level: riskScore <= 2 ? "low" : riskScore <= 5 ? "moderate" : "high",
+    level,
     recommendations: generateRecommendations(riskScore, data)
   };
 }
 
+// Helper function to generate recommendations
 function generateRecommendations(riskScore: number, data: any) {
   const recommendations = [];
 

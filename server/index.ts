@@ -1,7 +1,7 @@
 import express from "express";
 import { type Request, Response, NextFunction } from "express";
 import { setupVite, serveStatic, log } from "./vite";
-import { createServer } from 'http';
+import { createServer } from "http";
 import { setupAuth, setupAuthRoutes } from "./auth";
 import { registerRoutes } from "./routes";
 
