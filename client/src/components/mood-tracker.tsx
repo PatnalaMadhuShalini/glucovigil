@@ -29,6 +29,7 @@ import {
   Meh,
   Zap,
   Coffee,
+  Loader2
 } from "lucide-react";
 
 const moodIcons = {
@@ -40,11 +41,6 @@ const moodIcons = {
   energetic: Zap,
   tired: Coffee,
 };
-
-interface MoodRecommendation {
-  mood: string;
-  recommendations: string[];
-}
 
 const moodRecommendations: Record<string, MoodRecommendation> = {
   happy: {
@@ -112,6 +108,11 @@ const moodRecommendations: Record<string, MoodRecommendation> = {
   }
 };
 
+interface MoodRecommendation {
+  mood: string;
+  recommendations: string[];
+}
+
 export default function MoodTracker() {
   const { toast } = useToast();
   const [showForm, setShowForm] = useState(false);
@@ -129,21 +130,24 @@ export default function MoodTracker() {
 
   const mutation = useMutation({
     mutationFn: async (data: Mood) => {
-      const res = await apiRequest("POST", "/api/mood", {
-        ...data,
-        recordedAt: new Date().toISOString(),
-      });
+      console.log("Submitting mood data:", data);
+      const res = await apiRequest("POST", "/api/mood", data);
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Failed to save mood data");
+      }
       return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/health-data"] });
       toast({
         title: "Success",
-        description: "Your mood has been recorded",
+        description: "Your mood has been recorded successfully",
       });
       setShowForm(false);
     },
     onError: (error: Error) => {
+      console.error("Error saving mood:", error);
       toast({
         title: "Error",
         description: error.message,
@@ -158,8 +162,12 @@ export default function MoodTracker() {
     setCurrentRecommendations(recommendations);
   };
 
-  const onSubmit = (data: Mood) => {
-    mutation.mutateAsync(data);
+  const onSubmit = async (data: Mood) => {
+    try {
+      await mutation.mutateAsync(data);
+    } catch (error) {
+      console.error("Submit error:", error);
+    }
   };
 
   const moodOptions = [
@@ -300,11 +308,18 @@ export default function MoodTracker() {
                   Cancel
                 </Button>
                 <Button 
-                  type="submit" 
+                  type="submit"
                   disabled={mutation.isPending}
                   className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600"
                 >
-                  {mutation.isPending ? "Saving..." : "Save Mood"}
+                  {mutation.isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    "Save Mood"
+                  )}
                 </Button>
               </div>
             </form>
