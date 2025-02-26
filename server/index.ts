@@ -1,21 +1,40 @@
-import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes";
+import express from "express";
+import { type Request, Response, NextFunction } from "express";
 import { setupVite, serveStatic, log } from "./vite";
-import {createServer} from 'http';
+import { createServer } from 'http';
 import { setupAuth, setupAuthRoutes } from "./auth";
+import { registerRoutes } from "./routes";
 
+// Create Express app
 const app = express();
 const apiRouter = express.Router();
 
+// Basic middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Setup core auth (session, passport) on main app
 setupAuth(app);
 
+// Mount API router
+app.use('/api', apiRouter);
+
+// Test route to verify Express is working
+app.get('/test', (req, res) => {
+  res.json({ status: 'ok', message: 'Express server is running' });
+});
+
 // Ensure JSON content-type for API routes
 apiRouter.use((req, res, next) => {
   res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
   next();
 });
 
@@ -53,8 +72,6 @@ apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   res.status(status).json({ message });
 });
 
-// Mount API router before any other middleware
-app.use('/api', apiRouter);
 
 (async () => {
   try {
@@ -70,36 +87,20 @@ app.use('/api', apiRouter);
     // Add middleware to skip Vite/static for API routes
     app.use((req, res, next) => {
       if (req.path.startsWith('/api')) {
-        return next('route');
+        next('route');
+        return;
       }
       next();
     });
 
-    // Catch-all handler for unmatched API routes - must come after route registration
+    // Catch-all handler for unmatched API routes
     app.all("/api/*", (req, res) => {
       log(`Unmatched API route: ${req.method} ${req.path}`);
-      return res.status(404).json({ 
+      return res.status(404).json({
         message: "API endpoint not found",
         path: req.path,
-        method: req.method 
+        method: req.method
       });
-    });
-
-    // Only setup Vite/static files after API routes
-    if (app.get("env") === "development") {
-      log('Setting up Vite development server...');
-      await setupVite(app, server);
-    } else {
-      log('Setting up static file serving...');
-      serveStatic(app);
-    }
-
-    // Generic error handler comes last
-    app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-      const status = err.status || err.statusCode || 500;
-      const message = err.message || "Internal Server Error";
-      log('Error:', err.message);
-      res.status(status).json({ message });
     });
 
     // Try different ports if default is in use
@@ -128,6 +129,23 @@ app.use('/api', apiRouter);
     if (!port) {
       throw new Error('All ports are in use');
     }
+
+    // Setup Vite/static serving after API routes are established
+    if (app.get("env") === "development") {
+      log('Setting up Vite development server...');
+      await setupVite(app, server);
+    } else {
+      log('Setting up static file serving...');
+      serveStatic(app);
+    }
+
+    // Generic error handler comes last
+    app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+      const status = err.status || err.statusCode || 500;
+      const message = err.message || "Internal Server Error";
+      log('Error:', err.message);
+      res.status(status).json({ message });
+    });
 
     log(`Server running at http://0.0.0.0:${port}`);
   } catch (error) {

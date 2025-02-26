@@ -9,6 +9,16 @@ import fileUpload from 'express-fileupload';
 import crypto from 'crypto';
 
 export async function registerRoutes(router: Router): Promise<void> {
+  // Add test endpoint for API verification
+  router.get("/ping", (req, res) => {
+    console.log("Ping endpoint hit:", {
+      url: req.url,
+      method: req.method,
+      headers: req.headers
+    });
+    res.json({ status: "ok", timestamp: new Date().toISOString() });
+  });
+
   // Setup auth on the router
   setupAuth(router);
 
