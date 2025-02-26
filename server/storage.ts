@@ -1,4 +1,4 @@
-import { users, healthData, feedback, type User, type InsertUser, type HealthData, type Feedback } from "@shared/schema";
+import { users, healthData, feedback, type User, type InsertUser, type HealthData, type Feedback, type HealthDataWithPrediction } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 import session from "express-session";
@@ -11,9 +11,9 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  createHealthData(userId: number, data: HealthData): Promise<HealthData>;
-  getHealthDataByUserId(userId: number): Promise<HealthData[]>;
-  updateHealthData(userId: number, data: Partial<HealthData>): Promise<HealthData | undefined>;
+  createHealthData(userId: number, data: HealthData): Promise<HealthDataWithPrediction>;
+  getHealthDataByUserId(userId: number): Promise<HealthDataWithPrediction[]>;
+  updateHealthData(userId: number, data: Partial<HealthData>): Promise<HealthDataWithPrediction | undefined>;
   createFeedback(userId: number, feedback: Feedback): Promise<Feedback>;
   getUserByVerificationToken(token: string): Promise<User | undefined>;
   verifyUser(userId: number): Promise<boolean>;
@@ -45,7 +45,7 @@ export class DatabaseStorage implements IStorage {
     return newUser;
   }
 
-  async createHealthData(userId: number, data: HealthData): Promise<HealthData> {
+  async createHealthData(userId: number, data: HealthData): Promise<HealthDataWithPrediction> {
     const [newData] = await db
       .insert(healthData)
       .values({
@@ -53,27 +53,63 @@ export class DatabaseStorage implements IStorage {
         demographics: data.demographics,
         physiological: data.physiological,
         lifestyle: data.lifestyle,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       })
       .returning();
-    return newData;
+
+    return {
+      ...data,
+      id: newData.id,
+      userId: newData.userId,
+      createdAt: newData.createdAt,
+      prediction: null,
+      nutritionPlan: null,
+      exercisePlan: null,
+      achievements: []
+    };
   }
 
-  async getHealthDataByUserId(userId: number): Promise<HealthData[]> {
+  async getHealthDataByUserId(userId: number): Promise<HealthDataWithPrediction[]> {
     const data = await db
       .select()
       .from(healthData)
       .where(eq(healthData.userId, userId));
-    return data;
+
+    return data.map(entry => ({
+      demographics: entry.demographics as HealthData['demographics'],
+      physiological: entry.physiological as HealthData['physiological'],
+      lifestyle: entry.lifestyle as HealthData['lifestyle'],
+      id: entry.id,
+      userId: entry.userId,
+      createdAt: entry.createdAt,
+      prediction: entry.prediction as HealthDataWithPrediction['prediction'],
+      nutritionPlan: entry.nutritionPlan as HealthDataWithPrediction['nutritionPlan'],
+      exercisePlan: entry.exercisePlan as HealthDataWithPrediction['exercisePlan'],
+      achievements: entry.achievements as HealthDataWithPrediction['achievements'] || []
+    }));
   }
 
-  async updateHealthData(userId: number, data: Partial<HealthData>): Promise<HealthData | undefined> {
+  async updateHealthData(userId: number, data: Partial<HealthData>): Promise<HealthDataWithPrediction | undefined> {
     const [updatedData] = await db
       .update(healthData)
       .set(data)
       .where(eq(healthData.userId, userId))
       .returning();
-    return updatedData;
+
+    if (!updatedData) return undefined;
+
+    return {
+      demographics: updatedData.demographics as HealthData['demographics'],
+      physiological: updatedData.physiological as HealthData['physiological'],
+      lifestyle: updatedData.lifestyle as HealthData['lifestyle'],
+      id: updatedData.id,
+      userId: updatedData.userId,
+      createdAt: updatedData.createdAt,
+      prediction: updatedData.prediction as HealthDataWithPrediction['prediction'],
+      nutritionPlan: updatedData.nutritionPlan as HealthDataWithPrediction['nutritionPlan'],
+      exercisePlan: updatedData.exercisePlan as HealthDataWithPrediction['exercisePlan'],
+      achievements: updatedData.achievements as HealthDataWithPrediction['achievements'] || []
+    };
   }
 
   async createFeedback(userId: number, feedbackData: Feedback): Promise<Feedback> {
