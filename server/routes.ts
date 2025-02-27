@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { Router } from "express";
 import { storage } from "./storage";
-import { healthDataSchema, type HealthDataWithPrediction } from "@shared/schema";
+import { healthDataSchema, type HealthDataWithPrediction, type Prediction } from "@shared/schema";
 import { ZodError } from "zod";
 
 export async function registerRoutes(router: Router): Promise<void> {
@@ -11,36 +11,48 @@ export async function registerRoutes(router: Router): Promise<void> {
         return res.status(401).json({ message: "Unauthorized" });
       }
 
-      // Log incoming data
-      console.log("Received health data:", JSON.stringify(req.body, null, 2));
+      // Ensure user.id exists
+      if (!req.user?.id) {
+        return res.status(400).json({ message: "Invalid user session" });
+      }
 
-      // Validate input data
+      // Log request information
+      console.log('Processing health data for user:', req.user.id);
+      console.log('Raw request body:', JSON.stringify(req.body, null, 2));
+
+      // Validate the incoming data against schema
       const validatedData = healthDataSchema.parse(req.body);
+      console.log('Validated data:', JSON.stringify(validatedData, null, 2));
 
-      // Calculate prediction
+      // Calculate health prediction
       const prediction = calculateDiabetesRisk(validatedData);
-
-      // Get existing achievements
-      const existingData = await storage.getHealthDataByUserId(req.user.id);
-      const existingAchievements = existingData.length > 0 ? existingData[0].achievements || [] : [];
-
-      // Check and award achievements
-      const achievements = checkAndAwardAchievements(validatedData, existingAchievements);
+      console.log('Calculated prediction:', JSON.stringify(prediction, null, 2));
 
       // Prepare complete health data record
       const completeHealthData: HealthDataWithPrediction = {
         ...validatedData,
         prediction,
-        achievements,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        achievements: [],
+        nutritionPlan: undefined,
+        exercisePlan: undefined,
+        medicalRecords: null
       };
 
-      // Save to database
-      const savedData = await storage.createHealthData(req.user.id, completeHealthData);
+      console.log('Complete health data to save:', JSON.stringify(completeHealthData, null, 2));
 
-      res.status(201).json(savedData);
+      // Save to database with error handling
+      try {
+        const savedData = await storage.createHealthData(req.user.id, completeHealthData);
+        console.log('Successfully saved health data:', JSON.stringify(savedData, null, 2));
+        res.status(201).json(savedData);
+      } catch (dbError) {
+        console.error('Database error while saving health data:', dbError);
+        throw new Error('Failed to save health data to database');
+      }
     } catch (err) {
-      console.error("Error processing health data:", err);
+      console.error('Error processing health data:', err);
+      console.error('Error stack:', err instanceof Error ? err.stack : 'No stack trace');
 
       if (err instanceof ZodError) {
         return res.status(400).json({
@@ -62,10 +74,14 @@ export async function registerRoutes(router: Router): Promise<void> {
         return res.status(401).json({ message: "Unauthorized" });
       }
 
+      if (!req.user?.id) {
+        return res.status(400).json({ message: "Invalid user session" });
+      }
+
       const data = await storage.getHealthDataByUserId(req.user.id);
       res.json(data);
     } catch (err) {
-      console.error("Error fetching health data:", err);
+      console.error('Error fetching health data:', err);
       res.status(500).json({
         message: "Failed to fetch health data",
         error: err instanceof Error ? err.message : "Unknown error"
@@ -74,7 +90,21 @@ export async function registerRoutes(router: Router): Promise<void> {
   });
 }
 
-function calculateDiabetesRisk(data: HealthDataWithPrediction) {
+function calculateDiabetesRisk(data: {
+  demographics: { age: number };
+  physiological: {
+    height: number;
+    weight: number;
+    bloodPressure: { systolic: number; diastolic: number };
+    bloodSugar: number;
+  };
+  lifestyle: {
+    exercise: string;
+    diet: string;
+    smoking: boolean;
+    alcohol: boolean;
+  };
+}): Prediction {
   let riskScore = 0;
 
   // Calculate BMI
@@ -107,7 +137,15 @@ function calculateDiabetesRisk(data: HealthDataWithPrediction) {
   };
 }
 
-function generateRecommendations(riskScore: number, data: HealthDataWithPrediction): string[] {
+function generateRecommendations(riskScore: number, data: {
+  lifestyle: {
+    diet: string;
+    exercise: string;
+  };
+  physiological: {
+    bloodSugar: number;
+  };
+}): string[] {
   const recommendations: string[] = [];
 
   if (data.lifestyle.diet === "poor" || data.lifestyle.diet === "fair") {
