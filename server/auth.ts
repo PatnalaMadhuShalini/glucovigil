@@ -92,7 +92,7 @@ export function setupAuthRoutes(app: Express) {
       return res.status(400).json({ message: "Username and password are required" });
     }
 
-    passport.authenticate("local", (err, user, info) => {
+    passport.authenticate("local", (err: any, user: any, info: any) => {
       if (err) {
         console.error('[Auth] Login error:', err);
         return res.status(500).json({ message: "Internal server error" });
@@ -166,7 +166,7 @@ export function setupAuthRoutes(app: Express) {
   });
 
   // Logout route handler
-  app.post("/api/logout", (req, res) => {
+  app.post("/api/logout", (req, res, next) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "Not authenticated" });
     }
@@ -203,16 +203,27 @@ export function setupAuthRoutes(app: Express) {
   });
 }
 
-async function hashPassword(password: string) {
-  const salt = randomBytes(16).toString("hex");
-  const buf = (await scryptAsync(password, salt, 64)) as Buffer;
-  return `${buf.toString("hex")}.${salt}`;
+async function hashPassword(password: string): Promise<string> {
+  try {
+    const salt = randomBytes(16).toString("hex");
+    const buf = (await scryptAsync(password, salt, 64)) as Buffer;
+    const hashedPassword = `${buf.toString("hex")}.${salt}`;
+    console.log('[Auth] Password hashed successfully');
+    return hashedPassword;
+  } catch (err) {
+    console.error('[Auth] Error hashing password:', err);
+    throw new Error('Failed to hash password');
+  }
 }
 
-async function comparePasswords(supplied: string, stored: string) {
+async function comparePasswords(supplied: string, stored: string): Promise<boolean> {
   try {
     console.log('[Auth] Comparing passwords');
     const [hashed, salt] = stored.split(".");
+    if (!hashed || !salt) {
+      console.error('[Auth] Invalid stored password format');
+      return false;
+    }
     const hashedBuf = Buffer.from(hashed, "hex");
     const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
     return timingSafeEqual(hashedBuf, suppliedBuf);
