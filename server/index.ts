@@ -1,12 +1,12 @@
 import express from "express";
 import { type Request, Response, NextFunction } from "express";
+import { setupVite, serveStatic, log } from "./vite";
 import { createServer } from "http";
-import { log } from "./vite";
+import { setupAuth, setupAuthRoutes } from "./auth";
+import { registerRoutes } from "./routes";
 
 (async () => {
   try {
-    log('Starting minimal server initialization...');
-
     // Create Express app
     const app = express();
     log('Express app created');
@@ -16,30 +16,63 @@ import { log } from "./vite";
     app.use(express.urlencoded({ extended: false }));
     log('Basic middleware configured');
 
-    // Test route to verify Express is working
+    // Setup core auth (session, passport)
+    setupAuth(app);
+    log('Auth setup completed');
+
+    // Setup auth routes
+    setupAuthRoutes(app);
+    log('Auth routes configured');
+
+    // API routes
+    const apiRouter = express.Router();
+    app.use('/api', apiRouter);
+    registerRoutes(apiRouter);
+    log('API routes registered');
+
+    // Test route
     app.get('/test', (req, res) => {
       res.json({ status: 'ok', message: 'Express server is running' });
     });
     log('Test route added');
 
+    // API error handling
+    app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+      log('API Error:', err.message);
+      const status = err.status || err.statusCode || 500;
+      const message = err.message || "Internal Server Error";
+      res.status(status).json({ message });
+    });
+
     // Create HTTP server
     const server = createServer(app);
     log('HTTP server created');
 
-    // Listen on port 5000
+    // Setup Vite in development
+    if (app.get("env") === "development") {
+      log('Setting up Vite development server...');
+      await setupVite(app, server);
+      log('Vite setup completed');
+    } else {
+      log('Setting up static file serving...');
+      serveStatic(app);
+      log('Static serving setup completed');
+    }
+
+    // Start server
     const PORT = 5000;
     log(`Attempting to start server on port ${PORT}...`);
 
     await new Promise<void>((resolve, reject) => {
       server.listen(PORT, '0.0.0.0', () => {
-        log(`Successfully bound to port ${PORT}`);
+        log(`Server listening on port ${PORT}`);
         resolve();
       });
 
       server.on('error', (err) => {
         if ((err as any).code === 'EADDRINUSE') {
           log(`Port ${PORT} is already in use`);
-          reject(new Error(`Port ${PORT} is already in use. Please ensure no other process is using this port.`));
+          reject(new Error(`Port ${PORT} is already in use`));
         } else {
           log('Server error:', err);
           reject(err);
@@ -49,11 +82,7 @@ import { log } from "./vite";
 
     log(`Server running at http://0.0.0.0:${PORT}`);
   } catch (error) {
-    if (error instanceof Error) {
-      log('Failed to start server:', error.message);
-    } else {
-      log('Failed to start server:', String(error));
-    }
+    log('Failed to start server:', error);
     process.exit(1);
   }
 })();
