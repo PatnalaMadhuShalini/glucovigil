@@ -87,7 +87,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     mutationFn: async () => {
       const res = await apiRequest("POST", "/api/logout");
       if (!res.ok) {
-        throw new Error("Logout failed");
+        const error = await res.json();
+        throw new Error(error.message || "Logout failed");
       }
     },
     onSuccess: () => {

@@ -154,7 +154,7 @@ export function setupAuthRoutes(router: Router) {
     })(req, res, next);
   });
 
-  router.post("/logout", (req, res) => {
+  router.post("/api/logout", (req, res) => {
     const sessionId = req.sessionID;
     req.logout((err) => {
       if (err) {
