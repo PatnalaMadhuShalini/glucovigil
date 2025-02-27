@@ -5,31 +5,27 @@ import { healthDataSchema, type HealthDataWithPrediction } from "@shared/schema"
 import { ZodError } from "zod";
 
 export async function registerRoutes(router: Router): Promise<void> {
-  // Basic health check endpoint
   router.get("/ping", (req, res) => {
-    console.log("Ping endpoint hit");
     res.json({ status: "ok", timestamp: new Date().toISOString() });
   });
 
   // Submit health data
   router.post("/health-data", async (req, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
     try {
-      console.log("Received health data request:", JSON.stringify(req.body, null, 2));
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      console.log("Received health data:", JSON.stringify(req.body, null, 2));
 
       // Validate the incoming data
       const validatedData = healthDataSchema.parse(req.body);
-      console.log("Validated data:", JSON.stringify(validatedData, null, 2));
 
       // Calculate risk and predictions
       const prediction = calculateDiabetesRisk(validatedData);
-      console.log("Calculated prediction:", JSON.stringify(prediction, null, 2));
 
       // Get existing achievements
-      const existingData = await storage.getHealthDataByUserId(req.user!.id);
+      const existingData = await storage.getHealthDataByUserId(req.user.id);
       const existingAchievements = existingData.length > 0 ? existingData[0].achievements || [] : [];
 
       // Check and award achievements
@@ -43,37 +39,36 @@ export async function registerRoutes(router: Router): Promise<void> {
         createdAt: new Date().toISOString()
       };
 
-      console.log("Attempting to save health data:", JSON.stringify(completeHealthData, null, 2));
+      console.log("Saving health data:", JSON.stringify(completeHealthData, null, 2));
 
       // Save to database
-      const savedData = await storage.createHealthData(req.user!.id, completeHealthData);
+      const savedData = await storage.createHealthData(req.user.id, completeHealthData);
       console.log("Health data saved successfully:", JSON.stringify(savedData, null, 2));
 
       res.status(201).json(savedData);
     } catch (err) {
       console.error("Error processing health data:", err);
       if (err instanceof ZodError) {
-        res.status(400).json({ 
+        return res.status(400).json({ 
           message: "Invalid data format",
           errors: err.errors 
         });
-      } else {
-        res.status(500).json({ 
-          message: "Failed to save health data",
-          error: err instanceof Error ? err.message : "Unknown error"
-        });
       }
+      res.status(500).json({ 
+        message: "Failed to save health data",
+        error: err instanceof Error ? err.message : "Unknown error"
+      });
     }
   });
 
   // Get user's health data
   router.get("/health-data", async (req, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
     try {
-      const data = await storage.getHealthDataByUserId(req.user!.id);
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const data = await storage.getHealthDataByUserId(req.user.id);
       res.json(data);
     } catch (err) {
       console.error("Error fetching health data:", err);
@@ -98,15 +93,15 @@ function calculateDiabetesRisk(data: any) {
   if (bmi > 30) riskScore += 2;
   else if (bmi > 25) riskScore += 1;
 
-  // Blood sugar
-  if (data.physiological.bloodSugar > 126) riskScore += 2;
-  else if (data.physiological.bloodSugar > 100) riskScore += 1;
-
   // Blood pressure
   if (data.physiological.bloodPressure.systolic > 140 ||
       data.physiological.bloodPressure.diastolic > 90) {
     riskScore += 1;
   }
+
+  // Blood sugar
+  if (data.physiological.bloodSugar > 126) riskScore += 2;
+  else if (data.physiological.bloodSugar > 100) riskScore += 1;
 
   // Lifestyle factors
   if (data.lifestyle.smoking) riskScore += 1;
@@ -123,10 +118,9 @@ function calculateDiabetesRisk(data: any) {
   };
 }
 
-function generateRecommendations(riskScore: number, data: any) {
+function generateRecommendations(riskScore: number, data: any): string[] {
   const recommendations: string[] = [];
 
-  // Diet recommendations
   if (data.lifestyle.diet === "poor" || data.lifestyle.diet === "fair") {
     recommendations.push(
       "Improve your diet by including more whole grains, lean proteins, and vegetables",
@@ -134,7 +128,6 @@ function generateRecommendations(riskScore: number, data: any) {
     );
   }
 
-  // Exercise recommendations
   if (data.lifestyle.exercise === "none" || data.lifestyle.exercise === "light") {
     recommendations.push(
       "Increase physical activity - aim for at least 150 minutes of moderate exercise per week",
@@ -142,7 +135,6 @@ function generateRecommendations(riskScore: number, data: any) {
     );
   }
 
-  // Blood sugar recommendations
   if (data.physiological.bloodSugar > 100) {
     recommendations.push(
       "Monitor your blood sugar levels regularly",
@@ -150,12 +142,10 @@ function generateRecommendations(riskScore: number, data: any) {
     );
   }
 
-  // Additional recommendations for high risk
   if (riskScore > 5) {
     recommendations.push(
       "Schedule regular check-ups with your healthcare provider",
-      "Consider getting a comprehensive diabetes screening",
-      "Look into diabetes prevention programs in your area"
+      "Consider getting a comprehensive diabetes screening"
     );
   }
 
@@ -174,7 +164,6 @@ function checkAndAwardAchievements(data: any, existingAchievements: Achievement[
   const achievements = [...existingAchievements];
   const now = new Date().toISOString();
 
-  // First Time Health Check Achievement
   if (!existingAchievements.length) {
     achievements.push({
       id: "first_check",
@@ -185,23 +174,9 @@ function checkAndAwardAchievements(data: any, existingAchievements: Achievement[
     });
   }
 
-  // Blood Sugar Control Achievement
-  if (data.physiological.bloodSugar >= 70 && data.physiological.bloodSugar <= 100) {
-    const hasAchievement = achievements.some(a => a.id === "blood_sugar_control");
-    if (!hasAchievement) {
-      achievements.push({
-        id: "blood_sugar_control",
-        name: "Blood Sugar Master",
-        description: "Maintained healthy blood sugar levels",
-        icon: "🎯",
-        unlockedAt: now
-      });
-    }
-  }
-
-  // Healthy BMI Achievement
   const heightInMeters = data.physiological.height / 100;
   const bmi = data.physiological.weight / (heightInMeters * heightInMeters);
+
   if (bmi >= 18.5 && bmi <= 24.9) {
     const hasAchievement = achievements.some(a => a.id === "healthy_bmi");
     if (!hasAchievement) {
@@ -210,20 +185,6 @@ function checkAndAwardAchievements(data: any, existingAchievements: Achievement[
         name: "BMI Champion",
         description: "Maintained a healthy BMI",
         icon: "⭐",
-        unlockedAt: now
-      });
-    }
-  }
-
-  // Lifestyle Achievement
-  if (data.lifestyle.exercise !== "none" && data.lifestyle.diet === "good") {
-    const hasAchievement = achievements.some(a => a.id === "healthy_lifestyle");
-    if (!hasAchievement) {
-      achievements.push({
-        id: "healthy_lifestyle",
-        name: "Wellness Warrior",
-        description: "Maintained a healthy lifestyle with regular exercise and good diet",
-        icon: "🏃",
         unlockedAt: now
       });
     }
