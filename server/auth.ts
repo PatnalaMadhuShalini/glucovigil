@@ -5,31 +5,16 @@ import session from "express-session";
 import { scrypt, randomBytes } from "crypto";
 import { promisify } from "util";
 import { storage } from "./storage";
-import { User as SelectUser, insertUserSchema } from "@shared/schema";
+import { insertUserSchema } from "@shared/schema";
 
 const scryptAsync = promisify(scrypt);
 
-// Simple hash function
-async function hashPassword(password: string) {
-  const salt = randomBytes(16).toString('hex');
-  const buf = await scryptAsync(password, salt, 64) as Buffer;
-  return `${buf.toString('hex')}.${salt}`;
-}
-
-// Simple verify function
-async function verifyPassword(password: string, stored: string) {
-  const [hash, salt] = stored.split('.');
-  const buf = await scryptAsync(password, salt, 64) as Buffer;
-  return hash === buf.toString('hex');
-}
-
 export function setupAuth(app: Express) {
   app.use(session({
-    secret: 'gluco-smart-secret',
+    secret: 'secret-key',
     resave: false,
     saveUninitialized: false,
     store: storage.sessionStore,
-    cookie: { maxAge: 24 * 60 * 60 * 1000 }
   }));
 
   app.use(passport.initialize());
@@ -38,10 +23,17 @@ export function setupAuth(app: Express) {
   passport.use(new LocalStrategy(async (username, password, done) => {
     try {
       const user = await storage.getUserByUsername(username);
-      if (!user) return done(null, false);
+      if (!user) {
+        return done(null, false);
+      }
 
-      const isValid = await verifyPassword(password, user.password);
-      if (!isValid) return done(null, false);
+      const [hash, salt] = user.password.split('.');
+      const buf = await scryptAsync(password, salt, 64) as Buffer;
+      const isValid = hash === buf.toString('hex');
+
+      if (!isValid) {
+        return done(null, false);
+      }
 
       return done(null, user);
     } catch (err) {
@@ -49,7 +41,7 @@ export function setupAuth(app: Express) {
     }
   }));
 
-  passport.serializeUser((user: SelectUser, done) => {
+  passport.serializeUser((user: any, done) => {
     done(null, user.id);
   });
 
@@ -64,15 +56,51 @@ export function setupAuth(app: Express) {
 }
 
 export function setupAuthRoutes(app: Express) {
+  app.post("/api/register", async (req, res) => {
+    try {
+      const data = insertUserSchema.parse(req.body);
+
+      const existingUser = await storage.getUserByUsername(data.username);
+      if (existingUser) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
+
+      const salt = randomBytes(16).toString('hex');
+      const buf = await scryptAsync(data.password, salt, 64) as Buffer;
+      const hashedPassword = `${buf.toString('hex')}.${salt}`;
+
+      const user = await storage.createUser({
+        ...data,
+        password: hashedPassword
+      });
+
+      return res.json({
+        id: user.id,
+        username: user.username,
+        fullName: user.fullName,
+        email: user.email,
+        phone: user.phone,
+        gender: user.gender,
+        place: user.place
+      });
+    } catch (error: any) {
+      return res.status(400).json({ message: error.message });
+    }
+  });
+
   app.post("/api/login", (req, res, next) => {
     passport.authenticate("local", (err: any, user: any) => {
-      if (err) return res.status(500).json({ message: "Server error" });
-      if (!user) return res.status(401).json({ message: "Invalid username or password" });
-
+      if (err) {
+        return res.status(500).json({ message: "Server error" });
+      }
+      if (!user) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
       req.login(user, (err) => {
-        if (err) return res.status(500).json({ message: "Login failed" });
-
-        res.json({
+        if (err) {
+          return res.status(500).json({ message: "Login failed" });
+        }
+        return res.json({
           id: user.id,
           username: user.username,
           fullName: user.fullName,
@@ -85,42 +113,6 @@ export function setupAuthRoutes(app: Express) {
     })(req, res, next);
   });
 
-  app.post("/api/register", async (req, res) => {
-    try {
-      const data = insertUserSchema.parse(req.body);
-
-      const existingUser = await storage.getUserByUsername(data.username);
-      if (existingUser) {
-        return res.status(400).json({ message: "Username already exists" });
-      }
-
-      const hashedPassword = await hashPassword(data.password);
-      const user = await storage.createUser({
-        ...data,
-        password: hashedPassword
-      });
-
-      req.login(user, (err) => {
-        if (err) return res.status(500).json({ message: "Registration successful but login failed" });
-
-        res.json({
-          id: user.id,
-          username: user.username,
-          fullName: user.fullName,
-          email: user.email,
-          phone: user.phone,
-          gender: user.gender,
-          place: user.place
-        });
-      });
-    } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).json({ message: error.message });
-      }
-      return res.status(500).json({ message: "Registration failed" });
-    }
-  });
-
   app.post("/api/logout", (req, res) => {
     req.logout(() => {
       res.sendStatus(200);
@@ -131,7 +123,7 @@ export function setupAuthRoutes(app: Express) {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "Not authenticated" });
     }
-    const user = req.user as SelectUser;
+    const user = req.user as any;
     res.json({
       id: user.id,
       username: user.username,

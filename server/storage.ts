@@ -35,7 +35,7 @@ export class DatabaseStorage implements IStorage {
     const [user] = await db
       .select()
       .from(users)
-      .where(eq(users.username, username.trim()))
+      .where(eq(users.username, username.toLowerCase().trim()))
       .limit(1);
     return user;
   }
@@ -45,7 +45,7 @@ export class DatabaseStorage implements IStorage {
       .insert(users)
       .values({
         ...user,
-        username: user.username.trim(),
+        username: user.username.toLowerCase().trim(),
         achievements: [],
         healthGoals: [],
         preferredLanguage: 'en',
