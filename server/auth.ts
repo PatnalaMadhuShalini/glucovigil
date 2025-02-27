@@ -32,7 +32,6 @@ export function setupAuth(app: Express) {
   passport.use(
     new LocalStrategy(async (username, password, done) => {
       try {
-        // Ensure username is trimmed
         username = username.trim();
         console.log('[Auth] Attempting login for:', username);
 
@@ -81,7 +80,6 @@ export function setupAuth(app: Express) {
 export function setupAuthRoutes(app: Express) {
   // Login route handler
   app.post("/api/login", (req, res, next) => {
-    // Trim username to handle whitespace issues
     if (req.body.username) {
       req.body.username = req.body.username.trim();
     }
