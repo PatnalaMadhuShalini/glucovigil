@@ -27,10 +27,12 @@ export class DatabaseStorage implements IStorage {
       const [user] = await db
         .select()
         .from(users)
-        .where(eq(users.id, id));
+        .where(eq(users.id, id))
+        .limit(1);
+
       return user;
     } catch (err) {
-      console.error('[Storage] Error getting user by ID:', err);
+      console.error('Database error getting user by ID:', err);
       throw err;
     }
   }
@@ -40,10 +42,12 @@ export class DatabaseStorage implements IStorage {
       const [user] = await db
         .select()
         .from(users)
-        .where(eq(users.username, username.trim()));
+        .where(eq(users.username, username.trim()))
+        .limit(1);
+
       return user;
     } catch (err) {
-      console.error('[Storage] Error getting user by username:', err);
+      console.error('Database error getting user by username:', err);
       throw err;
     }
   }
@@ -61,9 +65,10 @@ export class DatabaseStorage implements IStorage {
           verified: false
         })
         .returning();
+
       return newUser;
     } catch (err) {
-      console.error('[Storage] Error creating user:', err);
+      console.error('Database error creating user:', err);
       throw err;
     }
   }
