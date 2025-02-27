@@ -1,7 +1,9 @@
 import express from "express";
 import { type Request, Response, NextFunction } from "express";
-import { log } from "./vite";
+import { setupVite, serveStatic, log } from "./vite";
 import { createServer } from "http";
+import { setupAuth, setupAuthRoutes } from "./auth";
+import { registerRoutes } from "./routes";
 
 (async () => {
   try {
@@ -22,6 +24,21 @@ import { createServer } from "http";
     // Create HTTP server
     const server = createServer(app);
     log('HTTP server created');
+
+    // Setup Vite for development
+    if (process.env.NODE_ENV !== "production") {
+      await setupVite(app);
+      log('Vite middleware configured');
+    } else {
+      serveStatic(app);
+      log('Static serving configured');
+    }
+
+    // Setup auth and routes after Vite
+    setupAuth(app);
+    setupAuthRoutes(app);
+    registerRoutes(app);
+    log('Auth and routes configured');
 
     // Start server
     const PORT = process.env.PORT || 5000; 
