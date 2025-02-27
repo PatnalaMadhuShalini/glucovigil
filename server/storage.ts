@@ -24,9 +24,7 @@ export class DatabaseStorage implements IStorage {
 
   async getUser(id: number): Promise<User | undefined> {
     try {
-      console.log('[Storage] Getting user by ID:', id);
       const [user] = await db.select().from(users).where(eq(users.id, id));
-      console.log('[Storage] User found:', user ? 'yes' : 'no');
       return user;
     } catch (err) {
       console.error('[Storage] Error getting user by ID:', err);
@@ -36,14 +34,8 @@ export class DatabaseStorage implements IStorage {
 
   async getUserByUsername(username: string): Promise<User | undefined> {
     try {
-      // Ensure username is trimmed
       username = username.trim();
-      console.log('[Storage] Getting user by username:', username);
       const [user] = await db.select().from(users).where(eq(users.username, username));
-      console.log('[Storage] User found:', user ? 'yes' : 'no');
-      if (user) {
-        console.log('[Storage] Password hash format:', user.password.includes('.') ? 'valid' : 'invalid');
-      }
       return user;
     } catch (err) {
       console.error('[Storage] Error getting user by username:', err);
@@ -53,14 +45,17 @@ export class DatabaseStorage implements IStorage {
 
   async createUser(user: InsertUser): Promise<User> {
     try {
-      // Ensure username is trimmed before storing
-      const trimmedUser = {
-        ...user,
-        username: user.username.trim()
-      };
-      console.log('[Storage] Creating new user:', trimmedUser.username);
-      const [newUser] = await db.insert(users).values(trimmedUser).returning();
-      console.log('[Storage] User created successfully');
+      const [newUser] = await db
+        .insert(users)
+        .values({
+          ...user,
+          username: user.username.trim(),
+          achievements: [],
+          healthGoals: [],
+          preferredLanguage: 'en',
+          verified: false
+        })
+        .returning();
       return newUser;
     } catch (err) {
       console.error('[Storage] Error creating user:', err);

@@ -32,79 +32,62 @@ export function setupAuth(app: Express) {
   passport.use(
     new LocalStrategy(async (username, password, done) => {
       try {
-        username = username.trim();
-        console.log('[Auth] Attempting login for:', username);
-
         const user = await storage.getUserByUsername(username);
         if (!user) {
-          console.log('[Auth] User not found:', username);
           return done(null, false, { message: "Invalid username or password" });
         }
 
-        console.log('[Auth] Found user:', username);
         const isValid = await comparePasswords(password, user.password);
-        console.log('[Auth] Password validation result:', isValid);
-
         if (!isValid) {
           return done(null, false, { message: "Invalid username or password" });
         }
 
         return done(null, user);
       } catch (err) {
-        console.error('[Auth] Error during authentication:', err);
         return done(err);
       }
     })
   );
 
   passport.serializeUser((user: SelectUser, done) => {
-    console.log('[Auth] Serializing user:', user.id);
     done(null, user.id);
   });
 
   passport.deserializeUser(async (id: number, done) => {
     try {
-      console.log('[Auth] Deserializing user:', id);
       const user = await storage.getUser(id);
       if (!user) {
         return done(null, false);
       }
       done(null, user);
     } catch (err) {
-      console.error('[Auth] Error during deserialization:', err);
       done(err);
     }
   });
 }
 
 export function setupAuthRoutes(app: Express) {
-  // Login route handler
   app.post("/api/login", (req, res, next) => {
-    if (req.body.username) {
-      req.body.username = req.body.username.trim();
-    }
+    const { username, password } = req.body;
 
-    console.log('[Auth] Login request received:', req.body.username);
-
-    if (!req.body.username || !req.body.password) {
+    if (!username || !password) {
       return res.status(400).json({ message: "Username and password are required" });
     }
 
     passport.authenticate("local", (err: any, user: any, info: any) => {
       if (err) {
-        console.error('[Auth] Login error:', err);
-        return res.status(500).json({ message: "Internal server error" });
+        return res.status(500).json({ message: "Authentication error" });
       }
+
       if (!user) {
-        console.log('[Auth] Authentication failed:', info?.message);
         return res.status(401).json({ message: info?.message || "Authentication failed" });
       }
+
       req.login(user, (err) => {
         if (err) {
-          console.error('[Auth] Session creation error:', err);
-          return res.status(500).json({ message: "Error during login" });
+          return res.status(500).json({ message: "Session creation failed" });
         }
-        console.log('[Auth] Login successful for:', user.username);
+
         return res.json({
           id: user.id,
           username: user.username,
@@ -118,15 +101,8 @@ export function setupAuthRoutes(app: Express) {
     })(req, res, next);
   });
 
-  // Register route handler
   app.post("/api/register", async (req, res) => {
     try {
-      // Trim username before validation
-      if (req.body.username) {
-        req.body.username = req.body.username.trim();
-      }
-
-      console.log('[Auth] Registration request received');
       const validatedData = insertUserSchema.parse(req.body);
 
       const existingUser = await storage.getUserByUsername(validatedData.username);
@@ -142,9 +118,9 @@ export function setupAuthRoutes(app: Express) {
 
       req.login(user, (err) => {
         if (err) {
-          return res.status(500).json({ message: "Error during login after registration" });
+          return res.status(500).json({ message: "Login after registration failed" });
         }
-        console.log('[Auth] Registration successful for:', user.username);
+
         return res.status(201).json({
           id: user.id,
           username: user.username,
@@ -159,23 +135,22 @@ export function setupAuthRoutes(app: Express) {
       if (err instanceof Error) {
         return res.status(400).json({ message: err.message });
       }
-      res.status(500).json({ message: "Error during registration" });
+      res.status(500).json({ message: "Registration failed" });
     }
   });
 
-  // Logout route handler
-  app.post("/api/logout", (req, res, next) => {
+  app.post("/api/logout", (req, res) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
     req.logout((err) => {
       if (err) {
-        return res.status(500).json({ message: "Error during logout" });
+        return res.status(500).json({ message: "Logout failed" });
       }
       req.session.destroy((err) => {
         if (err) {
-          return res.status(500).json({ message: "Error clearing session" });
+          return res.status(500).json({ message: "Session destruction failed" });
         }
         res.clearCookie('gluco.sid');
         res.sendStatus(200);
@@ -183,7 +158,6 @@ export function setupAuthRoutes(app: Express) {
     });
   });
 
-  // Get current user route handler
   app.get("/api/user", (req, res) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "Not authenticated" });
@@ -202,31 +176,21 @@ export function setupAuthRoutes(app: Express) {
 }
 
 async function hashPassword(password: string): Promise<string> {
-  try {
-    const salt = randomBytes(16).toString("hex");
-    const buf = (await scryptAsync(password, salt, 64)) as Buffer;
-    const hashedPassword = `${buf.toString("hex")}.${salt}`;
-    console.log('[Auth] Password hashed successfully');
-    return hashedPassword;
-  } catch (err) {
-    console.error('[Auth] Error hashing password:', err);
-    throw new Error('Failed to hash password');
-  }
+  const salt = randomBytes(16).toString("hex");
+  const buf = (await scryptAsync(password, salt, 64)) as Buffer;
+  return `${buf.toString("hex")}.${salt}`;
 }
 
 async function comparePasswords(supplied: string, stored: string): Promise<boolean> {
   try {
-    console.log('[Auth] Comparing passwords');
     const [hashed, salt] = stored.split(".");
     if (!hashed || !salt) {
-      console.error('[Auth] Invalid stored password format');
       return false;
     }
     const hashedBuf = Buffer.from(hashed, "hex");
     const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
     return timingSafeEqual(hashedBuf, suppliedBuf);
   } catch (err) {
-    console.error('[Auth] Error comparing passwords:', err);
     return false;
   }
 }
