@@ -8,9 +8,9 @@ export default function HomePage() {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-600">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900">
       {/* Subtle animated gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-indigo-400/10 to-violet-400/10 animate-gradient-xy" />
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-indigo-500/10 to-violet-500/10 animate-gradient-xy" />
 
       {/* Refined grid pattern */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-20 [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
@@ -36,11 +36,11 @@ export default function HomePage() {
               Your intelligent companion for diabetes risk assessment and personalized health management. Take control of your health journey with AI-powered insights and expert recommendations.
             </p>
             <Link href={user ? "/dashboard" : "/auth"}>
-              <Button className="relative overflow-hidden group bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-10 py-4 rounded-lg text-lg font-medium shadow-md hover:shadow-lg transition-all duration-500">
+              <Button className="relative overflow-hidden group bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white px-10 py-4 rounded-lg text-lg font-medium shadow-md hover:shadow-lg transition-all duration-500">
                 <span className="relative z-10">
                   {user ? "Go to Dashboard" : "Get Started"}
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/30 to-violet-500/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-400/30 to-violet-400/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </Button>
             </Link>
           </div>
@@ -71,17 +71,17 @@ export default function HomePage() {
             ].map((feature, index) => (
               <Card 
                 key={index} 
-                className="group transform hover:scale-105 transition-all duration-300 bg-gradient-to-br from-white/50 to-white/40 backdrop-blur-md border border-white/30 overflow-hidden shadow-lg hover:shadow-xl"
+                className="group transform hover:scale-105 transition-all duration-300 bg-gradient-to-br from-white/60 to-white/50 backdrop-blur-md border border-white/30 overflow-hidden shadow-lg hover:shadow-xl"
               >
                 <CardContent className="p-6 relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <div className="bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg p-3 w-fit mb-4">
-                    <feature.icon className="h-8 w-8 text-blue-700 transform group-hover:scale-110 transition-transform duration-300" />
+                  <div className="bg-gradient-to-br from-blue-200 to-purple-200 rounded-lg p-3 w-fit mb-4">
+                    <feature.icon className="h-8 w-8 text-blue-800 transform group-hover:scale-110 transition-transform duration-300" />
                   </div>
-                  <h2 className="text-xl font-bold mb-3 text-blue-900 group-hover:text-blue-800 transition-colors">
+                  <h2 className="text-xl font-bold mb-3 text-blue-950 group-hover:text-blue-900 transition-colors">
                     {feature.title}
                   </h2>
-                  <p className="text-sm text-blue-800/90 leading-relaxed">
+                  <p className="text-sm text-blue-900/90 leading-relaxed">
                     {feature.description}
                   </p>
                 </CardContent>
