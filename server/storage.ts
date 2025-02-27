@@ -31,7 +31,7 @@ export class DatabaseStorage implements IStorage {
         .limit(1);
       return user;
     } catch (err) {
-      console.error("Database error getting user by ID:", err);
+      console.error("Error getting user by ID:", err);
       throw err;
     }
   }
@@ -45,7 +45,7 @@ export class DatabaseStorage implements IStorage {
         .limit(1);
       return user;
     } catch (err) {
-      console.error("Database error getting user by username:", err);
+      console.error("Error getting user by username:", err);
       throw err;
     }
   }
@@ -65,7 +65,7 @@ export class DatabaseStorage implements IStorage {
         .returning();
       return newUser;
     } catch (err) {
-      console.error("Database error creating user:", err);
+      console.error("Error creating user:", err);
       throw err;
     }
   }

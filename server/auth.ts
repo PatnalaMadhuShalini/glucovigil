@@ -21,7 +21,7 @@ export function setupAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Simplified passport strategy
+  // Simple passport strategy
   passport.use(new LocalStrategy(async (username, password, done) => {
     try {
       const user = await storage.getUserByUsername(username);
@@ -29,14 +29,14 @@ export function setupAuth(app: Express) {
         return done(null, false);
       }
 
-      // Basic password check
+      // Simple password check
       const [hash, salt] = user.password.split('.');
       const buf = await scryptAsync(password, salt, 64) as Buffer;
-      if (hash !== buf.toString('hex')) {
-        return done(null, false);
-      }
 
-      return done(null, user);
+      if (buf.toString('hex') === hash) {
+        return done(null, user);
+      }
+      return done(null, false);
     } catch (err) {
       return done(err);
     }
@@ -57,77 +57,20 @@ export function setupAuth(app: Express) {
 }
 
 export function setupAuthRoutes(app: Express) {
-  app.post("/api/register", async (req, res) => {
-    try {
-      // Basic validation
-      if (!req.body.username || !req.body.password) {
-        return res.status(400).json({ message: "Username and password required" });
-      }
-
-      const data = insertUserSchema.parse(req.body);
-
-      // Check for existing user
-      const existingUser = await storage.getUserByUsername(data.username);
-      if (existingUser) {
-        return res.status(400).json({ message: "Username already exists" });
-      }
-
-      // Create password hash
-      const salt = randomBytes(16).toString('hex');
-      const buf = await scryptAsync(data.password, salt, 64) as Buffer;
-      const hashedPassword = `${buf.toString('hex')}.${salt}`;
-
-      // Create user
-      const user = await storage.createUser({
-        ...data,
-        password: hashedPassword
-      });
-
-      // Auto login after registration
-      req.login(user, (err) => {
-        if (err) {
-          console.error("Login error after registration:", err);
-          return res.status(500).json({ message: "Registration successful but login failed" });
-        }
-
-        res.json({
-          id: user.id,
-          username: user.username,
-          fullName: user.fullName,
-          email: user.email,
-          phone: user.phone,
-          gender: user.gender,
-          place: user.place
-        });
-      });
-    } catch (error: any) {
-      console.error("Registration error:", error);
-      res.status(400).json({ message: error.message });
-    }
-  });
-
+  // Simple login route
   app.post("/api/login", (req, res, next) => {
-    // Basic validation
-    if (!req.body.username || !req.body.password) {
-      return res.status(400).json({ message: "Username and password required" });
-    }
-
     passport.authenticate("local", (err: any, user: any) => {
       if (err) {
-        console.error("Authentication error:", err);
         return res.status(500).json({ message: "Server error" });
       }
-
       if (!user) {
         return res.status(401).json({ message: "Invalid username or password" });
       }
 
       req.login(user, (err) => {
         if (err) {
-          console.error("Login error:", err);
           return res.status(500).json({ message: "Login failed" });
         }
-
         res.json({
           id: user.id,
           username: user.username,
@@ -141,17 +84,54 @@ export function setupAuthRoutes(app: Express) {
     })(req, res, next);
   });
 
+  // Simple register route
+  app.post("/api/register", async (req, res) => {
+    try {
+      const data = insertUserSchema.parse(req.body);
+
+      // Check for existing user
+      const existingUser = await storage.getUserByUsername(data.username);
+      if (existingUser) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
+
+      // Create hash
+      const salt = randomBytes(16).toString('hex');
+      const buf = await scryptAsync(data.password, salt, 64) as Buffer;
+      const hashedPassword = `${buf.toString('hex')}.${salt}`;
+
+      // Create user
+      const user = await storage.createUser({
+        ...data,
+        password: hashedPassword
+      });
+
+      res.json({
+        id: user.id,
+        username: user.username,
+        fullName: user.fullName,
+        email: user.email,
+        phone: user.phone,
+        gender: user.gender,
+        place: user.place
+      });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Simple logout route
   app.post("/api/logout", (req, res) => {
     req.logout(() => {
       res.sendStatus(200);
     });
   });
 
+  // Get user route
   app.get("/api/user", (req, res) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "Not authenticated" });
     }
-
     const user = req.user as any;
     res.json({
       id: user.id,
