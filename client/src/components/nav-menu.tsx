@@ -7,7 +7,8 @@ export default function NavMenu() {
   const { user, logoutMutation } = useAuth();
   const [location] = useLocation();
 
-  const handleLogout = async () => {
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault();
     try {
       await logoutMutation.mutateAsync();
     } catch (error) {

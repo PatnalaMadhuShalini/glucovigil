@@ -89,10 +89,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      const res = await apiRequest("POST", "/api/logout");
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.message || "Logout failed");
+      try {
+        const res = await fetch("/api/logout", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({ message: "Logout failed" }));
+          throw new Error(errorData.message || "Logout failed");
+        }
+      } catch (error) {
+        console.error("Logout error:", error);
+        throw new Error("Logout failed. Please try again.");
       }
     },
     onSuccess: () => {
