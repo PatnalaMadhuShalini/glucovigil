@@ -85,7 +85,7 @@ export default function AuthPage() {
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-20 [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
 
       <div className="flex-1 flex items-center justify-center p-8 relative">
-        <Card className="w-full max-w-md shadow-lg bg-white/10 backdrop-blur-md border border-white/20">
+        <Card className="w-full max-w-md shadow-lg bg-white backdrop-blur-md border border-white/20">
           <CardHeader>
             <div className="flex justify-center mb-6">
               <img
@@ -94,15 +94,15 @@ export default function AuthPage() {
                 className="h-32 w-auto"
               />
             </div>
-            <CardTitle className="text-2xl font-bold text-center text-white">
+            <CardTitle className="text-2xl font-bold text-center text-blue-900">
               Welcome to GlucoSmart
             </CardTitle>
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="grid w-full grid-cols-2 mb-4">
-                <TabsTrigger value="login" className="text-white">Login</TabsTrigger>
-                <TabsTrigger value="register" className="text-white">Register</TabsTrigger>
+                <TabsTrigger value="login" className="text-blue-900">Login</TabsTrigger>
+                <TabsTrigger value="register" className="text-blue-900">Register</TabsTrigger>
               </TabsList>
 
               <TabsContent value="login">
@@ -116,9 +116,9 @@ export default function AuthPage() {
                       name="username"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-white">Username</FormLabel>
+                          <FormLabel className="text-blue-900">Username</FormLabel>
                           <FormControl>
-                            <Input {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/50" />
+                            <Input {...field} className="bg-white border-blue-200 text-blue-900 placeholder:text-blue-400" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -129,9 +129,9 @@ export default function AuthPage() {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-white">Password</FormLabel>
+                          <FormLabel className="text-blue-900">Password</FormLabel>
                           <FormControl>
-                            <Input type="password" {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/50" />
+                            <Input type="password" {...field} className="bg-white border-blue-200 text-blue-900 placeholder:text-blue-400" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -166,9 +166,9 @@ export default function AuthPage() {
                       name="username"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-white">Username</FormLabel>
+                          <FormLabel className="text-blue-900">Username</FormLabel>
                           <FormControl>
-                            <Input {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/50" />
+                            <Input {...field} className="bg-white border-blue-200 text-blue-900 placeholder:text-blue-400" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -179,9 +179,9 @@ export default function AuthPage() {
                       name="fullName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-white">Full Name</FormLabel>
+                          <FormLabel className="text-blue-900">Full Name</FormLabel>
                           <FormControl>
-                            <Input {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/50" />
+                            <Input {...field} className="bg-white border-blue-200 text-blue-900 placeholder:text-blue-400" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -192,9 +192,9 @@ export default function AuthPage() {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-white">Email</FormLabel>
+                          <FormLabel className="text-blue-900">Email</FormLabel>
                           <FormControl>
-                            <Input type="email" {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/50" />
+                            <Input type="email" {...field} className="bg-white border-blue-200 text-blue-900 placeholder:text-blue-400" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -205,9 +205,9 @@ export default function AuthPage() {
                       name="phone"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-white">Phone Number</FormLabel>
+                          <FormLabel className="text-blue-900">Phone Number</FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder="+91XXXXXXXXXX" className="bg-white/20 border-white/30 text-white placeholder:text-white/50" />
+                            <Input {...field} placeholder="+91XXXXXXXXXX" className="bg-white border-blue-200 text-blue-900 placeholder:text-blue-400" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -218,20 +218,20 @@ export default function AuthPage() {
                       name="gender"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-white">Gender</FormLabel>
+                          <FormLabel className="text-blue-900">Gender</FormLabel>
                           <Select
                             onValueChange={field.onChange}
                             defaultValue={field.value}
                           >
                             <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select gender" className="text-white" />
+                              <SelectTrigger className="bg-white border-blue-200 text-blue-900">
+                                <SelectValue placeholder="Select gender" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="male" className="text-white">Male</SelectItem>
-                              <SelectItem value="female" className="text-white">Female</SelectItem>
-                              <SelectItem value="other" className="text-white">Other</SelectItem>
+                              <SelectItem value="male">Male</SelectItem>
+                              <SelectItem value="female">Female</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -243,9 +243,9 @@ export default function AuthPage() {
                       name="place"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-white">Place</FormLabel>
+                          <FormLabel className="text-blue-900">Place</FormLabel>
                           <FormControl>
-                            <Input {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/50" />
+                            <Input {...field} className="bg-white border-blue-200 text-blue-900 placeholder:text-blue-400" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -256,9 +256,9 @@ export default function AuthPage() {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-white">Password</FormLabel>
+                          <FormLabel className="text-blue-900">Password</FormLabel>
                           <FormControl>
-                            <Input type="password" {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/50" />
+                            <Input type="password" {...field} className="bg-white border-blue-200 text-blue-900 placeholder:text-blue-400" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
