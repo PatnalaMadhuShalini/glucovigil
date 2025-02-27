@@ -18,28 +18,33 @@ export class DatabaseStorage implements IStorage {
 
   constructor() {
     this.sessionStore = new MemoryStore({
-      checkPeriod: 86400000 // Prune expired entries every 24h
+      checkPeriod: 86400000 // 24 hours
     });
   }
 
   async getUser(id: number): Promise<User | undefined> {
     try {
-      const [user] = await db.select().from(users).where(eq(users.id, id));
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, id));
       return user;
     } catch (err) {
       console.error('[Storage] Error getting user by ID:', err);
-      return undefined;
+      throw err;
     }
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
     try {
-      username = username.trim();
-      const [user] = await db.select().from(users).where(eq(users.username, username));
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(eq(users.username, username.trim()));
       return user;
     } catch (err) {
       console.error('[Storage] Error getting user by username:', err);
-      return undefined;
+      throw err;
     }
   }
 
