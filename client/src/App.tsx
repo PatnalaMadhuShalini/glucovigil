@@ -10,15 +10,16 @@ import ProfilePage from "@/pages/profile-page";
 import NotFound from "@/pages/not-found";
 import { ProtectedRoute } from "./lib/protected-route";
 import ChatAssistant from "@/components/chat-assistant";
+import NavMenu from "@/components/nav-menu";
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={HomePage} />
       <Route path="/auth" component={AuthPage} />
       <ProtectedRoute path="/dashboard" component={Dashboard} />
       <ProtectedRoute path="/profile" component={ProfilePage} />
-      <Route path="*" component={NotFound} />
+      <Route path="/" component={HomePage} />
+      <Route component={NotFound} />
     </Switch>
   );
 }
@@ -27,6 +28,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        <NavMenu />
         <Router />
         <ChatAssistant />
         <Toaster />
