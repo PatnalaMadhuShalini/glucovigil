@@ -16,7 +16,11 @@ import { registerRoutes } from "./routes";
     app.use(express.urlencoded({ extended: false }));
     log('Basic middleware configured');
 
-    // Setup core auth (session, passport)
+    // API routes first to ensure they're not intercepted by Vite
+    const apiRouter = express.Router();
+    app.use('/api', apiRouter);
+
+    // Setup core auth
     setupAuth(app);
     log('Auth setup completed');
 
@@ -24,9 +28,7 @@ import { registerRoutes } from "./routes";
     setupAuthRoutes(app);
     log('Auth routes configured');
 
-    // API routes
-    const apiRouter = express.Router();
-    app.use('/api', apiRouter);
+    // Register other API routes
     registerRoutes(apiRouter);
     log('API routes registered');
 
@@ -37,7 +39,7 @@ import { registerRoutes } from "./routes";
     log('Test route added');
 
     // API error handling
-    app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+    app.use('/api', (err: any, _req: Request, res: Response, _next: NextFunction) => {
       log('API Error:', err.message);
       const status = err.status || err.statusCode || 500;
       const message = err.message || "Internal Server Error";
@@ -48,10 +50,10 @@ import { registerRoutes } from "./routes";
     const server = createServer(app);
     log('HTTP server created');
 
-    // Setup Vite in development
-    if (app.get("env") === "development") {
+    // Setup Vite or static serving last
+    if (process.env.NODE_ENV !== "production") {
       log('Setting up Vite development server...');
-      await setupVite(app, server);
+      await setupVite(app);
       log('Vite setup completed');
     } else {
       log('Setting up static file serving...');
@@ -60,24 +62,29 @@ import { registerRoutes } from "./routes";
     }
 
     // Start server
-    const PORT = 5000;
+    const PORT = process.env.PORT || 5000;
     log(`Attempting to start server on port ${PORT}...`);
 
     await new Promise<void>((resolve, reject) => {
-      server.listen(PORT, '0.0.0.0', () => {
-        log(`Server listening on port ${PORT}`);
-        resolve();
-      });
+      try {
+        server.listen(PORT, '0.0.0.0', () => {
+          log(`Server listening on port ${PORT}`);
+          resolve();
+        });
 
-      server.on('error', (err) => {
-        if ((err as any).code === 'EADDRINUSE') {
-          log(`Port ${PORT} is already in use`);
-          reject(new Error(`Port ${PORT} is already in use`));
-        } else {
-          log('Server error:', err);
-          reject(err);
-        }
-      });
+        server.on('error', (err) => {
+          if ((err as any).code === 'EADDRINUSE') {
+            log(`Port ${PORT} is already in use`);
+            reject(new Error(`Port ${PORT} is already in use`));
+          } else {
+            log('Server error:', err);
+            reject(err);
+          }
+        });
+      } catch (err) {
+        log('Error during server startup:', err);
+        reject(err);
+      }
     });
 
     log(`Server running at http://0.0.0.0:${PORT}`);
