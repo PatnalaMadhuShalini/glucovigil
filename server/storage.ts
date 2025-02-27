@@ -23,36 +23,51 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, id))
-      .limit(1);
-    return user;
+    try {
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, id))
+        .limit(1);
+      return user;
+    } catch (err) {
+      console.error("Database error getting user by ID:", err);
+      throw err;
+    }
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db
-      .select()
-      .from(users)
-      .where(eq(users.username, username.toLowerCase().trim()))
-      .limit(1);
-    return user;
+    try {
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(eq(users.username, username.toLowerCase().trim()))
+        .limit(1);
+      return user;
+    } catch (err) {
+      console.error("Database error getting user by username:", err);
+      throw err;
+    }
   }
 
   async createUser(user: InsertUser): Promise<User> {
-    const [newUser] = await db
-      .insert(users)
-      .values({
-        ...user,
-        username: user.username.toLowerCase().trim(),
-        achievements: [],
-        healthGoals: [],
-        preferredLanguage: 'en',
-        verified: false
-      })
-      .returning();
-    return newUser;
+    try {
+      const [newUser] = await db
+        .insert(users)
+        .values({
+          ...user,
+          username: user.username.toLowerCase().trim(),
+          achievements: [],
+          healthGoals: [],
+          preferredLanguage: 'en',
+          verified: false
+        })
+        .returning();
+      return newUser;
+    } catch (err) {
+      console.error("Database error creating user:", err);
+      throw err;
+    }
   }
 }
 
