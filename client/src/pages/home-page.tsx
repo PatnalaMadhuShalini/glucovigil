@@ -8,7 +8,7 @@ export default function HomePage() {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-700 via-indigo-700 to-violet-700">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-600">
       {/* Subtle animated gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-indigo-400/10 to-violet-400/10 animate-gradient-xy" />
 
