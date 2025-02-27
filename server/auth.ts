@@ -32,48 +32,37 @@ export function setupAuth(app: Express) {
   passport.use(
     new LocalStrategy(async (username, password, done) => {
       try {
-        console.log('Attempting login for user:', username);
         const user = await storage.getUserByUsername(username);
 
         if (!user) {
-          console.log('User not found:', username);
           return done(null, false, { message: "Invalid username or password" });
         }
 
-        console.log('Comparing passwords for user:', username);
         const isValid = await comparePasswords(password, user.password);
-        console.log('Password comparison result:', isValid);
 
         if (!isValid) {
-          console.log('Invalid password for user:', username);
           return done(null, false, { message: "Invalid username or password" });
         }
 
-        console.log('Login successful for user:', username);
         return done(null, user);
       } catch (err) {
-        console.error('Authentication error:', err);
         return done(err);
       }
     })
   );
 
-  passport.serializeUser((user, done) => {
-    console.log('Serializing user:', user.id);
+  passport.serializeUser((user: SelectUser, done) => {
     done(null, user.id);
   });
 
   passport.deserializeUser(async (id: number, done) => {
     try {
-      console.log('Deserializing user:', id);
       const user = await storage.getUser(id);
       if (!user) {
-        console.warn(`User ${id} not found during deserialization`);
         return done(null, false);
       }
       done(null, user);
     } catch (err) {
-      console.error('Deserialization error:', err);
       done(err);
     }
   });
@@ -82,13 +71,7 @@ export function setupAuth(app: Express) {
 export function setupAuthRoutes(app: Express) {
   // Login route handler
   app.post("/api/login", (req, res, next) => {
-    console.log('Login request received:', { 
-      username: req.body.username,
-      hasPassword: !!req.body.password 
-    });
-
     if (!req.body.username || !req.body.password) {
-      console.log('Missing credentials in request');
       return res.status(400).json({ message: "Username and password are required" });
     }
 
@@ -98,7 +81,6 @@ export function setupAuthRoutes(app: Express) {
         return res.status(500).json({ message: "Internal server error" });
       }
       if (!user) {
-        console.log('Authentication failed:', info?.message);
         return res.status(401).json({ message: info?.message || "Authentication failed" });
       }
       req.login(user, (err) => {
@@ -106,7 +88,6 @@ export function setupAuthRoutes(app: Express) {
           console.error("Session creation error:", err);
           return res.status(500).json({ message: "Error during login" });
         }
-        console.log('Login successful for user:', user.username);
         return res.json({
           id: user.id,
           username: user.username,
@@ -123,12 +104,10 @@ export function setupAuthRoutes(app: Express) {
   // Register route handler
   app.post("/api/register", async (req, res) => {
     try {
-      console.log('Registration request received');
       const validatedData = insertUserSchema.parse(req.body);
 
       const existingUser = await storage.getUserByUsername(validatedData.username);
       if (existingUser) {
-        console.log('Username already exists:', validatedData.username);
         return res.status(400).json({ message: "Username already exists" });
       }
 
@@ -138,10 +117,8 @@ export function setupAuthRoutes(app: Express) {
         password: hashedPassword,
       });
 
-      console.log('User registered successfully:', user.username);
       req.login(user, (err) => {
         if (err) {
-          console.error("Login error after registration:", err);
           return res.status(500).json({ message: "Error during login after registration" });
         }
         return res.status(201).json({
@@ -155,7 +132,6 @@ export function setupAuthRoutes(app: Express) {
         });
       });
     } catch (err) {
-      console.error("Registration error:", err);
       if (err instanceof Error) {
         return res.status(400).json({ message: err.message });
       }
@@ -169,24 +145,15 @@ export function setupAuthRoutes(app: Express) {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
-    console.log('Logout request received');
     req.logout((err) => {
       if (err) {
-        console.error("Logout error:", err);
         return res.status(500).json({ message: "Error during logout" });
       }
       req.session.destroy((err) => {
         if (err) {
-          console.error("Session destruction error:", err);
           return res.status(500).json({ message: "Error clearing session" });
         }
-        res.clearCookie('gluco.sid', {
-          path: '/',
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: 'lax'
-        });
-        console.log('Logout successful');
+        res.clearCookie('gluco.sid');
         res.sendStatus(200);
       });
     });
@@ -194,13 +161,10 @@ export function setupAuthRoutes(app: Express) {
 
   // Get current user route handler
   app.get("/api/user", (req, res) => {
-    console.log('User info request received');
     if (!req.isAuthenticated()) {
-      console.log('User not authenticated');
       return res.status(401).json({ message: "Not authenticated" });
     }
     const user = req.user as SelectUser;
-    console.log('Returning user info for:', user.username);
     res.json({
       id: user.id,
       username: user.username,
@@ -224,10 +188,9 @@ async function comparePasswords(supplied: string, stored: string) {
     const [hashed, salt] = stored.split(".");
     const hashedBuf = Buffer.from(hashed, "hex");
     const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
-
     return timingSafeEqual(hashedBuf, suppliedBuf);
   } catch (err) {
-    console.error('Error in comparePasswords:', err);
+    console.error('Error comparing passwords:', err);
     return false;
   }
 }
