@@ -19,67 +19,28 @@ setupAuth(app);
 // Mount API router
 app.use('/api', apiRouter);
 
+// Setup auth routes directly on the app since they need session access
+setupAuthRoutes(app);
+
+// Register API routes
+registerRoutes(apiRouter);
+
 // Test route to verify Express is working
 app.get('/test', (req, res) => {
   res.json({ status: 'ok', message: 'Express server is running' });
 });
 
-// Ensure JSON content-type for API routes
-apiRouter.use((req, res, next) => {
-  res.setHeader('Content-Type', 'application/json');
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  next();
-});
-
-// Enhanced logging middleware for API routes
-apiRouter.use((req, res, next) => {
-  const start = Date.now();
-  const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
-
-  const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
-  };
-
-  res.on("finish", () => {
-    const duration = Date.now() - start;
-    let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-    if (capturedJsonResponse) {
-      logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-    }
-    if (logLine.length > 80) {
-      logLine = logLine.slice(0, 79) + "…";
-    }
-    log(logLine);
-  });
-  next();
-});
-
 // API error handling middleware
-apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   const status = err.status || err.statusCode || 500;
   const message = err.message || "Internal Server Error";
   log('API Error:', err.message);
   res.status(status).json({ message });
 });
 
-
 (async () => {
   try {
     log('Starting server initialization...');
-
-    // Setup auth routes and register API routes on the router
-    setupAuthRoutes(apiRouter);
-    await registerRoutes(apiRouter);
 
     // Create HTTP server
     const server = createServer(app);
@@ -138,14 +99,6 @@ apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       log('Setting up static file serving...');
       serveStatic(app);
     }
-
-    // Generic error handler comes last
-    app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-      const status = err.status || err.statusCode || 500;
-      const message = err.message || "Internal Server Error";
-      log('Error:', err.message);
-      res.status(status).json({ message });
-    });
 
     log(`Server running at http://0.0.0.0:${port}`);
   } catch (error) {
