@@ -110,6 +110,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
 
   const onSubmit = (formData: HealthData) => {
     try {
+      console.log("Submitting form data:", formData);
       const transformedData: HealthData = {
         demographics: {
           age: Number(formData.demographics.age),
@@ -135,10 +136,16 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
         }
       };
 
+      console.log("Transformed data:", transformedData);
       mutation.mutate(transformedData);
     } catch (error) {
       console.error("Form submission error:", error);
-      setError("Failed to process form data");
+      setError(error instanceof Error ? error.message : "Failed to process form data");
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to process form data",
+        variant: "destructive",
+      });
     }
   };
 
