@@ -30,7 +30,7 @@ export default function NavMenu() {
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <Link href="/">
-              <a className="flex items-center group">
+              <span className="flex items-center group cursor-pointer"> {/* Replaced <a> with <span> */}
                 <img 
                   src="/logo.svg"
                   alt="GlucoSmart Logo" 
@@ -39,34 +39,34 @@ export default function NavMenu() {
                 <span className="ml-2 text-lg font-medium text-white/90">
                   GlucoSmart
                 </span>
-              </a>
+              </span>
             </Link>
 
             {user && (
               <div className="ml-8 flex items-center space-x-2">
                 <Link href="/">
-                  <a className={linkClass('/')} title="Home">
+                  <span className={linkClass('/')} title="Home"> {/* Replaced <a> with <span> */}
                     <span className="flex items-center gap-2">
                       <Home className="h-4 w-4" />
                       Home
                     </span>
-                  </a>
+                  </span>
                 </Link>
                 <Link href="/dashboard">
-                  <a className={linkClass('/dashboard')} title="Dashboard">
+                  <span className={linkClass('/dashboard')} title="Dashboard"> {/* Replaced <a> with <span> */}
                     <span className="flex items-center gap-2">
                       <LayoutDashboard className="h-4 w-4" />
                       Dashboard
                     </span>
-                  </a>
+                  </span>
                 </Link>
                 <Link href="/profile">
-                  <a className={linkClass('/profile')} title="Profile">
+                  <span className={linkClass('/profile')} title="Profile"> {/* Replaced <a> with <span> */}
                     <span className="flex items-center gap-2">
                       <User className="h-4 w-4" />
                       Profile
                     </span>
-                  </a>
+                  </span>
                 </Link>
               </div>
             )}
@@ -85,9 +85,9 @@ export default function NavMenu() {
               </Button>
             ) : (
               <Link href="/auth">
-                <Button className="bg-gradient-to-r from-blue-500/90 to-indigo-600/90 hover:from-blue-600 hover:to-indigo-700 text-white px-6 py-2">
+                <span className="bg-gradient-to-r from-blue-500/90 to-indigo-600/90 hover:from-blue-600 hover:to-indigo-700 text-white px-6 py-2 cursor-pointer"> {/* Replaced <a> with <span> */}
                   Login
-                </Button>
+                </span>
               </Link>
             )}
           </div>
