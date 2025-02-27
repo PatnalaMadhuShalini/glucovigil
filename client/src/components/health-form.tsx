@@ -83,12 +83,26 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
   const mutation = useMutation({
     mutationFn: async (data: HealthData) => {
       setError(null);
-      const res = await apiRequest("POST", "/api/health-data", data);
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Failed to submit health data");
+      try {
+        const res = await fetch("/api/health-data", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(data),
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.message || "Failed to submit health data");
+        }
+
+        return res.json();
+      } catch (err) {
+        console.error("Mutation error:", err);
+        throw err;
       }
-      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/health-data"] });

@@ -8,9 +8,9 @@ export default function HomePage() {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-900 via-indigo-900 to-violet-900">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-sky-50 via-sky-100 to-sky-200"> {/*Brighter background*/}
       {/* Subtle animated gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-indigo-500/10 to-violet-500/10 animate-gradient-xy" />
+      <div className="absolute inset-0 bg-gradient-to-br from-sky-500/10 via-sky-600/10 to-sky-700/10 animate-gradient-xy" />
 
       {/* Refined grid pattern */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-30 [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
@@ -24,13 +24,13 @@ export default function HomePage() {
                 alt="GlucoSmart Logo" 
                 className="h-28 w-auto drop-shadow-lg animate-float-gentle"
               />
-              <Sparkles className="absolute -top-4 -right-4 h-6 w-6 text-blue-200/80 animate-pulse-subtle" />
+              <Sparkles className="absolute -top-4 -right-4 h-6 w-6 text-sky-700 animate-pulse-subtle" /> {/*Darker icon*/}
             </div>
           </div>
-          <h1 className="text-5xl font-medium mb-6 bg-gradient-to-r from-blue-100 via-indigo-200 to-violet-100 bg-clip-text text-transparent drop-shadow">
+          <h1 className="text-5xl font-medium mb-6 bg-gradient-to-r from-sky-500 via-indigo-200 to-violet-100 bg-clip-text text-transparent drop-shadow"> {/*Brighter gradient*/}
             Welcome to GlucoSmart
           </h1>
-          <p className="text-xl font-light text-blue-100/80 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl font-light text-gray-800 max-w-3xl mx-auto leading-relaxed"> {/*Improved contrast*/}
             Your intelligent companion for diabetes risk assessment and personalized health management
           </p>
         </div>
@@ -58,12 +58,12 @@ export default function HomePage() {
               description: "Smart health companion powered by AI"
             }
           ].map((feature, index) => (
-            <Card key={index} className="group transform hover:scale-102 transition-all duration-500 bg-white/10 backdrop-blur-sm border border-white/10 overflow-hidden shadow-lg">
+            <Card key={index} className="group transform hover:scale-102 transition-all duration-500 bg-white/10 backdrop-blur-sm border border-gray-200 overflow-hidden shadow-lg"> {/*Brighter card*/}
               <CardContent className="p-6 relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/30 to-violet-500/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <feature.icon className="h-12 w-12 text-blue-200 mb-4 transform group-hover:scale-105 transition-transform duration-500" />
-                <h2 className="text-xl font-medium mb-2 text-white/90">{feature.title}</h2>
-                <p className="text-sm text-blue-100/80 leading-relaxed">
+                <div className="absolute inset-0 bg-gradient-to-br from-sky-500/30 to-sky-600/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" /> {/*Brighter gradient*/}
+                <feature.icon className="h-12 w-12 text-sky-700 mb-4 transform group-hover:scale-105 transition-transform duration-500" /> {/*Darker icon*/}
+                <h2 className="text-xl font-medium mb-2 text-gray-900">{feature.title}</h2> {/*Improved contrast*/}
+                <p className="text-sm text-gray-700 leading-relaxed"> {/*Improved contrast*/}
                   {feature.description}
                 </p>
               </CardContent>
@@ -73,48 +73,21 @@ export default function HomePage() {
 
         <div className="text-center">
           <Link href={user ? "/dashboard" : "/auth"}>
-            <Button className="relative overflow-hidden group bg-gradient-to-r from-blue-600/90 to-indigo-600/90 hover:from-blue-600 hover:to-indigo-600 text-white/90 px-10 py-4 rounded-lg text-lg font-normal shadow-md hover:shadow-lg transition-all duration-500">
+            <Button className="relative overflow-hidden group bg-gradient-to-r from-sky-600/90 to-sky-700/90 hover:from-sky-700 hover:to-sky-800 text-gray-100 px-10 py-4 rounded-lg text-lg font-normal shadow-md hover:shadow-lg transition-all duration-500"> {/*Brighter button*/}
               <span className="relative z-10">
                 {user ? "Go to Dashboard" : "Get Started"}
               </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/30 to-violet-500/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-r from-sky-500/30 to-sky-600/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="absolute inset-0 bg-[url('/sparkles.svg')] bg-center opacity-0 group-hover:opacity-10 transition-opacity duration-500" />
             </Button>
           </Link>
         </div>
 
-        <footer className="mt-24 py-8 border-t border-white/5">
-          <div className="text-center text-blue-100/60">
+        <footer className="mt-24 py-8 border-t border-gray-200"> {/*Brighter border*/}
+          <div className="text-center text-gray-700"> {/*Improved contrast*/}
             <p className="font-normal text-base">GlucoSmart Health Analytics</p>
             <p className="mt-2 text-sm font-light">Your trusted partner in health management</p>
             <p className="mt-1 text-sm font-medium">Created by PDMS</p>
-            <div className="mt-6 grid md:grid-cols-3 gap-6 max-w-3xl mx-auto">
-              <div className="bg-white/5 backdrop-blur-sm p-4 rounded-lg border border-white/10">
-                <h3 className="text-lg font-medium text-blue-200 mb-2">About</h3>
-                <p className="text-sm text-blue-100/70">
-                  GlucoSmart was founded in 2023 to revolutionize diabetes management through AI-powered health analytics and personalized recommendations.
-                </p>
-              </div>
-              <div className="bg-white/5 backdrop-blur-sm p-4 rounded-lg border border-white/10">
-                <h3 className="text-lg font-medium text-blue-200 mb-2">Features</h3>
-                <p className="text-sm text-blue-100/70">
-                  Advanced risk prediction, personalized health recommendations, medical record integration, and comprehensive health monitoring.
-                </p>
-              </div>
-              <div className="bg-white/5 backdrop-blur-sm p-4 rounded-lg border border-white/10">
-                <h3 className="text-lg font-medium text-blue-200 mb-2">Contact</h3>
-                <p className="text-sm text-blue-100/70">
-                  Email: support@glucosmart.com<br/>
-                  Phone: (555) 123-4567<br/>
-                  Location: Health Innovation Center
-                </p>
-              </div>
-            </div>
-            <div className="mt-6 flex justify-center space-x-8">
-              <a href="#" className="text-blue-200/80 hover:text-blue-200 transition-colors duration-300 text-sm">About</a>
-              <a href="#" className="text-blue-200/80 hover:text-blue-200 transition-colors duration-300 text-sm">Features</a>
-              <a href="#" className="text-blue-200/80 hover:text-blue-200 transition-colors duration-300 text-sm">Contact</a>
-            </div>
           </div>
         </footer>
       </div>

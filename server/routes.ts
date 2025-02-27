@@ -81,7 +81,7 @@ export async function registerRoutes(router: Router): Promise<void> {
       res.status(201).json(result);
     } catch (err) {
       if (err instanceof ZodError) {
-        res.status(400).json(err.errors);
+        res.status(400).json({ message: "Invalid data format", errors: err.errors });
       } else {
         res.status(500).json({ message: "Internal server error" });
       }
