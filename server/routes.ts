@@ -73,14 +73,6 @@ export async function registerRoutes(router: Router): Promise<void> {
       });
     }
   });
-
-  // Basic protected endpoint to test auth
-  router.get("/protected", (req, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-    res.json({ message: "You have access to protected route" });
-  });
 }
 
 function calculateDiabetesRisk(data: any) {
@@ -145,16 +137,6 @@ function generateRecommendations(riskScore: number, data: any) {
     recommendations.push(
       "Monitor your blood sugar levels regularly",
       "Consider consulting with a healthcare provider about glucose management"
-    );
-  }
-
-  // BMI-based recommendations
-  const heightInMeters = data.physiological.height / 100;
-  const bmi = data.physiological.weight / (heightInMeters * heightInMeters);
-  if (bmi > 25) {
-    recommendations.push(
-      "Work on achieving a healthy weight through diet and exercise",
-      "Consider consulting with a nutritionist for personalized meal planning"
     );
   }
 

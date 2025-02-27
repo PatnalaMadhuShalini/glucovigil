@@ -1,4 +1,4 @@
-import { users, type User, type InsertUser } from "@shared/schema";
+import { users, healthData, type User, type InsertUser, type HealthData } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 import session from "express-session";
@@ -11,6 +11,9 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   sessionStore: session.Store;
+  // Add health data operations
+  createHealthData(userId: number, data: HealthData): Promise<HealthData>;
+  getHealthDataByUserId(userId: number): Promise<HealthData[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -72,6 +75,53 @@ export class DatabaseStorage implements IStorage {
     } catch (err) {
       console.error('Error creating user:', err);
       throw new Error('Failed to create user');
+    }
+  }
+
+  // Add health data methods
+  async createHealthData(userId: number, data: HealthData): Promise<HealthData> {
+    try {
+      console.log('Creating health data for user:', userId, data);
+      const [newHealthData] = await db
+        .insert(healthData)
+        .values({
+          userId,
+          demographics: data.demographics,
+          physiological: data.physiological,
+          lifestyle: data.lifestyle,
+          prediction: data.prediction || null,
+          createdAt: new Date().toISOString(),
+          nutritionPlan: null,
+          exercisePlan: null,
+          achievements: [],
+          medicalRecords: null
+        })
+        .returning();
+
+      if (!newHealthData) {
+        throw new Error('Health data creation failed');
+      }
+
+      return newHealthData as HealthData;
+    } catch (err) {
+      console.error('Error creating health data:', err);
+      throw new Error('Failed to create health data');
+    }
+  }
+
+  async getHealthDataByUserId(userId: number): Promise<HealthData[]> {
+    try {
+      console.log('Fetching health data for user:', userId);
+      const userHealthData = await db
+        .select()
+        .from(healthData)
+        .where(eq(healthData.userId, userId))
+        .orderBy(healthData.createdAt);
+
+      return userHealthData as HealthData[];
+    } catch (err) {
+      console.error('Error getting health data:', err);
+      throw new Error('Failed to get health data');
     }
   }
 }
