@@ -7,26 +7,7 @@ import { promisify } from "util";
 import { storage } from "./storage";
 import { User as SelectUser, insertUserSchema } from "@shared/schema";
 
-declare global {
-  namespace Express {
-    interface User extends SelectUser {}
-  }
-}
-
 const scryptAsync = promisify(scrypt);
-
-async function hashPassword(password: string) {
-  const salt = randomBytes(16).toString("hex");
-  const buf = (await scryptAsync(password, salt, 64)) as Buffer;
-  return `${buf.toString("hex")}.${salt}`;
-}
-
-async function comparePasswords(supplied: string, stored: string) {
-  const [hashed, salt] = stored.split(".");
-  const hashedBuf = Buffer.from(hashed, "hex");
-  const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
-  return timingSafeEqual(hashedBuf, suppliedBuf);
-}
 
 export function setupAuth(app: Express) {
   const sessionSettings: session.SessionOptions = {
@@ -38,10 +19,9 @@ export function setupAuth(app: Express) {
       secure: process.env.NODE_ENV === "production",
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
       httpOnly: true,
-      sameSite: 'lax',
-      path: '/'
+      sameSite: 'lax'
     },
-    name: 'gluco.sid' // Custom session ID name
+    name: 'gluco.sid'
   };
 
   app.set("trust proxy", 1);
@@ -52,30 +32,40 @@ export function setupAuth(app: Express) {
   passport.use(
     new LocalStrategy(async (username, password, done) => {
       try {
+        console.log('Attempting login for user:', username);
         const user = await storage.getUserByUsername(username);
+
         if (!user) {
+          console.log('User not found:', username);
           return done(null, false, { message: "Invalid username or password" });
         }
 
+        console.log('Comparing passwords for user:', username);
         const isValid = await comparePasswords(password, user.password);
+        console.log('Password comparison result:', isValid);
+
         if (!isValid) {
+          console.log('Invalid password for user:', username);
           return done(null, false, { message: "Invalid username or password" });
         }
 
+        console.log('Login successful for user:', username);
         return done(null, user);
       } catch (err) {
         console.error('Authentication error:', err);
         return done(err);
       }
-    }),
+    })
   );
 
   passport.serializeUser((user, done) => {
+    console.log('Serializing user:', user.id);
     done(null, user.id);
   });
 
   passport.deserializeUser(async (id: number, done) => {
     try {
+      console.log('Deserializing user:', id);
       const user = await storage.getUser(id);
       if (!user) {
         console.warn(`User ${id} not found during deserialization`);
@@ -89,14 +79,26 @@ export function setupAuth(app: Express) {
   });
 }
 
-export function setupAuthRoutes(router: Router) {
-  router.post("/login", (req, res, next) => {
+export function setupAuthRoutes(app: Express) {
+  // Login route handler
+  app.post("/api/login", (req, res, next) => {
+    console.log('Login request received:', { 
+      username: req.body.username,
+      hasPassword: !!req.body.password 
+    });
+
+    if (!req.body.username || !req.body.password) {
+      console.log('Missing credentials in request');
+      return res.status(400).json({ message: "Username and password are required" });
+    }
+
     passport.authenticate("local", (err, user, info) => {
       if (err) {
         console.error("Login error:", err);
         return res.status(500).json({ message: "Internal server error" });
       }
       if (!user) {
+        console.log('Authentication failed:', info?.message);
         return res.status(401).json({ message: info?.message || "Authentication failed" });
       }
       req.login(user, (err) => {
@@ -104,6 +106,7 @@ export function setupAuthRoutes(router: Router) {
           console.error("Session creation error:", err);
           return res.status(500).json({ message: "Error during login" });
         }
+        console.log('Login successful for user:', user.username);
         return res.json({
           id: user.id,
           username: user.username,
@@ -117,12 +120,15 @@ export function setupAuthRoutes(router: Router) {
     })(req, res, next);
   });
 
-  router.post("/register", async (req, res) => {
+  // Register route handler
+  app.post("/api/register", async (req, res) => {
     try {
+      console.log('Registration request received');
       const validatedData = insertUserSchema.parse(req.body);
 
       const existingUser = await storage.getUserByUsername(validatedData.username);
       if (existingUser) {
+        console.log('Username already exists:', validatedData.username);
         return res.status(400).json({ message: "Username already exists" });
       }
 
@@ -132,6 +138,7 @@ export function setupAuthRoutes(router: Router) {
         password: hashedPassword,
       });
 
+      console.log('User registered successfully:', user.username);
       req.login(user, (err) => {
         if (err) {
           console.error("Login error after registration:", err);
@@ -156,7 +163,13 @@ export function setupAuthRoutes(router: Router) {
     }
   });
 
-  router.post("/logout", (req, res) => {
+  // Logout route handler
+  app.post("/api/logout", (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    console.log('Logout request received');
     req.logout((err) => {
       if (err) {
         console.error("Logout error:", err);
@@ -173,16 +186,21 @@ export function setupAuthRoutes(router: Router) {
           secure: process.env.NODE_ENV === "production",
           sameSite: 'lax'
         });
+        console.log('Logout successful');
         res.sendStatus(200);
       });
     });
   });
 
-  router.get("/user", (req, res) => {
+  // Get current user route handler
+  app.get("/api/user", (req, res) => {
+    console.log('User info request received');
     if (!req.isAuthenticated()) {
+      console.log('User not authenticated');
       return res.status(401).json({ message: "Not authenticated" });
     }
     const user = req.user as SelectUser;
+    console.log('Returning user info for:', user.username);
     res.json({
       id: user.id,
       username: user.username,
@@ -193,4 +211,23 @@ export function setupAuthRoutes(router: Router) {
       place: user.place
     });
   });
+}
+
+async function hashPassword(password: string) {
+  const salt = randomBytes(16).toString("hex");
+  const buf = (await scryptAsync(password, salt, 64)) as Buffer;
+  return `${buf.toString("hex")}.${salt}`;
+}
+
+async function comparePasswords(supplied: string, stored: string) {
+  try {
+    const [hashed, salt] = stored.split(".");
+    const hashedBuf = Buffer.from(hashed, "hex");
+    const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
+
+    return timingSafeEqual(hashedBuf, suppliedBuf);
+  } catch (err) {
+    console.error('Error in comparePasswords:', err);
+    return false;
+  }
 }

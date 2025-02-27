@@ -59,9 +59,15 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     for (const p of ports) {
       try {
         log(`Attempting to start server on port ${p}...`);
-        await server.listen({
-          port: p,
-          host: "0.0.0.0",
+        await new Promise<void>((resolve, reject) => {
+          server.listen(p, '0.0.0.0', () => {
+            resolve();
+          });
+          server.on('error', (err) => {
+            if ((err as any).code === 'EADDRINUSE') {
+              reject(err);
+            }
+          });
         });
         port = p;
         log(`Successfully bound to port ${p}`);
