@@ -18,21 +18,22 @@ export async function registerRoutes(router: Router): Promise<void> {
     }
 
     try {
-      console.log("Received health data:", req.body);
-      const data = healthDataSchema.parse(req.body);
+      console.log("Processing health data request:", req.body);
+      const validatedData = healthDataSchema.parse(req.body);
 
       // Calculate risk and predictions
-      const prediction = calculateDiabetesRisk(data);
+      const prediction = calculateDiabetesRisk(validatedData);
+      console.log("Calculated prediction:", prediction);
 
       // Get existing achievements
       const existingData = await storage.getHealthDataByUserId(req.user!.id);
-      const existingAchievements = existingData.length > 0 ? existingData[0].achievements : [];
+      const existingAchievements = existingData.length > 0 ? existingData[0].achievements || [] : [];
 
       // Check and award achievements
-      const achievements = checkAndAwardAchievements(data, existingAchievements);
+      const achievements = checkAndAwardAchievements(validatedData, existingAchievements);
 
       const healthData = await storage.createHealthData(req.user!.id, {
-        ...data,
+        ...validatedData,
         prediction,
         achievements,
         createdAt: new Date().toISOString()
@@ -114,7 +115,7 @@ function calculateDiabetesRisk(data: any) {
 }
 
 function generateRecommendations(riskScore: number, data: any) {
-  const recommendations = [];
+  const recommendations: string[] = [];
 
   // Diet recommendations
   if (data.lifestyle.diet === "poor" || data.lifestyle.diet === "fair") {
@@ -161,7 +162,7 @@ interface Achievement {
 }
 
 function checkAndAwardAchievements(data: any, existingAchievements: Achievement[] = []): Achievement[] {
-  const achievements = [...(existingAchievements || [])];
+  const achievements = [...existingAchievements];
   const now = new Date().toISOString();
 
   // First Time Health Check Achievement
@@ -214,20 +215,6 @@ function checkAndAwardAchievements(data: any, existingAchievements: Achievement[
         name: "Wellness Warrior",
         description: "Maintained a healthy lifestyle with regular exercise and good diet",
         icon: "🏃",
-        unlockedAt: now
-      });
-    }
-  }
-
-  // Symptom Tracking Achievement
-  if (data.symptoms) {
-    const hasAchievement = achievements.some(a => a.id === "symptom_tracker");
-    if (!hasAchievement) {
-      achievements.push({
-        id: "symptom_tracker",
-        name: "Health Monitor",
-        description: "Started tracking your symptoms",
-        icon: "📋",
         unlockedAt: now
       });
     }

@@ -11,7 +11,7 @@ export const users = pgTable("users", {
   phone: text("phone").notNull(),
   gender: text("gender").notNull(),
   place: text("place").notNull(),
-  achievements: json("achievements").default([]),
+  achievements: json("achievements").$type<Achievement[]>().default([]),
   preferredLanguage: text("preferred_language").default("en"),
   healthGoals: json("health_goals").default([]),
   verificationToken: text("verification_token"),
@@ -21,14 +21,37 @@ export const users = pgTable("users", {
 export const healthData = pgTable("health_data", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(),
-  demographics: json("demographics").notNull(),
-  physiological: json("physiological").notNull(),
-  lifestyle: json("lifestyle").notNull(),
-  prediction: json("prediction"),
+  demographics: json("demographics").$type<{
+    age: number;
+    gender: "male" | "female" | "other";
+    ethnicity: string;
+  }>().notNull(),
+  physiological: json("physiological").$type<{
+    height: number;
+    weight: number;
+    bloodPressure: {
+      systolic: number;
+      diastolic: number;
+    };
+    bloodSugar: number;
+  }>().notNull(),
+  lifestyle: json("lifestyle").$type<{
+    exercise: "none" | "light" | "moderate" | "heavy";
+    diet: "poor" | "fair" | "good" | "excellent";
+    stressLevel: "low" | "moderate" | "high" | "severe";
+    workStyle: "sedentary" | "light" | "moderate" | "active";
+    alcohol: boolean;
+    smoking: boolean;
+  }>().notNull(),
+  prediction: json("prediction").$type<{
+    score: number;
+    level: "low" | "moderate" | "high";
+    recommendations: string[];
+  }>(),
   createdAt: text("created_at").notNull(),
-  nutritionPlan: json("nutrition_plan"),
-  exercisePlan: json("exercise_plan"),
-  achievements: json("achievements"),
+  achievements: json("achievements").$type<Achievement[]>().default([]),
+  nutritionPlan: json("nutrition_plan").$type<NutritionPlan | null>(),
+  exercisePlan: json("exercise_plan").$type<ExercisePlan | null>(),
   medicalRecords: json("medical_records")
 });
 
@@ -95,8 +118,7 @@ export const healthDataSchema = z.object({
     workStyle: z.enum(["sedentary", "light", "moderate", "active"]),
     alcohol: z.boolean(),
     smoking: z.boolean()
-  }),
-  symptoms: symptomSchema.optional(),
+  })
 });
 
 export const feedbackSchema = z.object({
@@ -153,7 +175,6 @@ export type ExercisePlan = {
   };
 };
 
-// Add prediction types
 export type Prediction = {
   score: number;
   level: "low" | "moderate" | "high";
@@ -161,10 +182,9 @@ export type Prediction = {
 };
 
 export type HealthDataWithPrediction = HealthData & {
-  prediction: Prediction;
+  prediction?: Prediction;
   nutritionPlan?: NutritionPlan;
   exercisePlan?: ExercisePlan;
   achievements?: Achievement[];
-  symptoms?: Symptom;
   createdAt: string;
 };
