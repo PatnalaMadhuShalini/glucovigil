@@ -10,7 +10,7 @@ import SymptomWizard from "@/components/symptom-wizard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/hooks/use-auth";
-import { Loader2, ActivitySquare } from "lucide-react";
+import { Loader2, ActivitySquare, Sparkles } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { HealthDataWithPrediction } from "@shared/schema";
 import Achievements from "@/components/achievements";
@@ -27,8 +27,11 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-white to-teal-50">
-        <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-900 via-blue-900 to-cyan-800">
+        <div className="relative">
+          <Loader2 className="h-12 w-12 animate-spin text-blue-300" />
+          <div className="absolute inset-0 animate-pulse bg-blue-500/20 rounded-full blur-xl" />
+        </div>
       </div>
     );
   }
@@ -37,41 +40,51 @@ export default function Dashboard() {
   const showRiskAlert = latestData?.prediction?.level === "high";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-teal-50">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-blue-900 to-cyan-800">
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/30 via-purple-500/30 to-pink-500/30 animate-gradient-xy" />
+
       <NavMenu />
-      <div className="py-12">
+      <div className="relative py-12">
         <div className="container mx-auto px-4">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 bg-gradient-to-r from-blue-700 to-teal-600 bg-clip-text text-transparent">
-              Welcome back, {user?.username}
-            </h1>
-            <p className="text-gray-600 text-lg">Monitor your health and get personalized insights</p>
+            <div className="flex items-center gap-3 mb-2">
+              <h1 className="text-4xl font-bold text-white">
+                Welcome back, {user?.username}
+              </h1>
+              <Sparkles className="h-6 w-6 text-yellow-400 animate-pulse" />
+            </div>
+            <p className="text-blue-100/80 text-lg">
+              Monitor your health and get personalized insights
+            </p>
           </div>
 
           {showRiskAlert && (
-            <Alert className="mb-8 border-2 border-red-200 bg-red-50">
-              <AlertDescription className="text-red-700 font-medium">
+            <Alert className="mb-8 border-2 border-red-300/50 bg-red-900/30 backdrop-blur-lg">
+              <AlertDescription className="text-red-200 font-medium">
                 Your latest health assessment indicates a high risk level. Please review your recommendations and consider consulting a healthcare professional.
               </AlertDescription>
             </Alert>
           )}
 
           {!showForm && !healthData?.length && (
-            <Card className="mb-8 bg-white/80 backdrop-blur-sm border-2 border-blue-100">
+            <Card className="mb-8 bg-white/10 backdrop-blur-lg border-2 border-white/20">
               <CardContent className="p-8 text-center">
-                <p className="mb-4 text-lg text-gray-700">Start by completing your health assessment</p>
+                <p className="mb-6 text-xl text-blue-100">Start by completing your health assessment</p>
                 <Button 
                   onClick={() => setShowForm(true)}
-                  className="bg-gradient-to-r from-blue-600 to-teal-500 hover:from-blue-700 hover:to-teal-600"
+                  className="relative overflow-hidden group bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700"
                 >
-                  Take Health Assessment
+                  <span className="relative z-10">Take Health Assessment</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </Button>
               </CardContent>
             </Card>
           )}
 
           {showForm && (
-            <Card className="mb-8 bg-white/80 backdrop-blur-sm border-2 border-blue-100">
+            <Card className="mb-8 bg-white/10 backdrop-blur-lg border-2 border-white/20">
               <CardContent className="p-6">
                 <HealthForm onComplete={() => setShowForm(false)} />
               </CardContent>
@@ -92,19 +105,20 @@ export default function Dashboard() {
               <div className="grid md:grid-cols-2 gap-8 mb-8">
                 <div className="space-y-8">
                   <HealthRecommendations healthData={latestData} />
-                  <Card className="bg-white/80 backdrop-blur-sm border-2 border-blue-100">
+                  <Card className="bg-white/10 backdrop-blur-lg border-2 border-white/20 group hover:bg-white/15 transition-all duration-300">
                     <CardContent className="p-6">
                       <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-xl font-semibold text-gray-800">Symptom Tracking</h2>
+                        <h2 className="text-xl font-semibold text-white">Symptom Tracking</h2>
                         <Button
                           onClick={() => setShowSymptomWizard(true)}
-                          className="bg-gradient-to-r from-blue-600 to-teal-500 hover:from-blue-700 hover:to-teal-600 flex items-center gap-2"
+                          className="relative overflow-hidden group bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 flex items-center gap-2"
                         >
                           <ActivitySquare className="h-4 w-4" />
-                          Track Symptoms
+                          <span className="relative z-10">Track Symptoms</span>
+                          <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         </Button>
                       </div>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-blue-100/70">
                         Use our intuitive wizard to track your symptoms and get personalized insights.
                       </p>
                     </CardContent>
@@ -117,14 +131,14 @@ export default function Dashboard() {
           )}
 
           {showSymptomWizard && (
-            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-              <Card className="w-full max-w-2xl max-h-[90vh] overflow-auto m-4 bg-white/95">
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+              <Card className="w-full max-w-2xl max-h-[90vh] overflow-auto m-4 bg-white/95 border-2 border-white/30">
                 <CardContent className="p-6">
                   <div className="flex justify-end mb-4">
                     <Button
                       variant="outline"
                       onClick={() => setShowSymptomWizard(false)}
-                      className="border-2 border-blue-100"
+                      className="border-2 border-indigo-200/30 hover:bg-indigo-100/10"
                     >
                       Close
                     </Button>
