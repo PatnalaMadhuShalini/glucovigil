@@ -14,10 +14,10 @@ import ChatAssistant from "@/components/chat-assistant";
 function Router() {
   return (
     <Switch>
+      <Route path="/" component={HomePage} />
       <Route path="/auth" component={AuthPage} />
       <ProtectedRoute path="/dashboard" component={Dashboard} />
       <ProtectedRoute path="/profile" component={ProfilePage} />
-      <ProtectedRoute path="/" component={HomePage} />
       <Route path="*" component={NotFound} />
     </Switch>
   );
