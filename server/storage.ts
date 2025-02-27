@@ -18,7 +18,7 @@ export class DatabaseStorage implements IStorage {
 
   constructor() {
     this.sessionStore = new MemoryStore({
-      checkPeriod: 86400000 // 24 hours
+      checkPeriod: 86400000
     });
   }
 

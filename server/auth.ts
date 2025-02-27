@@ -9,43 +9,41 @@ import { User as SelectUser, insertUserSchema } from "@shared/schema";
 
 const scryptAsync = promisify(scrypt);
 
-// Simple password hashing
-async function hashPassword(password: string, salt?: string) {
-  const actualSalt = salt || randomBytes(16).toString('hex');
-  const hashedBuffer = await scryptAsync(password, actualSalt, 64) as Buffer;
-  return `${hashedBuffer.toString('hex')}.${actualSalt}`;
+// Simple hash function
+async function hashPassword(password: string) {
+  const salt = randomBytes(16).toString('hex');
+  const buf = await scryptAsync(password, salt, 64) as Buffer;
+  return `${buf.toString('hex')}.${salt}`;
+}
+
+// Simple verify function
+async function verifyPassword(password: string, stored: string) {
+  const [hash, salt] = stored.split('.');
+  const buf = await scryptAsync(password, salt, 64) as Buffer;
+  return hash === buf.toString('hex');
 }
 
 export function setupAuth(app: Express) {
-  // Session setup
   app.use(session({
-    secret: process.env.SESSION_SECRET || 'gluco-smart-secret-key',
+    secret: 'gluco-smart-secret',
     resave: false,
     saveUninitialized: false,
     store: storage.sessionStore,
-    cookie: { maxAge: 24 * 60 * 60 * 1000 } // 24 hours
+    cookie: { maxAge: 24 * 60 * 60 * 1000 }
   }));
 
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Configure passport
   passport.use(new LocalStrategy(async (username, password, done) => {
     try {
       const user = await storage.getUserByUsername(username);
-      if (!user) {
-        return done(null, false);
-      }
+      if (!user) return done(null, false);
 
-      // Verify password
-      const [, salt] = user.password.split('.');
-      const hashedPassword = await hashPassword(password, salt);
+      const isValid = await verifyPassword(password, user.password);
+      if (!isValid) return done(null, false);
 
-      if (hashedPassword === user.password) {
-        return done(null, user);
-      }
-
-      return done(null, false);
+      return done(null, user);
     } catch (err) {
       return done(err);
     }
@@ -66,26 +64,15 @@ export function setupAuth(app: Express) {
 }
 
 export function setupAuthRoutes(app: Express) {
-  // Login
   app.post("/api/login", (req, res, next) => {
-    if (!req.body.username || !req.body.password) {
-      return res.status(400).json({ message: "Username and password are required" });
-    }
-
     passport.authenticate("local", (err: any, user: any) => {
-      if (err) {
-        return res.status(500).json({ message: "Server error" });
-      }
-      if (!user) {
-        return res.status(401).json({ message: "Invalid username or password" });
-      }
+      if (err) return res.status(500).json({ message: "Server error" });
+      if (!user) return res.status(401).json({ message: "Invalid username or password" });
 
       req.login(user, (err) => {
-        if (err) {
-          return res.status(500).json({ message: "Login failed" });
-        }
+        if (err) return res.status(500).json({ message: "Login failed" });
 
-        return res.json({
+        res.json({
           id: user.id,
           username: user.username,
           fullName: user.fullName,
@@ -98,31 +85,25 @@ export function setupAuthRoutes(app: Express) {
     })(req, res, next);
   });
 
-  // Register
   app.post("/api/register", async (req, res) => {
     try {
       const data = insertUserSchema.parse(req.body);
 
-      // Check existing user
       const existingUser = await storage.getUserByUsername(data.username);
       if (existingUser) {
         return res.status(400).json({ message: "Username already exists" });
       }
 
-      // Hash password and create user
       const hashedPassword = await hashPassword(data.password);
       const user = await storage.createUser({
         ...data,
         password: hashedPassword
       });
 
-      // Login after registration
       req.login(user, (err) => {
-        if (err) {
-          return res.status(500).json({ message: "Registration successful but login failed" });
-        }
+        if (err) return res.status(500).json({ message: "Registration successful but login failed" });
 
-        return res.json({
+        res.json({
           id: user.id,
           username: user.username,
           fullName: user.fullName,
@@ -140,19 +121,16 @@ export function setupAuthRoutes(app: Express) {
     }
   });
 
-  // Logout
   app.post("/api/logout", (req, res) => {
     req.logout(() => {
       res.sendStatus(200);
     });
   });
 
-  // Get current user
   app.get("/api/user", (req, res) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "Not authenticated" });
     }
-
     const user = req.user as SelectUser;
     res.json({
       id: user.id,
