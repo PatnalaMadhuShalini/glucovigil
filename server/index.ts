@@ -16,11 +16,9 @@ import { registerRoutes } from "./routes";
     app.use(express.urlencoded({ extended: false }));
     log('Basic middleware configured');
 
-    // API routes first to ensure they're not intercepted by Vite
-    const apiRouter = express.Router();
-    app.use('/api', apiRouter);
+    app.set("trust proxy", 1);
 
-    // Setup core auth
+    // Setup auth
     setupAuth(app);
     log('Auth setup completed');
 
@@ -28,15 +26,11 @@ import { registerRoutes } from "./routes";
     setupAuthRoutes(app);
     log('Auth routes configured');
 
-    // Register other API routes
+    // API routes
+    const apiRouter = express.Router();
+    app.use('/api', apiRouter);
     registerRoutes(apiRouter);
     log('API routes registered');
-
-    // Test route
-    app.get('/test', (req, res) => {
-      res.json({ status: 'ok', message: 'Express server is running' });
-    });
-    log('Test route added');
 
     // API error handling
     app.use('/api', (err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -63,31 +57,27 @@ import { registerRoutes } from "./routes";
 
     // Start server
     const PORT = process.env.PORT || 5000;
-    log(`Attempting to start server on port ${PORT}...`);
 
-    await new Promise<void>((resolve, reject) => {
-      try {
-        server.listen(PORT, '0.0.0.0', () => {
-          log(`Server listening on port ${PORT}`);
-          resolve();
-        });
+    // Close any existing connections
+    try {
+      server.close();
+    } catch (err) {
+      // Ignore errors if no server was running
+    }
 
-        server.on('error', (err) => {
-          if ((err as any).code === 'EADDRINUSE') {
-            log(`Port ${PORT} is already in use`);
-            reject(new Error(`Port ${PORT} is already in use`));
-          } else {
-            log('Server error:', err);
-            reject(err);
-          }
-        });
-      } catch (err) {
-        log('Error during server startup:', err);
-        reject(err);
-      }
+    server.listen(PORT, () => {
+      log(`Server listening on port ${PORT}`);
     });
 
-    log(`Server running at http://0.0.0.0:${PORT}`);
+    server.on('error', (err: Error) => {
+      log('Server error:', err);
+      if ((err as any).code === 'EADDRINUSE') {
+        log(`Port ${PORT} is already in use`);
+        process.exit(1);
+      }
+      process.exit(1);
+    });
+
   } catch (error) {
     log('Failed to start server:', error);
     process.exit(1);
