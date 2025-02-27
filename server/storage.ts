@@ -23,7 +23,6 @@ export class DatabaseStorage implements IStorage {
   sessionStore: session.Store;
 
   constructor() {
-    // Use in-memory store for debugging
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000 // Prune expired entries every 24h
     });
@@ -31,36 +30,36 @@ export class DatabaseStorage implements IStorage {
 
   async getUser(id: number): Promise<User | undefined> {
     try {
-      console.log('Getting user by ID:', id);
+      console.log('[Storage] Getting user by ID:', id);
       const [user] = await db.select().from(users).where(eq(users.id, id));
-      console.log('User found:', user ? 'yes' : 'no');
+      console.log('[Storage] User found:', user ? 'yes' : 'no');
       return user;
     } catch (err) {
-      console.error('Error getting user by ID:', err);
+      console.error('[Storage] Error getting user by ID:', err);
       return undefined;
     }
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
     try {
-      console.log('Getting user by username:', username);
+      console.log('[Storage] Getting user by username:', username);
       const [user] = await db.select().from(users).where(eq(users.username, username));
-      console.log('User found:', user ? 'yes' : 'no');
+      console.log('[Storage] User found:', user ? 'yes' : 'no');
       return user;
     } catch (err) {
-      console.error('Error getting user by username:', err);
+      console.error('[Storage] Error getting user by username:', err);
       return undefined;
     }
   }
 
   async createUser(user: InsertUser): Promise<User> {
     try {
-      console.log('Creating new user:', user.username);
+      console.log('[Storage] Creating new user:', user.username);
       const [newUser] = await db.insert(users).values(user).returning();
-      console.log('User created successfully');
+      console.log('[Storage] User created successfully');
       return newUser;
     } catch (err) {
-      console.error('Error creating user:', err);
+      console.error('[Storage] Error creating user:', err);
       throw err;
     }
   }
