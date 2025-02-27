@@ -24,34 +24,44 @@ export class DatabaseStorage implements IStorage {
 
   async getUser(id: number): Promise<User | undefined> {
     try {
+      console.log('Getting user by ID:', id);
       const [user] = await db
         .select()
         .from(users)
         .where(eq(users.id, id))
         .limit(1);
+
+      console.log('User found by ID:', user ? 'yes' : 'no');
       return user;
     } catch (err) {
-      console.error('Failed to get user by ID:', err);
+      console.error('Database error - getUser:', err);
       throw new Error('Failed to get user');
     }
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
     try {
+      console.log('Getting user by username:', username);
+      const normalizedUsername = username.toLowerCase().trim();
+
       const [user] = await db
         .select()
         .from(users)
-        .where(eq(users.username, username.toLowerCase().trim()))
+        .where(eq(users.username, normalizedUsername))
         .limit(1);
+
+      console.log('User found by username:', user ? 'yes' : 'no');
       return user;
     } catch (err) {
-      console.error('Failed to get user by username:', err);
-      throw new Error('Failed to get user');
+      console.error('Database error - getUserByUsername:', err);
+      throw new Error('Failed to get user by username');
     }
   }
 
   async createUser(user: InsertUser): Promise<User> {
     try {
+      console.log('Creating new user:', { ...user, password: '[REDACTED]' });
+
       const [newUser] = await db
         .insert(users)
         .values({
@@ -65,12 +75,14 @@ export class DatabaseStorage implements IStorage {
         .returning();
 
       if (!newUser) {
+        console.error('User creation failed - no user returned');
         throw new Error('User creation failed');
       }
 
+      console.log('User created successfully');
       return newUser;
     } catch (err) {
-      console.error('Failed to create user:', err);
+      console.error('Database error - createUser:', err);
       throw new Error('Failed to create user account');
     }
   }
