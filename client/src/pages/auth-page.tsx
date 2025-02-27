@@ -77,9 +77,15 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen flex bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="flex-1 flex items-center justify-center p-8">
-        <Card className="w-full max-w-md shadow-lg">
+    <div className="min-h-screen flex bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900">
+      {/* Subtle animated gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-indigo-500/10 to-violet-500/10 animate-gradient-xy" />
+
+      {/* Refined grid pattern */}
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-20 [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
+
+      <div className="flex-1 flex items-center justify-center p-8 relative">
+        <Card className="w-full max-w-md shadow-lg bg-white/10 backdrop-blur-md border border-white/20">
           <CardHeader>
             <div className="flex justify-center mb-6">
               <img
@@ -88,15 +94,15 @@ export default function AuthPage() {
                 className="h-32 w-auto"
               />
             </div>
-            <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+            <CardTitle className="text-2xl font-bold text-center text-white">
               Welcome to GlucoSmart
             </CardTitle>
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="grid w-full grid-cols-2 mb-4">
-                <TabsTrigger value="login">Login</TabsTrigger>
-                <TabsTrigger value="register">Register</TabsTrigger>
+                <TabsTrigger value="login" className="text-white">Login</TabsTrigger>
+                <TabsTrigger value="register" className="text-white">Register</TabsTrigger>
               </TabsList>
 
               <TabsContent value="login">
@@ -110,9 +116,9 @@ export default function AuthPage() {
                       name="username"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Username</FormLabel>
+                          <FormLabel className="text-white">Username</FormLabel>
                           <FormControl>
-                            <Input {...field} />
+                            <Input {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/50" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -123,9 +129,9 @@ export default function AuthPage() {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Password</FormLabel>
+                          <FormLabel className="text-white">Password</FormLabel>
                           <FormControl>
-                            <Input type="password" {...field} />
+                            <Input type="password" {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/50" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -133,7 +139,7 @@ export default function AuthPage() {
                     />
                     <Button
                       type="submit"
-                      className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
+                      className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white"
                       disabled={loginMutation.isPending}
                     >
                       {loginMutation.isPending ? (
@@ -160,9 +166,9 @@ export default function AuthPage() {
                       name="username"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Username</FormLabel>
+                          <FormLabel className="text-white">Username</FormLabel>
                           <FormControl>
-                            <Input {...field} />
+                            <Input {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/50" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -173,9 +179,9 @@ export default function AuthPage() {
                       name="fullName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Full Name</FormLabel>
+                          <FormLabel className="text-white">Full Name</FormLabel>
                           <FormControl>
-                            <Input {...field} />
+                            <Input {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/50" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -186,9 +192,9 @@ export default function AuthPage() {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email</FormLabel>
+                          <FormLabel className="text-white">Email</FormLabel>
                           <FormControl>
-                            <Input type="email" {...field} />
+                            <Input type="email" {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/50" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -199,9 +205,9 @@ export default function AuthPage() {
                       name="phone"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Phone Number</FormLabel>
+                          <FormLabel className="text-white">Phone Number</FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder="+91XXXXXXXXXX" />
+                            <Input {...field} placeholder="+91XXXXXXXXXX" className="bg-white/20 border-white/30 text-white placeholder:text-white/50" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -212,20 +218,20 @@ export default function AuthPage() {
                       name="gender"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Gender</FormLabel>
+                          <FormLabel className="text-white">Gender</FormLabel>
                           <Select
                             onValueChange={field.onChange}
                             defaultValue={field.value}
                           >
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="Select gender" />
+                                <SelectValue placeholder="Select gender" className="text-white" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="male">Male</SelectItem>
-                              <SelectItem value="female">Female</SelectItem>
-                              <SelectItem value="other">Other</SelectItem>
+                              <SelectItem value="male" className="text-white">Male</SelectItem>
+                              <SelectItem value="female" className="text-white">Female</SelectItem>
+                              <SelectItem value="other" className="text-white">Other</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -237,9 +243,9 @@ export default function AuthPage() {
                       name="place"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Place</FormLabel>
+                          <FormLabel className="text-white">Place</FormLabel>
                           <FormControl>
-                            <Input {...field} />
+                            <Input {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/50" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -250,9 +256,9 @@ export default function AuthPage() {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Password</FormLabel>
+                          <FormLabel className="text-white">Password</FormLabel>
                           <FormControl>
-                            <Input type="password" {...field} />
+                            <Input type="password" {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/50" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -260,7 +266,7 @@ export default function AuthPage() {
                     />
                     <Button
                       type="submit"
-                      className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
+                      className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white"
                       disabled={registerMutation.isPending}
                     >
                       {registerMutation.isPending ? (
@@ -280,7 +286,7 @@ export default function AuthPage() {
         </Card>
       </div>
 
-      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-blue-500 to-cyan-500 items-center justify-center p-12 text-white">
+      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 items-center justify-center p-12 text-white relative">
         <div className="max-w-lg">
           <h1 className="text-4xl font-bold mb-6">
             Take Control of Your Health Journey
