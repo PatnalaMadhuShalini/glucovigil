@@ -31,7 +31,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import MedicalRecordsUpload from "./medical-records-upload";
 
 const InfoTooltip = ({ content }: { content: string }) => (
   <TooltipProvider>
@@ -83,6 +82,10 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
   const mutation = useMutation({
     mutationFn: async (data: HealthData) => {
       setError(null);
+
+      // Log the request
+      console.log('Sending health data request:', JSON.stringify(data, null, 2));
+
       const res = await apiRequest("POST", "/api/health-data", data);
       if (!res.ok) {
         const errorData = await res.json();
@@ -110,7 +113,9 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
 
   const onSubmit = (formData: HealthData) => {
     try {
-      console.log("Submitting form data:", formData);
+      console.log("Form data before transformation:", formData);
+
+      // Transform the data to ensure correct types
       const transformedData: HealthData = {
         demographics: {
           age: Number(formData.demographics.age),
@@ -131,12 +136,12 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
           diet: formData.lifestyle.diet,
           stressLevel: formData.lifestyle.stressLevel,
           workStyle: formData.lifestyle.workStyle,
-          alcohol: formData.lifestyle.alcohol === true,
-          smoking: formData.lifestyle.smoking === true
+          alcohol: Boolean(formData.lifestyle.alcohol),
+          smoking: Boolean(formData.lifestyle.smoking)
         }
       };
 
-      console.log("Transformed data:", transformedData);
+      console.log("Transformed data:", JSON.stringify(transformedData, null, 2));
       mutation.mutate(transformedData);
     } catch (error) {
       console.error("Form submission error:", error);
