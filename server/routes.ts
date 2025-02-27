@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { Router } from "express";
 import { storage } from "./storage";
-import { healthDataSchema } from "@shared/schema";
+import { healthDataSchema, type HealthDataWithPrediction } from "@shared/schema";
 import { ZodError } from "zod";
 
 export async function registerRoutes(router: Router): Promise<void> {
@@ -18,12 +18,15 @@ export async function registerRoutes(router: Router): Promise<void> {
     }
 
     try {
-      console.log("Processing health data request:", req.body);
+      console.log("Received health data request:", JSON.stringify(req.body, null, 2));
+
+      // Validate the incoming data
       const validatedData = healthDataSchema.parse(req.body);
+      console.log("Validated data:", JSON.stringify(validatedData, null, 2));
 
       // Calculate risk and predictions
       const prediction = calculateDiabetesRisk(validatedData);
-      console.log("Calculated prediction:", prediction);
+      console.log("Calculated prediction:", JSON.stringify(prediction, null, 2));
 
       // Get existing achievements
       const existingData = await storage.getHealthDataByUserId(req.user!.id);
@@ -32,15 +35,21 @@ export async function registerRoutes(router: Router): Promise<void> {
       // Check and award achievements
       const achievements = checkAndAwardAchievements(validatedData, existingAchievements);
 
-      const healthData = await storage.createHealthData(req.user!.id, {
+      // Prepare the complete health data record
+      const completeHealthData: HealthDataWithPrediction = {
         ...validatedData,
         prediction,
         achievements,
         createdAt: new Date().toISOString()
-      });
+      };
 
-      console.log("Health data saved successfully:", healthData);
-      res.status(201).json(healthData);
+      console.log("Attempting to save health data:", JSON.stringify(completeHealthData, null, 2));
+
+      // Save to database
+      const savedData = await storage.createHealthData(req.user!.id, completeHealthData);
+      console.log("Health data saved successfully:", JSON.stringify(savedData, null, 2));
+
+      res.status(201).json(savedData);
     } catch (err) {
       console.error("Error processing health data:", err);
       if (err instanceof ZodError) {
@@ -95,7 +104,7 @@ function calculateDiabetesRisk(data: any) {
 
   // Blood pressure
   if (data.physiological.bloodPressure.systolic > 140 ||
-    data.physiological.bloodPressure.diastolic > 90) {
+      data.physiological.bloodPressure.diastolic > 90) {
     riskScore += 1;
   }
 
@@ -166,7 +175,7 @@ function checkAndAwardAchievements(data: any, existingAchievements: Achievement[
   const now = new Date().toISOString();
 
   // First Time Health Check Achievement
-  if (!existingAchievements?.length) {
+  if (!existingAchievements.length) {
     achievements.push({
       id: "first_check",
       name: "Health Pioneer",
