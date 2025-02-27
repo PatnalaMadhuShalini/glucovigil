@@ -135,6 +135,8 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
         }
       };
 
+      // Log the data being submitted for debugging
+      console.log("Submitting health data:", transformedData);
       mutation.mutate(transformedData);
     } catch (error) {
       console.error("Form submission error:", error);

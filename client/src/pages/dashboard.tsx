@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import NavMenu from "@/components/nav-menu";
 import HealthForm from "@/components/health-form";
 import RiskDisplay from "@/components/risk-display";
 import Recommendations from "@/components/recommendations";
@@ -45,7 +44,6 @@ export default function Dashboard() {
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
       <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/30 via-purple-500/30 to-pink-500/30 animate-gradient-xy" />
 
-      <NavMenu />
       <div className="relative py-12">
         <div className="container mx-auto px-4">
           <div className="mb-8">
@@ -69,12 +67,12 @@ export default function Dashboard() {
           )}
 
           {!showForm && !healthData?.length && (
-            <Card className="mb-8 bg-white/10 backdrop-blur-lg border-2 border-white/20">
+            <Card className="mb-8 bg-white/10 backdrop-blur-lg border-2 border-white/20 shadow-xl">
               <CardContent className="p-8 text-center">
                 <p className="mb-6 text-xl text-blue-100">Start by completing your health assessment</p>
                 <Button 
                   onClick={() => setShowForm(true)}
-                  className="relative overflow-hidden group bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700"
+                  className="relative overflow-hidden group bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 px-6 py-3 text-lg"
                 >
                   <span className="relative z-10">Take Health Assessment</span>
                   <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -84,14 +82,17 @@ export default function Dashboard() {
           )}
 
           {showForm && (
-            <Card className="mb-8 bg-white/10 backdrop-blur-lg border-2 border-white/20">
+            <Card className="mb-8 bg-white/15 backdrop-blur-lg border-2 border-white/30 shadow-xl">
               <CardContent className="p-6">
-                <HealthForm onComplete={() => setShowForm(false)} />
+                <h2 className="text-2xl font-bold text-white mb-6 text-center">Health Assessment Form</h2>
+                <div className="bg-white/5 p-6 rounded-lg">
+                  <HealthForm onComplete={() => setShowForm(false)} />
+                </div>
               </CardContent>
             </Card>
           )}
 
-          {healthData?.length > 0 && (
+          {healthData && healthData.length > 0 && (
             <>
               <div className="grid md:grid-cols-2 gap-8 mb-8">
                 <RiskDisplay data={latestData} />

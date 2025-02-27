@@ -58,12 +58,12 @@ export default function HomePage() {
               description: "Smart health companion powered by AI"
             }
           ].map((feature, index) => (
-            <Card key={index} className="group transform hover:scale-102 transition-all duration-500 bg-white/5 backdrop-blur-sm border border-white/10 overflow-hidden">
+            <Card key={index} className="group transform hover:scale-102 transition-all duration-500 bg-white/10 backdrop-blur-sm border border-white/10 overflow-hidden shadow-lg">
               <CardContent className="p-6 relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-violet-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <feature.icon className="h-10 w-10 text-blue-200/70 mb-4 transform group-hover:scale-105 transition-transform duration-500" />
-                <h2 className="text-lg font-medium mb-2 text-white/80">{feature.title}</h2>
-                <p className="text-sm text-blue-100/60 leading-relaxed">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/30 to-violet-500/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <feature.icon className="h-12 w-12 text-blue-200 mb-4 transform group-hover:scale-105 transition-transform duration-500" />
+                <h2 className="text-xl font-medium mb-2 text-white/90">{feature.title}</h2>
+                <p className="text-sm text-blue-100/80 leading-relaxed">
                   {feature.description}
                 </p>
               </CardContent>
@@ -87,10 +87,33 @@ export default function HomePage() {
           <div className="text-center text-blue-100/60">
             <p className="font-normal text-base">GlucoSmart Health Analytics</p>
             <p className="mt-2 text-sm font-light">Your trusted partner in health management</p>
-            <div className="mt-4 flex justify-center space-x-8">
-              <a href="#" className="text-blue-200/60 hover:text-blue-200/80 transition-colors duration-300 text-sm">About</a>
-              <a href="#" className="text-blue-200/60 hover:text-blue-200/80 transition-colors duration-300 text-sm">Features</a>
-              <a href="#" className="text-blue-200/60 hover:text-blue-200/80 transition-colors duration-300 text-sm">Contact</a>
+            <p className="mt-1 text-sm font-medium">Created by PDMS</p>
+            <div className="mt-6 grid md:grid-cols-3 gap-6 max-w-3xl mx-auto">
+              <div className="bg-white/5 backdrop-blur-sm p-4 rounded-lg border border-white/10">
+                <h3 className="text-lg font-medium text-blue-200 mb-2">About</h3>
+                <p className="text-sm text-blue-100/70">
+                  GlucoSmart was founded in 2023 to revolutionize diabetes management through AI-powered health analytics and personalized recommendations.
+                </p>
+              </div>
+              <div className="bg-white/5 backdrop-blur-sm p-4 rounded-lg border border-white/10">
+                <h3 className="text-lg font-medium text-blue-200 mb-2">Features</h3>
+                <p className="text-sm text-blue-100/70">
+                  Advanced risk prediction, personalized health recommendations, medical record integration, and comprehensive health monitoring.
+                </p>
+              </div>
+              <div className="bg-white/5 backdrop-blur-sm p-4 rounded-lg border border-white/10">
+                <h3 className="text-lg font-medium text-blue-200 mb-2">Contact</h3>
+                <p className="text-sm text-blue-100/70">
+                  Email: support@glucosmart.com<br/>
+                  Phone: (555) 123-4567<br/>
+                  Location: Health Innovation Center
+                </p>
+              </div>
+            </div>
+            <div className="mt-6 flex justify-center space-x-8">
+              <a href="#" className="text-blue-200/80 hover:text-blue-200 transition-colors duration-300 text-sm">About</a>
+              <a href="#" className="text-blue-200/80 hover:text-blue-200 transition-colors duration-300 text-sm">Features</a>
+              <a href="#" className="text-blue-200/80 hover:text-blue-200 transition-colors duration-300 text-sm">Contact</a>
             </div>
           </div>
         </footer>

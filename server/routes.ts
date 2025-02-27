@@ -29,6 +29,7 @@ export async function registerRoutes(router: Router): Promise<void> {
     if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
 
     try {
+      console.log("Received health data:", req.body);
       const data = healthDataSchema.parse(req.body);
       const prediction = calculateDiabetesRisk(data);
 
@@ -48,8 +49,9 @@ export async function registerRoutes(router: Router): Promise<void> {
 
       res.status(201).json(healthData);
     } catch (err) {
+      console.error("Error processing health data:", err);
       if (err instanceof ZodError) {
-        res.status(400).json(err.errors);
+        res.status(400).json({ message: "Invalid data format", errors: err.errors });
       } else {
         res.status(500).json({ message: "Internal server error" });
       }
@@ -64,6 +66,7 @@ export async function registerRoutes(router: Router): Promise<void> {
       const data = await storage.getHealthDataByUserId(req.user!.id);
       res.json(data);
     } catch (err) {
+      console.error("Error fetching health data:", err);
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -200,7 +203,11 @@ function calculateDiabetesRisk(data: any) {
   if (data.lifestyle.exercise === "none") riskScore += 1;
   if (data.lifestyle.diet === "poor") riskScore += 1;
 
-  const level = riskScore <= 2 ? "low" : riskScore <= 5 ? "moderate" : "high";
+  // Ensure level is explicitly typed as one of the expected values
+  const level: "low" | "moderate" | "high" =
+    riskScore <= 2 ? "low" :
+      riskScore <= 5 ? "moderate" :
+        "high";
 
   return {
     score: riskScore,
