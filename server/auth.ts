@@ -22,7 +22,8 @@ export function setupAuth(app: Express) {
     saveUninitialized: false,
     store: storage.sessionStore,
     cookie: {
-      maxAge: 24 * 60 * 60 * 1000
+      maxAge: 24 * 60 * 60 * 1000,
+      httpOnly: true
     }
   }));
 
@@ -38,13 +39,10 @@ export function setupAuth(app: Express) {
 
       const [hash, salt] = user.password.split('.');
       const buf = await scryptAsync(password, salt, 64) as Buffer;
-      const isValid = hash === buf.toString('hex');
-
-      if (!isValid) {
-        return done(null, false);
+      if (buf.toString('hex') === hash) {
+        return done(null, user);
       }
-
-      return done(null, user);
+      return done(null, false);
     } catch (err) {
       return done(err);
     }
@@ -65,45 +63,37 @@ export function setupAuth(app: Express) {
 }
 
 export function setupAuthRoutes(app: Express) {
-  // Simple registration route
   app.post("/api/register", async (req, res) => {
     try {
-      // Basic validation
-      const { username, password, fullName, email, phone, gender, place } = req.body;
+      const { username, password } = req.body;
 
       if (!username || !password) {
         return res.status(400).json({ message: "Username and password are required" });
       }
 
-      // Check for existing user first
-      const existingUser = await storage.getUserByUsername(username);
+      // Create user with minimal data
+      const userData = {
+        username: username.toLowerCase().trim(),
+        password: await hashPassword(password),
+        fullName: req.body.fullName || username,
+        email: req.body.email || '',
+        phone: req.body.phone || '',
+        gender: req.body.gender || 'other',
+        place: req.body.place || ''
+      };
+
+      const existingUser = await storage.getUserByUsername(userData.username);
       if (existingUser) {
         return res.status(400).json({ message: "Username already exists" });
       }
 
-      // Hash password
-      const hashedPassword = await hashPassword(password);
-
-      // Create user with minimal data first
-      const userData = {
-        username,
-        password: hashedPassword,
-        fullName: fullName || username,
-        email: email || '',
-        phone: phone || '',
-        gender: gender || 'other',
-        place: place || ''
-      };
-
       const user = await storage.createUser(userData);
 
-      // Auto login after registration
       req.login(user, (err) => {
         if (err) {
           return res.status(500).json({ message: "Registration successful but login failed" });
         }
-
-        return res.json({
+        res.json({
           id: user.id,
           username: user.username,
           fullName: user.fullName,
@@ -113,12 +103,8 @@ export function setupAuthRoutes(app: Express) {
           place: user.place
         });
       });
-
     } catch (error: any) {
-      console.error('Registration error:', error);
-      return res.status(400).json({ 
-        message: "Registration failed: " + error.message
-      });
+      res.status(400).json({ message: error.message });
     }
   });
 
@@ -130,13 +116,11 @@ export function setupAuthRoutes(app: Express) {
       if (!user) {
         return res.status(401).json({ message: "Invalid username or password" });
       }
-
       req.login(user, (err) => {
         if (err) {
           return res.status(500).json({ message: "Login failed" });
         }
-
-        return res.json({
+        res.json({
           id: user.id,
           username: user.username,
           fullName: user.fullName,
@@ -159,7 +143,6 @@ export function setupAuthRoutes(app: Express) {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "Not authenticated" });
     }
-
     const user = req.user as any;
     res.json({
       id: user.id,

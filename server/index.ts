@@ -7,56 +7,46 @@ import { registerRoutes } from "./routes";
 
 (async () => {
   try {
-    log('Starting server initialization...');
-
     // Create Express app with minimal middleware
     const app = express();
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
-    log('Basic middleware configured');
 
-    // Health check route to verify server is working
+    // Health check route
     app.get('/health', (req, res) => {
-      res.json({ status: 'ok', message: 'Server is running' });
+      res.json({ status: 'ok' });
     });
-    log('Health check route added');
+
 
     // Create HTTP server
     const server = createServer(app);
-    log('HTTP server created');
 
     // Setup Vite for development
     if (process.env.NODE_ENV !== "production") {
       await setupVite(app);
-      log('Vite middleware configured');
     } else {
       serveStatic(app);
-      log('Static serving configured');
     }
 
-    // Setup auth and routes after Vite
+    // Setup auth and routes
     setupAuth(app);
     setupAuthRoutes(app);
     registerRoutes(app);
-    log('Auth and routes configured');
 
-    // Start server
-    const PORT = process.env.PORT || 5000; 
-    log(`Attempting to start server on port ${PORT}`);
-
-    server.listen(PORT, '0.0.0.0', () => {
-      log(`Server successfully started on port ${PORT}`);
+    // Error handling middleware
+    app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+      console.error('Server error:', err);
+      res.status(500).json({ message: 'Internal server error' });
     });
 
-    server.on('error', (err) => {
-      if ((err as any).code === 'EADDRINUSE') {
-        log(`Error: Port ${PORT} is already in use`);
-      } else {
-        log('Server error:', err);
-      }
+    // Start server
+    const port = process.env.PORT || 3000;
+    server.listen(port, () => {
+      console.log(`Server running on port ${port}`);
     });
 
   } catch (error) {
-    log('Server initialization failed:', error);
+    console.error('Server initialization failed:', error);
+    process.exit(1);
   }
 })();
