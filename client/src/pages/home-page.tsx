@@ -69,12 +69,12 @@ export default function HomePage() {
                 description: "Smart health companion powered by AI"
               }
             ].map((feature, index) => (
-              <Card key={index} className="group transform hover:scale-102 transition-all duration-500 bg-white/20 backdrop-blur-sm border border-white/30 overflow-hidden">
+              <Card key={index} className="group transform hover:scale-102 transition-all duration-500 bg-white/40 backdrop-blur-sm border border-white/30 overflow-hidden">
                 <CardContent className="p-6 relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-violet-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <feature.icon className="h-10 w-10 text-blue-200 mb-4 transform group-hover:scale-105 transition-transform duration-500" />
-                  <h2 className="text-lg font-semibold mb-2 text-white">{feature.title}</h2>
-                  <p className="text-sm text-blue-50 leading-relaxed">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 to-indigo-100/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <feature.icon className="h-10 w-10 text-blue-800 mb-4 transform group-hover:scale-105 transition-transform duration-500" />
+                  <h2 className="text-lg font-semibold mb-2 text-blue-900">{feature.title}</h2>
+                  <p className="text-sm text-blue-800 leading-relaxed">
                     {feature.description}
                   </p>
                 </CardContent>
