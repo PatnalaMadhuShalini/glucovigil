@@ -9,45 +9,43 @@ import { User as SelectUser, insertUserSchema } from "@shared/schema";
 
 const scryptAsync = promisify(scrypt);
 
+// Simple password hashing
+async function hashPassword(password: string, salt?: string) {
+  const actualSalt = salt || randomBytes(16).toString('hex');
+  const hashedBuffer = await scryptAsync(password, actualSalt, 64) as Buffer;
+  return `${hashedBuffer.toString('hex')}.${actualSalt}`;
+}
+
 export function setupAuth(app: Express) {
+  // Session setup
   app.use(session({
     secret: process.env.SESSION_SECRET || 'gluco-smart-secret-key',
     resave: false,
     saveUninitialized: false,
     store: storage.sessionStore,
-    cookie: {
-      secure: false, // Set to true only in production with HTTPS
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000 // 24 hours
-    }
+    cookie: { maxAge: 24 * 60 * 60 * 1000 } // 24 hours
   }));
 
   app.use(passport.initialize());
   app.use(passport.session());
 
+  // Configure passport
   passport.use(new LocalStrategy(async (username, password, done) => {
     try {
       const user = await storage.getUserByUsername(username);
       if (!user) {
-        return done(null, false, { message: "Invalid username or password" });
+        return done(null, false);
       }
 
-      // Parse stored password hash
-      const [storedHash, salt] = user.password.split('.');
-      if (!storedHash || !salt) {
-        return done(null, false, { message: "Invalid password format" });
-      }
+      // Verify password
+      const [, salt] = user.password.split('.');
+      const hashedPassword = await hashPassword(password, salt);
 
-      // Hash the provided password with the same salt
-      const suppliedBuf = await scryptAsync(password, salt, 64) as Buffer;
-      const suppliedHash = suppliedBuf.toString('hex');
-
-      // Compare the hashes
-      if (storedHash === suppliedHash) {
+      if (hashedPassword === user.password) {
         return done(null, user);
-      } else {
-        return done(null, false, { message: "Invalid username or password" });
       }
+
+      return done(null, false);
     } catch (err) {
       return done(err);
     }
@@ -68,17 +66,18 @@ export function setupAuth(app: Express) {
 }
 
 export function setupAuthRoutes(app: Express) {
+  // Login
   app.post("/api/login", (req, res, next) => {
     if (!req.body.username || !req.body.password) {
       return res.status(400).json({ message: "Username and password are required" });
     }
 
-    passport.authenticate("local", (err: any, user: any, info: any) => {
+    passport.authenticate("local", (err: any, user: any) => {
       if (err) {
         return res.status(500).json({ message: "Server error" });
       }
       if (!user) {
-        return res.status(401).json({ message: info?.message || "Invalid credentials" });
+        return res.status(401).json({ message: "Invalid username or password" });
       }
 
       req.login(user, (err) => {
@@ -86,7 +85,6 @@ export function setupAuthRoutes(app: Express) {
           return res.status(500).json({ message: "Login failed" });
         }
 
-        // Return user data without sensitive information
         return res.json({
           id: user.id,
           username: user.username,
@@ -100,34 +98,31 @@ export function setupAuthRoutes(app: Express) {
     })(req, res, next);
   });
 
+  // Register
   app.post("/api/register", async (req, res) => {
     try {
       const data = insertUserSchema.parse(req.body);
 
-      // Check for existing user
+      // Check existing user
       const existingUser = await storage.getUserByUsername(data.username);
       if (existingUser) {
         return res.status(400).json({ message: "Username already exists" });
       }
 
-      // Generate salt and hash password
-      const salt = randomBytes(16).toString('hex');
-      const hashedBuf = await scryptAsync(data.password, salt, 64) as Buffer;
-      const hashedPassword = `${hashedBuf.toString('hex')}.${salt}`;
-
-      // Create user with hashed password
+      // Hash password and create user
+      const hashedPassword = await hashPassword(data.password);
       const user = await storage.createUser({
         ...data,
         password: hashedPassword
       });
 
-      // Log user in after registration
+      // Login after registration
       req.login(user, (err) => {
         if (err) {
           return res.status(500).json({ message: "Registration successful but login failed" });
         }
 
-        return res.status(201).json({
+        return res.json({
           id: user.id,
           username: user.username,
           fullName: user.fullName,
@@ -137,7 +132,6 @@ export function setupAuthRoutes(app: Express) {
           place: user.place
         });
       });
-
     } catch (error) {
       if (error instanceof Error) {
         return res.status(400).json({ message: error.message });
@@ -146,15 +140,14 @@ export function setupAuthRoutes(app: Express) {
     }
   });
 
+  // Logout
   app.post("/api/logout", (req, res) => {
-    req.logout((err) => {
-      if (err) {
-        return res.status(500).json({ message: "Logout failed" });
-      }
+    req.logout(() => {
       res.sendStatus(200);
     });
   });
 
+  // Get current user
   app.get("/api/user", (req, res) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "Not authenticated" });
