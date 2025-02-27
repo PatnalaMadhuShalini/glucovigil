@@ -58,8 +58,8 @@ async function startServer() {
 
     // Start server
     await new Promise<void>((resolve, reject) => {
-      server.listen(5000, '0.0.0.0', () => {
-        console.log('Server running on port 5000');
+      server.listen(5001, '0.0.0.0', () => {
+        console.log('Server running on port 5001');
         resolve();
       });
 
