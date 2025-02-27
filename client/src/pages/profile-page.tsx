@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
-import NavMenu from "@/components/nav-menu";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -19,15 +18,14 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
+      <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] bg-[#0A192F]">
         <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
-      <NavMenu />
+    <div className="min-h-[calc(100vh-4rem)] bg-[#0A192F]">
       <div className="container mx-auto px-4 py-8">
         <div className="grid gap-6">
           {/* User Profile Section */}
@@ -81,9 +79,9 @@ export default function ProfilePage() {
                 <TabsContent value="history">
                   <div className="space-y-4">
                     {healthData?.map((entry, index) => (
-                      <div key={index} className="p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                      <div key={index} className="p-4 bg-white/5 rounded-lg shadow-sm hover:shadow-md transition-shadow">
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-gray-500">
+                          <span className="text-sm text-gray-400">
                             {new Date(entry.createdAt).toLocaleDateString()}
                           </span>
                           <span className={`text-sm font-medium ${
@@ -95,10 +93,10 @@ export default function ProfilePage() {
                           </span>
                         </div>
                         <div className="mt-2">
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-gray-400">
                             Blood Sugar: {entry.physiological.bloodSugar} mg/dL
                           </p>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-gray-400">
                             BP: {entry.physiological.bloodPressure.systolic}/{entry.physiological.bloodPressure.diastolic}
                           </p>
                         </div>
@@ -111,18 +109,18 @@ export default function ProfilePage() {
                   <div className="space-y-4">
                     {healthData?.length ? (
                       <div className="grid gap-4">
-                        <div className="p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                          <h3 className="font-medium mb-2">Latest Report</h3>
+                        <div className="p-4 bg-white/5 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                          <h3 className="font-medium mb-2 text-white/90">Latest Report</h3>
                           <div className="space-y-2">
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-gray-400">
                               Risk Level: {healthData[healthData.length - 1].prediction?.level.toUpperCase()}
                             </p>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-gray-400">
                               Score: {healthData[healthData.length - 1].prediction?.score}
                             </p>
                             <div className="mt-4">
-                              <h4 className="text-sm font-medium mb-2">Recommendations:</h4>
-                              <ul className="list-disc pl-4 text-sm text-gray-600">
+                              <h4 className="text-sm font-medium mb-2 text-white/90">Recommendations:</h4>
+                              <ul className="list-disc pl-4 text-sm text-gray-400">
                                 {healthData[healthData.length - 1].prediction?.recommendations.map((rec, i) => (
                                   <li key={i}>{rec}</li>
                                 ))}
@@ -132,7 +130,7 @@ export default function ProfilePage() {
                         </div>
                       </div>
                     ) : (
-                      <p className="text-gray-500">No health reports available yet.</p>
+                      <p className="text-gray-400">No health reports available yet.</p>
                     )}
                   </div>
                 </TabsContent>
