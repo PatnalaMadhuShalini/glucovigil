@@ -1,6 +1,5 @@
 import express from "express";
 import { type Request, Response, NextFunction } from "express";
-import { setupVite, serveStatic } from "./vite";
 import { createServer } from "http";
 import { setupAuth, setupAuthRoutes } from "./auth";
 import { registerRoutes } from "./routes";
@@ -32,11 +31,18 @@ async function startServer() {
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
+    // Health check endpoint
+    app.get('/health', (req, res) => {
+      res.json({ status: 'ok', timestamp: new Date().toISOString() });
+    });
+
     // Setup auth and routes first
     console.log('Setting up authentication...');
     setupAuth(app);
     setupAuthRoutes(app);
-    registerRoutes(app);
+    const router = express.Router();
+    await registerRoutes(router);
+    app.use('/api', router);
 
     // Error handling middleware
     app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
@@ -50,18 +56,6 @@ async function startServer() {
     // Create HTTP server
     server = createServer(app);
 
-    // Handle server errors
-    server.on('error', (error: any) => {
-      if (error.code === 'EADDRINUSE') {
-        console.error('Port 5000 is in use. Attempting to close existing connections...');
-        server.close();
-        process.exit(1);
-      } else {
-        console.error('Server error:', error);
-        process.exit(1);
-      }
-    });
-
     // Start server
     await new Promise<void>((resolve, reject) => {
       server.listen(5000, '0.0.0.0', () => {
@@ -69,23 +63,11 @@ async function startServer() {
         resolve();
       });
 
-      server.once('error', reject);
+      server.once('error', (error: any) => {
+        console.error('Server startup error:', error);
+        reject(error);
+      });
     });
-
-    // Setup Vite after server is running
-    if (process.env.NODE_ENV !== "production") {
-      console.log('Setting up Vite development server...');
-      try {
-        await setupVite(app);
-        console.log('Vite setup completed');
-      } catch (error) {
-        console.error('Vite setup failed:', error);
-        serveStatic(app);
-      }
-    } else {
-      console.log('Setting up static file serving...');
-      serveStatic(app);
-    }
 
   } catch (error) {
     console.error('Server initialization failed:', error);

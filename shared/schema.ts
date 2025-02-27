@@ -21,33 +21,10 @@ export const users = pgTable("users", {
 export const healthData = pgTable("health_data", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(),
-  demographics: json("demographics").$type<{
-    age: number;
-    gender: "male" | "female" | "other";
-    ethnicity: string;
-  }>().notNull(),
-  physiological: json("physiological").$type<{
-    height: number;
-    weight: number;
-    bloodPressure: {
-      systolic: number;
-      diastolic: number;
-    };
-    bloodSugar: number;
-  }>().notNull(),
-  lifestyle: json("lifestyle").$type<{
-    exercise: "none" | "light" | "moderate" | "heavy";
-    diet: "poor" | "fair" | "good" | "excellent";
-    stressLevel: "low" | "moderate" | "high" | "severe";
-    workStyle: "sedentary" | "light" | "moderate" | "active";
-    alcohol: boolean;
-    smoking: boolean;
-  }>().notNull(),
-  prediction: json("prediction").$type<{
-    score: number;
-    level: "low" | "moderate" | "high";
-    recommendations: string[];
-  }>(),
+  demographics: json("demographics").$type<z.infer<typeof healthDataSchema>["demographics"]>().notNull(),
+  physiological: json("physiological").$type<z.infer<typeof healthDataSchema>["physiological"]>().notNull(),
+  lifestyle: json("lifestyle").$type<z.infer<typeof healthDataSchema>["lifestyle"]>().notNull(),
+  prediction: json("prediction").$type<Prediction>(),
   createdAt: text("created_at").notNull(),
   achievements: json("achievements").$type<Achievement[]>().default([]),
   nutritionPlan: json("nutrition_plan").$type<NutritionPlan | null>(),
@@ -95,7 +72,6 @@ export const symptomSchema = z.object({
 export type Symptom = z.infer<typeof symptomSchema>;
 
 
-// Update the health data schema to exactly match our form data
 export const healthDataSchema = z.object({
   demographics: z.object({
     age: z.number().int().min(0).max(120),

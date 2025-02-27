@@ -1,4 +1,4 @@
-import { users, healthData, type User, type InsertUser, type HealthData, type HealthDataWithPrediction } from "@shared/schema";
+import { users, healthData, type User, type InsertUser, type HealthDataWithPrediction } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 import session from "express-session";
@@ -78,36 +78,44 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  // Add health data methods
   async createHealthData(userId: number, data: HealthDataWithPrediction): Promise<HealthDataWithPrediction> {
     try {
       console.log('Creating health data for user:', userId);
       console.log('Health data to insert:', JSON.stringify(data, null, 2));
 
+      // Prepare the data for insertion
+      const healthDataToInsert = {
+        userId,
+        demographics: data.demographics,
+        physiological: data.physiological,
+        lifestyle: data.lifestyle,
+        prediction: data.prediction || null,
+        createdAt: data.createdAt || new Date().toISOString(),
+        nutritionPlan: data.nutritionPlan || null,
+        exercisePlan: data.exercisePlan || null,
+        achievements: data.achievements || [],
+        medicalRecords: null
+      };
+
+      console.log('Formatted health data for insertion:', JSON.stringify(healthDataToInsert, null, 2));
+
       const [newHealthData] = await db
         .insert(healthData)
-        .values({
-          userId,
-          demographics: data.demographics,
-          physiological: data.physiological,
-          lifestyle: data.lifestyle,
-          prediction: data.prediction || null,
-          createdAt: data.createdAt || new Date().toISOString(),
-          nutritionPlan: data.nutritionPlan || null,
-          exercisePlan: data.exercisePlan || null,
-          achievements: data.achievements || [],
-          medicalRecords: null
-        })
+        .values(healthDataToInsert)
         .returning();
 
       if (!newHealthData) {
-        throw new Error('Health data creation failed');
+        throw new Error('Health data creation failed - no data returned');
       }
 
       console.log('Successfully created health data:', JSON.stringify(newHealthData, null, 2));
       return newHealthData as HealthDataWithPrediction;
     } catch (err) {
       console.error('Error creating health data:', err);
+      if (err instanceof Error) {
+        console.error('Error details:', err.message);
+        console.error('Error stack:', err.stack);
+      }
       throw new Error('Failed to create health data: ' + (err instanceof Error ? err.message : 'Unknown error'));
     }
   }
@@ -121,6 +129,7 @@ export class DatabaseStorage implements IStorage {
         .where(eq(healthData.userId, userId))
         .orderBy(healthData.createdAt);
 
+      console.log('Retrieved health data:', JSON.stringify(userHealthData, null, 2));
       return userHealthData as HealthDataWithPrediction[];
     } catch (err) {
       console.error('Error getting health data:', err);

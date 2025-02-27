@@ -5,23 +5,19 @@ import { healthDataSchema, type HealthDataWithPrediction } from "@shared/schema"
 import { ZodError } from "zod";
 
 export async function registerRoutes(router: Router): Promise<void> {
-  router.get("/ping", (req, res) => {
-    res.json({ status: "ok", timestamp: new Date().toISOString() });
-  });
-
-  // Submit health data
   router.post("/health-data", async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
         return res.status(401).json({ message: "Unauthorized" });
       }
 
+      // Log incoming data
       console.log("Received health data:", JSON.stringify(req.body, null, 2));
 
-      // Validate the incoming data
+      // Validate input data
       const validatedData = healthDataSchema.parse(req.body);
 
-      // Calculate risk and predictions
+      // Calculate prediction
       const prediction = calculateDiabetesRisk(validatedData);
 
       // Get existing achievements
@@ -31,7 +27,7 @@ export async function registerRoutes(router: Router): Promise<void> {
       // Check and award achievements
       const achievements = checkAndAwardAchievements(validatedData, existingAchievements);
 
-      // Prepare the complete health data record
+      // Prepare complete health data record
       const completeHealthData: HealthDataWithPrediction = {
         ...validatedData,
         prediction,
@@ -39,29 +35,27 @@ export async function registerRoutes(router: Router): Promise<void> {
         createdAt: new Date().toISOString()
       };
 
-      console.log("Saving health data:", JSON.stringify(completeHealthData, null, 2));
-
       // Save to database
       const savedData = await storage.createHealthData(req.user.id, completeHealthData);
-      console.log("Health data saved successfully:", JSON.stringify(savedData, null, 2));
 
       res.status(201).json(savedData);
     } catch (err) {
       console.error("Error processing health data:", err);
+
       if (err instanceof ZodError) {
-        return res.status(400).json({ 
+        return res.status(400).json({
           message: "Invalid data format",
-          errors: err.errors 
+          errors: err.errors
         });
       }
-      res.status(500).json({ 
+
+      res.status(500).json({
         message: "Failed to save health data",
         error: err instanceof Error ? err.message : "Unknown error"
       });
     }
   });
 
-  // Get user's health data
   router.get("/health-data", async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
@@ -72,7 +66,7 @@ export async function registerRoutes(router: Router): Promise<void> {
       res.json(data);
     } catch (err) {
       console.error("Error fetching health data:", err);
-      res.status(500).json({ 
+      res.status(500).json({
         message: "Failed to fetch health data",
         error: err instanceof Error ? err.message : "Unknown error"
       });
@@ -80,30 +74,25 @@ export async function registerRoutes(router: Router): Promise<void> {
   });
 }
 
-function calculateDiabetesRisk(data: any) {
+function calculateDiabetesRisk(data: HealthDataWithPrediction) {
   let riskScore = 0;
 
-  // Age factor
-  if (data.demographics.age > 45) riskScore += 2;
-  if (data.demographics.age > 65) riskScore += 1;
-
-  // BMI calculation
+  // Calculate BMI
   const heightInMeters = data.physiological.height / 100;
   const bmi = data.physiological.weight / (heightInMeters * heightInMeters);
+
+  // Risk factors
   if (bmi > 30) riskScore += 2;
   else if (bmi > 25) riskScore += 1;
 
-  // Blood pressure
+  if (data.physiological.bloodSugar > 126) riskScore += 2;
+  else if (data.physiological.bloodSugar > 100) riskScore += 1;
+
   if (data.physiological.bloodPressure.systolic > 140 ||
       data.physiological.bloodPressure.diastolic > 90) {
     riskScore += 1;
   }
 
-  // Blood sugar
-  if (data.physiological.bloodSugar > 126) riskScore += 2;
-  else if (data.physiological.bloodSugar > 100) riskScore += 1;
-
-  // Lifestyle factors
   if (data.lifestyle.smoking) riskScore += 1;
   if (data.lifestyle.alcohol) riskScore += 1;
   if (data.lifestyle.exercise === "none") riskScore += 1;
@@ -118,7 +107,7 @@ function calculateDiabetesRisk(data: any) {
   };
 }
 
-function generateRecommendations(riskScore: number, data: any): string[] {
+function generateRecommendations(riskScore: number, data: HealthDataWithPrediction): string[] {
   const recommendations: string[] = [];
 
   if (data.lifestyle.diet === "poor" || data.lifestyle.diet === "fair") {
@@ -152,19 +141,11 @@ function generateRecommendations(riskScore: number, data: any): string[] {
   return recommendations;
 }
 
-interface Achievement {
-  id: string;
-  name: string;
-  description: string;
-  icon: string;
-  unlockedAt: string;
-}
-
-function checkAndAwardAchievements(data: any, existingAchievements: Achievement[] = []): Achievement[] {
+function checkAndAwardAchievements(data: HealthDataWithPrediction, existingAchievements: any[] = []): Achievement[] {
   const achievements = [...existingAchievements];
   const now = new Date().toISOString();
 
-  if (!existingAchievements.length) {
+  if (!achievements.length) {
     achievements.push({
       id: "first_check",
       name: "Health Pioneer",
@@ -191,4 +172,12 @@ function checkAndAwardAchievements(data: any, existingAchievements: Achievement[
   }
 
   return achievements;
+}
+
+interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  unlockedAt: string;
 }
