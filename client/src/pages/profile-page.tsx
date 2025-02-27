@@ -18,21 +18,24 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-sky-100 via-white to-sky-100">
+        <Loader2 className="h-8 w-8 animate-spin text-sky-600" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-sky-100 via-white to-sky-200">
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-20 [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
+      <div className="absolute inset-0 bg-gradient-to-br from-sky-500/10 via-blue-500/10 to-indigo-500/10 animate-gradient-xy" />
+
+      <div className="container mx-auto px-4 py-8 relative">
         <div className="grid gap-6">
           {/* User Profile Section */}
-          <Card className="shadow-lg hover:shadow-xl transition-shadow">
+          <Card className="shadow-lg hover:shadow-xl transition-shadow bg-white border border-sky-100">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Activity className="h-5 w-5" />
+              <CardTitle className="flex items-center gap-2 text-gray-800">
+                <Activity className="h-5 w-5 text-sky-600" />
                 Profile Information
               </CardTitle>
             </CardHeader>
@@ -59,9 +62,9 @@ export default function ProfilePage() {
           </Card>
 
           {/* Health Data and Reports Section */}
-          <Card className="shadow-lg hover:shadow-xl transition-shadow">
+          <Card className="shadow-lg hover:shadow-xl transition-shadow bg-white border border-sky-100">
             <CardHeader>
-              <CardTitle>Health Reports & History</CardTitle>
+              <CardTitle className="text-gray-800">Health Reports & History</CardTitle>
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="history">
@@ -79,7 +82,7 @@ export default function ProfilePage() {
                 <TabsContent value="history">
                   <div className="space-y-4">
                     {healthData?.map((entry, index) => (
-                      <div key={index} className="p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                      <div key={index} className="p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-sky-50">
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-gray-500">
                             {new Date(entry.createdAt).toLocaleDateString()}
@@ -109,8 +112,8 @@ export default function ProfilePage() {
                   <div className="space-y-4">
                     {healthData?.length ? (
                       <div className="grid gap-4">
-                        <div className="p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                          <h3 className="font-medium mb-2">Latest Report</h3>
+                        <div className="p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-sky-50">
+                          <h3 className="font-medium mb-2 text-gray-800">Latest Report</h3>
                           <div className="space-y-2">
                             <p className="text-sm text-gray-600">
                               Risk Level: {healthData[healthData.length - 1].prediction?.level.toUpperCase()}
@@ -119,7 +122,7 @@ export default function ProfilePage() {
                               Score: {healthData[healthData.length - 1].prediction?.score}
                             </p>
                             <div className="mt-4">
-                              <h4 className="text-sm font-medium mb-2">Recommendations:</h4>
+                              <h4 className="text-sm font-medium mb-2 text-gray-700">Recommendations:</h4>
                               <ul className="list-disc pl-4 text-sm text-gray-600">
                                 {healthData[healthData.length - 1].prediction?.recommendations.map((rec, i) => (
                                   <li key={i}>{rec}</li>
@@ -139,7 +142,7 @@ export default function ProfilePage() {
               <div className="mt-6">
                 <Button
                   onClick={() => setShowHealthForm(true)}
-                  className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
+                  className="w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700"
                 >
                   Update Health Data
                 </Button>
@@ -148,12 +151,14 @@ export default function ProfilePage() {
           </Card>
 
           {showHealthForm && (
-            <Card className="shadow-lg">
+            <Card className="shadow-lg bg-white border border-sky-100">
               <CardHeader>
-                <CardTitle>Update Health Information</CardTitle>
+                <CardTitle className="text-gray-800">Update Health Information</CardTitle>
               </CardHeader>
               <CardContent>
-                <HealthForm onComplete={() => setShowHealthForm(false)} />
+                <div className="bg-sky-50 p-6 rounded-lg">
+                  <HealthForm onComplete={() => setShowHealthForm(false)} />
+                </div>
               </CardContent>
             </Card>
           )}
