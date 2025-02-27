@@ -57,10 +57,13 @@ async function startServer() {
     // Create HTTP server
     server = createServer(app);
 
-    // Start server
+    // Start server on port 5000
     await new Promise<void>((resolve, reject) => {
-      server.listen(5001, '0.0.0.0', () => {
-        console.log('Server running on port 5001');
+      const port = 5000;
+      console.log(`Attempting to start server on port ${port}...`);
+
+      server.listen(port, '0.0.0.0', () => {
+        console.log(`Server running on port ${port}`);
         resolve();
       });
 
