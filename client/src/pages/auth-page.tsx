@@ -61,31 +61,30 @@ export default function AuthPage() {
     return null;
   }
 
-  const handleLogin = (data: LoginData) => {
-    loginMutation.mutate(data, {
-      onSuccess: () => setLocation("/dashboard"),
-    });
+  const handleLogin = async (data: LoginData) => {
+    try {
+      await loginMutation.mutateAsync(data);
+      setLocation("/dashboard");
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
 
-  const handleRegister = (data: InsertUser) => {
-    registerMutation.mutate(data, {
-      onSuccess: () => {
-        registerForm.reset();
-        setActiveTab("login");
-      },
-    });
+  const handleRegister = async (data: InsertUser) => {
+    try {
+      await registerMutation.mutateAsync(data);
+      registerForm.reset();
+      setActiveTab("login");
+    } catch (error) {
+      console.error("Registration failed:", error);
+    }
   };
 
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900">
-      {/* Subtle animated gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-indigo-500/10 to-violet-500/10 animate-gradient-xy" />
-
-      {/* Refined grid pattern */}
-      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-20 [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
-
-      <div className="flex-1 flex items-center justify-center p-8 relative">
-        <Card className="w-full max-w-md shadow-lg bg-white backdrop-blur-md border border-white/20">
+      {/* Left side - Auth form */}
+      <div className="flex-1 bg-white flex items-center justify-center p-8">
+        <Card className="w-full max-w-md border-none shadow-none">
           <CardHeader>
             <div className="flex justify-center mb-6">
               <img
@@ -94,15 +93,15 @@ export default function AuthPage() {
                 className="h-32 w-auto"
               />
             </div>
-            <CardTitle className="text-2xl font-bold text-center text-blue-900">
+            <CardTitle className="text-2xl font-bold text-center text-gray-900">
               Welcome to GlucoSmart
             </CardTitle>
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-2 mb-4">
-                <TabsTrigger value="login" className="text-blue-900">Login</TabsTrigger>
-                <TabsTrigger value="register" className="text-blue-900">Register</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 mb-6">
+                <TabsTrigger value="login" className="text-gray-700">Login</TabsTrigger>
+                <TabsTrigger value="register" className="text-gray-700">Register</TabsTrigger>
               </TabsList>
 
               <TabsContent value="login">
@@ -116,9 +115,12 @@ export default function AuthPage() {
                       name="username"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-blue-900">Username</FormLabel>
+                          <FormLabel className="text-gray-700">Username</FormLabel>
                           <FormControl>
-                            <Input {...field} className="bg-white border-blue-200 text-blue-900 placeholder:text-blue-400" />
+                            <Input 
+                              {...field} 
+                              className="border-gray-200 focus:border-blue-300 text-gray-900" 
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -129,9 +131,13 @@ export default function AuthPage() {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-blue-900">Password</FormLabel>
+                          <FormLabel className="text-gray-700">Password</FormLabel>
                           <FormControl>
-                            <Input type="password" {...field} className="bg-white border-blue-200 text-blue-900 placeholder:text-blue-400" />
+                            <Input 
+                              type="password" 
+                              {...field} 
+                              className="border-gray-200 focus:border-blue-300 text-gray-900" 
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -286,6 +292,7 @@ export default function AuthPage() {
         </Card>
       </div>
 
+      {/* Right side - Hero section */}
       <div className="hidden lg:flex flex-1 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 items-center justify-center p-12 text-white relative">
         <div className="max-w-lg">
           <h1 className="text-4xl font-bold mb-6">
