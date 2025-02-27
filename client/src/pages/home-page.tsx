@@ -115,7 +115,7 @@ export default function HomePage() {
                   Empowering individuals with AI-driven health insights for better diabetes management and prevention.
                 </p>
                 <p className="text-sm text-blue-100/60">
-                  Created by PDMS - Pioneering Digital Medical Solutions
+                  Created by PDMS
                 </p>
               </div>
 
@@ -181,10 +181,10 @@ export default function HomePage() {
 
             <div className="text-center border-t border-white/10 pt-8">
               <p className="text-sm text-blue-100/60">
-                © {new Date().getFullYear()} GlucoSmart by PDMS. All rights reserved.
+                © {new Date().getFullYear()} GlucoSmart. All rights reserved.
               </p>
               <p className="text-xs text-blue-100/40 mt-2">
-                Pioneering Digital Medical Solutions (PDMS) - Transforming Healthcare Through Innovation
+                Created with passion by PDMS
               </p>
             </div>
           </div>
