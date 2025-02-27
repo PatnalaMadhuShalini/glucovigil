@@ -18,7 +18,7 @@ export class DatabaseStorage implements IStorage {
 
   constructor() {
     this.sessionStore = new MemoryStore({
-      checkPeriod: 86400000
+      checkPeriod: 86400000 // 24 hours
     });
   }
 
@@ -29,7 +29,6 @@ export class DatabaseStorage implements IStorage {
         .from(users)
         .where(eq(users.id, id))
         .limit(1);
-
       return user;
     } catch (err) {
       console.error('Error getting user:', err);
@@ -44,11 +43,10 @@ export class DatabaseStorage implements IStorage {
         .from(users)
         .where(eq(users.username, username.toLowerCase().trim()))
         .limit(1);
-
       return user;
     } catch (err) {
       console.error('Error getting user by username:', err);
-      throw new Error('Failed to get user by username');
+      throw new Error('Failed to get user');
     }
   }
 
@@ -67,13 +65,13 @@ export class DatabaseStorage implements IStorage {
         .returning();
 
       if (!newUser) {
-        throw new Error('User creation failed - no user returned');
+        throw new Error('User creation failed');
       }
 
       return newUser;
     } catch (err) {
       console.error('Error creating user:', err);
-      throw new Error('Failed to create user - database error');
+      throw new Error('Failed to create user');
     }
   }
 }
