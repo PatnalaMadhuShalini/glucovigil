@@ -30,7 +30,9 @@ function App() {
       <AuthProvider>
         <div className="min-h-screen bg-[#0A192F]">
           <NavMenu />
-          <Router />
+          <main className="container mx-auto px-4 py-8">
+            <Router />
+          </main>
           <ChatAssistant />
           <Toaster />
         </div>
