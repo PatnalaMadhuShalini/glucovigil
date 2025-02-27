@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import NavMenu from "@/components/nav-menu";
 import HealthForm from "@/components/health-form";
 import RiskDisplay from "@/components/risk-display";
 import Recommendations from "@/components/recommendations";
@@ -26,7 +27,7 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] bg-[#0A192F]">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-900 via-blue-900 to-cyan-800">
         <div className="relative">
           <Loader2 className="h-12 w-12 animate-spin text-blue-300" />
           <div className="absolute inset-0 animate-pulse bg-blue-500/20 rounded-full blur-xl" />
@@ -39,7 +40,12 @@ export default function Dashboard() {
   const showRiskAlert = latestData?.prediction?.level === "high";
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-[#0A192F]">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-blue-900 to-cyan-800">
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/30 via-purple-500/30 to-pink-500/30 animate-gradient-xy" />
+
+      <NavMenu />
       <div className="relative py-12">
         <div className="container mx-auto px-4">
           <div className="mb-8">
@@ -63,10 +69,10 @@ export default function Dashboard() {
           )}
 
           {!showForm && !healthData?.length && (
-            <Card className="mb-8 bg-white/5 backdrop-blur-lg border border-white/10">
+            <Card className="mb-8 bg-white/10 backdrop-blur-lg border-2 border-white/20">
               <CardContent className="p-8 text-center">
                 <p className="mb-6 text-xl text-blue-100">Start by completing your health assessment</p>
-                <Button
+                <Button 
                   onClick={() => setShowForm(true)}
                   className="relative overflow-hidden group bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700"
                 >
@@ -78,7 +84,7 @@ export default function Dashboard() {
           )}
 
           {showForm && (
-            <Card className="mb-8 bg-white backdrop-blur-lg border border-gray-200">
+            <Card className="mb-8 bg-white/10 backdrop-blur-lg border-2 border-white/20">
               <CardContent className="p-6">
                 <HealthForm onComplete={() => setShowForm(false)} />
               </CardContent>
@@ -99,7 +105,7 @@ export default function Dashboard() {
               <div className="grid md:grid-cols-2 gap-8 mb-8">
                 <div className="space-y-8">
                   <HealthRecommendations healthData={latestData} />
-                  <Card className="bg-white/5 backdrop-blur-lg border border-white/10 group hover:bg-white/10 transition-all duration-300">
+                  <Card className="bg-white/10 backdrop-blur-lg border-2 border-white/20 group hover:bg-white/15 transition-all duration-300">
                     <CardContent className="p-6">
                       <div className="flex justify-between items-center mb-4">
                         <h2 className="text-xl font-semibold text-white">Symptom Tracking</h2>

@@ -1,16 +1,10 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@/hooks/use-auth";
-import { InsertUser, insertUserSchema } from "@shared/schema";
-
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-} from "@/components/ui/card";
+import { useLocation } from "wouter";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -20,7 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
@@ -28,9 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { insertUserSchema, type InsertUser } from "@shared/schema";
 import { Loader2 } from "lucide-react";
 
 type LoginData = {
@@ -69,36 +61,25 @@ export default function AuthPage() {
     return null;
   }
 
-  const handleLogin = async (data: LoginData) => {
-    try {
-      await loginMutation.mutateAsync(data);
-      setLocation("/dashboard");
-    } catch (error) {
-      console.error("Login failed:", error);
-      // Display an error alert
-      //This part is added to display error messages
-      // Add error handling for login
-    }
+  const handleLogin = (data: LoginData) => {
+    loginMutation.mutate(data, {
+      onSuccess: () => setLocation("/dashboard"),
+    });
   };
 
-  const handleRegister = async (data: InsertUser) => {
-    try {
-      await registerMutation.mutateAsync(data);
-      registerForm.reset();
-      setActiveTab("login");
-    } catch (error) {
-      console.error("Registration failed:", error);
-      // Display an error alert
-      //This part is added to display error messages
-      // Add error handling for registration
-    }
+  const handleRegister = (data: InsertUser) => {
+    registerMutation.mutate(data, {
+      onSuccess: () => {
+        registerForm.reset();
+        setActiveTab("login");
+      },
+    });
   };
 
   return (
-    <div className="min-h-screen flex bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900">
-      {/* Left side - Auth form */}
-      <div className="flex-1 bg-white flex items-center justify-center p-8">
-        <Card className="w-full max-w-md border-none shadow-none">
+    <div className="min-h-screen flex bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="flex-1 flex items-center justify-center p-8">
+        <Card className="w-full max-w-md shadow-lg">
           <CardHeader>
             <div className="flex justify-center mb-6">
               <img
@@ -107,15 +88,15 @@ export default function AuthPage() {
                 className="h-32 w-auto"
               />
             </div>
-            <CardTitle className="text-2xl font-bold text-center text-gray-900">
+            <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
               Welcome to GlucoSmart
             </CardTitle>
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="login" className="text-gray-700">Login</TabsTrigger>
-                <TabsTrigger value="register" className="text-gray-700">Register</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 mb-4">
+                <TabsTrigger value="login">Login</TabsTrigger>
+                <TabsTrigger value="register">Register</TabsTrigger>
               </TabsList>
 
               <TabsContent value="login">
@@ -129,12 +110,9 @@ export default function AuthPage() {
                       name="username"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-gray-700">Username</FormLabel>
+                          <FormLabel>Username</FormLabel>
                           <FormControl>
-                            <Input 
-                              {...field} 
-                              className="border-gray-200 focus:border-blue-300 text-gray-900" 
-                            />
+                            <Input {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -145,13 +123,9 @@ export default function AuthPage() {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-gray-700">Password</FormLabel>
+                          <FormLabel>Password</FormLabel>
                           <FormControl>
-                            <Input 
-                              type="password" 
-                              {...field} 
-                              className="border-gray-200 focus:border-blue-300 text-gray-900" 
-                            />
+                            <Input type="password" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -159,7 +133,7 @@ export default function AuthPage() {
                     />
                     <Button
                       type="submit"
-                      className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white"
+                      className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
                       disabled={loginMutation.isPending}
                     >
                       {loginMutation.isPending ? (
@@ -186,9 +160,9 @@ export default function AuthPage() {
                       name="username"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-blue-900">Username</FormLabel>
+                          <FormLabel>Username</FormLabel>
                           <FormControl>
-                            <Input {...field} className="bg-white border-blue-200 text-blue-900 placeholder:text-blue-400" />
+                            <Input {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -199,9 +173,9 @@ export default function AuthPage() {
                       name="fullName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-blue-900">Full Name</FormLabel>
+                          <FormLabel>Full Name</FormLabel>
                           <FormControl>
-                            <Input {...field} className="bg-white border-blue-200 text-blue-900 placeholder:text-blue-400" />
+                            <Input {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -212,9 +186,9 @@ export default function AuthPage() {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-blue-900">Email</FormLabel>
+                          <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input type="email" {...field} className="bg-white border-blue-200 text-blue-900 placeholder:text-blue-400" />
+                            <Input type="email" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -225,9 +199,9 @@ export default function AuthPage() {
                       name="phone"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-blue-900">Phone Number</FormLabel>
+                          <FormLabel>Phone Number</FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder="+91XXXXXXXXXX" className="bg-white border-blue-200 text-blue-900 placeholder:text-blue-400" />
+                            <Input {...field} placeholder="+91XXXXXXXXXX" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -238,13 +212,13 @@ export default function AuthPage() {
                       name="gender"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-blue-900">Gender</FormLabel>
+                          <FormLabel>Gender</FormLabel>
                           <Select
                             onValueChange={field.onChange}
                             defaultValue={field.value}
                           >
                             <FormControl>
-                              <SelectTrigger className="bg-white border-blue-200 text-blue-900">
+                              <SelectTrigger>
                                 <SelectValue placeholder="Select gender" />
                               </SelectTrigger>
                             </FormControl>
@@ -263,9 +237,9 @@ export default function AuthPage() {
                       name="place"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-blue-900">Place</FormLabel>
+                          <FormLabel>Place</FormLabel>
                           <FormControl>
-                            <Input {...field} className="bg-white border-blue-200 text-blue-900 placeholder:text-blue-400" />
+                            <Input {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -276,9 +250,9 @@ export default function AuthPage() {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-blue-900">Password</FormLabel>
+                          <FormLabel>Password</FormLabel>
                           <FormControl>
-                            <Input type="password" {...field} className="bg-white border-blue-200 text-blue-900 placeholder:text-blue-400" />
+                            <Input type="password" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -286,7 +260,7 @@ export default function AuthPage() {
                     />
                     <Button
                       type="submit"
-                      className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white"
+                      className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
                       disabled={registerMutation.isPending}
                     >
                       {registerMutation.isPending ? (
@@ -306,8 +280,7 @@ export default function AuthPage() {
         </Card>
       </div>
 
-      {/* Right side - Hero section */}
-      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 items-center justify-center p-12 text-white relative">
+      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-blue-500 to-cyan-500 items-center justify-center p-12 text-white">
         <div className="max-w-lg">
           <h1 className="text-4xl font-bold mb-6">
             Take Control of Your Health Journey

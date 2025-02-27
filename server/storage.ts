@@ -1,140 +1,113 @@
-import { users, healthData, type User, type InsertUser, type HealthDataWithPrediction } from "@shared/schema";
+import { users, healthData, feedback, type User, type InsertUser, type HealthData, type Feedback, type HealthDataWithPrediction } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 import session from "express-session";
-import createMemoryStore from "memorystore";
+import connectPg from "connect-pg-simple";
+import { pool } from "./db";
 
-const MemoryStore = createMemoryStore(session);
+const PostgresSessionStore = connectPg(session);
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  sessionStore: session.Store;
-  // Add health data operations
   createHealthData(userId: number, data: HealthDataWithPrediction): Promise<HealthDataWithPrediction>;
   getHealthDataByUserId(userId: number): Promise<HealthDataWithPrediction[]>;
+  updateHealthData(userId: number, data: Partial<HealthDataWithPrediction>): Promise<HealthDataWithPrediction | undefined>;
+  createFeedback(userId: number, feedback: Feedback): Promise<Feedback>;
+  getUserByVerificationToken(token: string): Promise<User | undefined>;
+  verifyUser(userId: number): Promise<boolean>;
+  sessionStore: session.Store;
 }
 
 export class DatabaseStorage implements IStorage {
   sessionStore: session.Store;
 
   constructor() {
-    this.sessionStore = new MemoryStore({
-      checkPeriod: 86400000 // 24 hours
+    this.sessionStore = new PostgresSessionStore({
+      pool,
+      createTableIfMissing: true,
     });
   }
 
   async getUser(id: number): Promise<User | undefined> {
-    try {
-      const [user] = await db
-        .select()
-        .from(users)
-        .where(eq(users.id, id))
-        .limit(1);
-      return user;
-    } catch (err) {
-      console.error('Error getting user:', err);
-      throw new Error('Failed to get user');
-    }
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    try {
-      const [user] = await db
-        .select()
-        .from(users)
-        .where(eq(users.username, username.toLowerCase().trim()))
-        .limit(1);
-      return user;
-    } catch (err) {
-      console.error('Error getting user by username:', err);
-      throw new Error('Failed to get user');
-    }
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
   }
 
   async createUser(user: InsertUser): Promise<User> {
-    try {
-      const [newUser] = await db
-        .insert(users)
-        .values({
-          ...user,
-          username: user.username.toLowerCase().trim(),
-          achievements: [],
-          healthGoals: [],
-          preferredLanguage: 'en',
-          verified: false
-        })
-        .returning();
-
-      if (!newUser) {
-        throw new Error('User creation failed');
-      }
-
-      return newUser;
-    } catch (err) {
-      console.error('Error creating user:', err);
-      throw new Error('Failed to create user');
-    }
+    const [newUser] = await db.insert(users).values(user).returning();
+    return newUser;
   }
 
   async createHealthData(userId: number, data: HealthDataWithPrediction): Promise<HealthDataWithPrediction> {
-    try {
-      console.log('Creating health data for user:', userId);
-      console.log('Health data to insert:', JSON.stringify(data, null, 2));
-
-      // Prepare the data for insertion
-      const healthDataToInsert = {
+    const [newData] = await db
+      .insert(healthData)
+      .values({
         userId,
         demographics: data.demographics,
         physiological: data.physiological,
         lifestyle: data.lifestyle,
-        prediction: data.prediction || null,
-        createdAt: data.createdAt || new Date().toISOString(),
-        nutritionPlan: data.nutritionPlan || null,
-        exercisePlan: data.exercisePlan || null,
-        achievements: data.achievements || [],
-        medicalRecords: null
-      };
-
-      console.log('Formatted health data for insertion:', JSON.stringify(healthDataToInsert, null, 2));
-
-      const [newHealthData] = await db
-        .insert(healthData)
-        .values(healthDataToInsert)
-        .returning();
-
-      if (!newHealthData) {
-        throw new Error('Health data creation failed - no data returned');
-      }
-
-      console.log('Successfully created health data:', JSON.stringify(newHealthData, null, 2));
-      return newHealthData as HealthDataWithPrediction;
-    } catch (err) {
-      console.error('Error creating health data:', err);
-      if (err instanceof Error) {
-        console.error('Error details:', err.message);
-        console.error('Error stack:', err.stack);
-      }
-      throw new Error('Failed to create health data: ' + (err instanceof Error ? err.message : 'Unknown error'));
-    }
+        prediction: data.prediction,
+        nutritionPlan: data.nutritionPlan,
+        exercisePlan: data.exercisePlan,
+        achievements: data.achievements,
+        createdAt: new Date().toISOString(),
+      })
+      .returning();
+    return newData as HealthDataWithPrediction;
   }
 
   async getHealthDataByUserId(userId: number): Promise<HealthDataWithPrediction[]> {
-    try {
-      console.log('Fetching health data for user:', userId);
-      const userHealthData = await db
-        .select()
-        .from(healthData)
-        .where(eq(healthData.userId, userId))
-        .orderBy(healthData.createdAt);
+    const data = await db
+      .select()
+      .from(healthData)
+      .where(eq(healthData.userId, userId));
+    return data as HealthDataWithPrediction[];
+  }
 
-      console.log('Retrieved health data:', JSON.stringify(userHealthData, null, 2));
-      return userHealthData as HealthDataWithPrediction[];
-    } catch (err) {
-      console.error('Error getting health data:', err);
-      throw new Error('Failed to get health data');
-    }
+  async updateHealthData(userId: number, data: Partial<HealthDataWithPrediction>): Promise<HealthDataWithPrediction | undefined> {
+    const [updatedData] = await db
+      .update(healthData)
+      .set(data)
+      .where(eq(healthData.userId, userId))
+      .returning();
+    return updatedData as HealthDataWithPrediction;
+  }
+
+  async createFeedback(userId: number, feedbackData: Feedback): Promise<Feedback> {
+    const [newFeedback] = await db
+      .insert(feedback)
+      .values({
+        userId,
+        rating: feedbackData.rating,
+        category: feedbackData.category,
+        comment: feedbackData.comment,
+      })
+      .returning();
+    return newFeedback;
+  }
+
+  async getUserByVerificationToken(token: string): Promise<User | undefined> {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.verificationToken, token));
+    return user;
+  }
+
+  async verifyUser(userId: number): Promise<boolean> {
+    const [user] = await db
+      .update(users)
+      .set({ verified: true })
+      .where(eq(users.id, userId))
+      .returning();
+    return !!user;
   }
 }
 

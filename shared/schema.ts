@@ -11,7 +11,7 @@ export const users = pgTable("users", {
   phone: text("phone").notNull(),
   gender: text("gender").notNull(),
   place: text("place").notNull(),
-  achievements: json("achievements").$type<Achievement[]>().default([]),
+  achievements: json("achievements").default([]),
   preferredLanguage: text("preferred_language").default("en"),
   healthGoals: json("health_goals").default([]),
   verificationToken: text("verification_token"),
@@ -21,14 +21,14 @@ export const users = pgTable("users", {
 export const healthData = pgTable("health_data", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(),
-  demographics: json("demographics").$type<z.infer<typeof healthDataSchema>["demographics"]>().notNull(),
-  physiological: json("physiological").$type<z.infer<typeof healthDataSchema>["physiological"]>().notNull(),
-  lifestyle: json("lifestyle").$type<z.infer<typeof healthDataSchema>["lifestyle"]>().notNull(),
-  prediction: json("prediction").$type<Prediction>(),
+  demographics: json("demographics").notNull(),
+  physiological: json("physiological").notNull(),
+  lifestyle: json("lifestyle").notNull(),
+  prediction: json("prediction"),
   createdAt: text("created_at").notNull(),
-  achievements: json("achievements").$type<Achievement[]>().default([]),
-  nutritionPlan: json("nutrition_plan").$type<NutritionPlan | null>(),
-  exercisePlan: json("exercise_plan").$type<ExercisePlan | null>(),
+  nutritionPlan: json("nutrition_plan"),
+  exercisePlan: json("exercise_plan"),
+  achievements: json("achievements"),
   medicalRecords: json("medical_records")
 });
 
@@ -72,6 +72,7 @@ export const symptomSchema = z.object({
 export type Symptom = z.infer<typeof symptomSchema>;
 
 
+// Update HealthData schema to remove mood types
 export const healthDataSchema = z.object({
   demographics: z.object({
     age: z.number().int().min(0).max(120),
@@ -83,7 +84,7 @@ export const healthDataSchema = z.object({
     weight: z.number().min(30, "Weight must be at least 30 kg").max(300, "Weight must be less than 300 kg"),
     bloodPressure: z.object({
       systolic: z.number().min(70, "Systolic must be at least 70").max(200, "Systolic must be less than 200"),
-      diastolic: z.number().min(40, "Diastolic must be at least 40").max(130, "Diastolic must be less than 130"),
+      diastolic: z.number().min(40, "Diastolic must be at least 40").max(130, "Diastolic must be less than 130")
     }),
     bloodSugar: z.number().min(50, "Blood sugar must be at least 50 mg/dL").max(300, "Blood sugar must be less than 300 mg/dL"),
   }),
@@ -94,7 +95,8 @@ export const healthDataSchema = z.object({
     workStyle: z.enum(["sedentary", "light", "moderate", "active"]),
     alcohol: z.boolean(),
     smoking: z.boolean()
-  })
+  }),
+  symptoms: symptomSchema.optional(),
 });
 
 export const feedbackSchema = z.object({
@@ -151,6 +153,7 @@ export type ExercisePlan = {
   };
 };
 
+// Add prediction types
 export type Prediction = {
   score: number;
   level: "low" | "moderate" | "high";
@@ -158,9 +161,10 @@ export type Prediction = {
 };
 
 export type HealthDataWithPrediction = HealthData & {
-  prediction?: Prediction;
+  prediction: Prediction;
   nutritionPlan?: NutritionPlan;
   exercisePlan?: ExercisePlan;
   achievements?: Achievement[];
+  symptoms?: Symptom;
   createdAt: string;
 };

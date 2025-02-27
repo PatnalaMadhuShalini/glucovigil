@@ -31,12 +31,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import MedicalRecordsUpload from "./medical-records-upload";
 
 const InfoTooltip = ({ content }: { content: string }) => (
   <TooltipProvider>
     <Tooltip>
       <TooltipTrigger asChild>
-        <HelpCircle className="h-4 w-4 ml-2 text-gray-500 inline-block cursor-help" />
+        <HelpCircle className="h-4 w-4 ml-2 text-muted-foreground inline-block cursor-help" />
       </TooltipTrigger>
       <TooltipContent>
         <p className="max-w-xs text-sm">{content}</p>
@@ -49,37 +50,39 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
   const { toast } = useToast();
   const [error, setError] = useState<string | null>(null);
 
+  const defaultValues: HealthData = {
+    demographics: {
+      age: 0,
+      gender: "male",
+      ethnicity: "",
+    },
+    physiological: {
+      height: 0,
+      weight: 0,
+      bloodPressure: {
+        systolic: 0,
+        diastolic: 0,
+      },
+      bloodSugar: 0,
+    },
+    lifestyle: {
+      exercise: "none",
+      diet: "fair",
+      stressLevel: "moderate",
+      workStyle: "sedentary",
+      alcohol: false,
+      smoking: false
+    },
+  };
+
   const form = useForm<HealthData>({
     resolver: zodResolver(healthDataSchema),
-    defaultValues: {
-      demographics: {
-        age: 0,
-        gender: "male",
-        ethnicity: "",
-      },
-      physiological: {
-        height: 0,
-        weight: 0,
-        bloodPressure: {
-          systolic: 0,
-          diastolic: 0,
-        },
-        bloodSugar: 0,
-      },
-      lifestyle: {
-        exercise: "none",
-        diet: "fair",
-        stressLevel: "moderate",
-        workStyle: "sedentary",
-        alcohol: false,
-        smoking: false
-      },
-    },
+    defaultValues,
   });
 
   const mutation = useMutation({
     mutationFn: async (data: HealthData) => {
-      console.log('Submitting health data:', JSON.stringify(data, null, 2));
+      setError(null);
       const res = await apiRequest("POST", "/api/health-data", data);
       if (!res.ok) {
         const errorData = await res.json();
@@ -96,7 +99,6 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
       onComplete();
     },
     onError: (error: Error) => {
-      console.error('Health data submission error:', error);
       setError(error.message);
       toast({
         title: "Error",
@@ -106,12 +108,9 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
     },
   });
 
-  const onSubmit = async (formData: HealthData) => {
+  const onSubmit = (formData: HealthData) => {
     try {
-      setError(null);
-      console.log('Raw form data:', JSON.stringify(formData, null, 2));
-
-      const validatedData: HealthData = {
+      const transformedData: HealthData = {
         demographics: {
           age: Number(formData.demographics.age),
           gender: formData.demographics.gender,
@@ -131,22 +130,15 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
           diet: formData.lifestyle.diet,
           stressLevel: formData.lifestyle.stressLevel,
           workStyle: formData.lifestyle.workStyle,
-          alcohol: Boolean(formData.lifestyle.alcohol),
-          smoking: Boolean(formData.lifestyle.smoking)
+          alcohol: formData.lifestyle.alcohol === true,
+          smoking: formData.lifestyle.smoking === true
         }
       };
 
-      console.log('Validated data:', JSON.stringify(validatedData, null, 2));
-      await mutation.mutateAsync(validatedData);
+      mutation.mutate(transformedData);
     } catch (error) {
-      console.error('Form submission error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to submit health data';
-      setError(errorMessage);
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
+      console.error("Form submission error:", error);
+      setError("Failed to process form data");
     }
   };
 
@@ -162,7 +154,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
         {/* Demographics Section */}
         <div className="space-y-6">
           <div className="flex items-center">
-            <h2 className="text-xl font-semibold text-gray-900">Personal Information</h2>
+            <h2 className="text-xl font-semibold">Personal Information</h2>
             <InfoTooltip content="Basic information about you that helps us provide more accurate health insights." />
           </div>
           <div className="grid md:grid-cols-3 gap-4">
@@ -171,7 +163,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
               name="demographics.age"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Age (years)</FormLabel>
+                  <FormLabel>Age</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -181,9 +173,6 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       onChange={(e) => field.onChange(Number(e.target.value))}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Your age helps us assess age-related health factors
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -207,9 +196,6 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormDescription>
-                    Gender can affect various health risk factors
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -225,7 +211,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                     <Input {...field} />
                   </FormControl>
                   <FormDescription>
-                    Different ethnicities may have different health risk factors
+                    This helps assess specific health risk factors.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -237,7 +223,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
         {/* Physical Measurements Section */}
         <div className="space-y-6">
           <div className="flex items-center">
-            <h2 className="text-xl font-semibold text-gray-900">Physical Measurements</h2>
+            <h2 className="text-xl font-semibold">Physical Measurements</h2>
             <InfoTooltip content="Your physical measurements help us calculate important health indicators like BMI." />
           </div>
           <div className="grid md:grid-cols-2 gap-6">
@@ -292,11 +278,11 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
         {/* Blood Pressure and Sugar Section */}
         <div className="space-y-6">
           <div className="flex items-center">
-            <h2 className="text-xl font-semibold text-gray-900">Blood Pressure & Sugar</h2>
+            <h2 className="text-xl font-semibold">Blood Pressure & Sugar</h2>
             <InfoTooltip content="These vital measurements help assess your cardiovascular health and diabetes risk." />
           </div>
 
-          <div className="bg-blue-50 p-4 rounded-lg mb-4 text-gray-700">
+          <div className="bg-blue-50 p-4 rounded-lg mb-4">
             <h3 className="font-medium mb-2">Where to find these numbers?</h3>
             <ul className="list-disc pl-4 space-y-2 text-sm">
               <li>Blood pressure can be measured at home with a blood pressure monitor, at a pharmacy, or during your last doctor's visit</li>
@@ -381,7 +367,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
         {/* Lifestyle Section */}
         <div className="space-y-6">
           <div className="flex items-center">
-            <h2 className="text-xl font-semibold text-gray-900">Lifestyle Factors</h2>
+            <h2 className="text-xl font-semibold">Lifestyle Factors</h2>
             <InfoTooltip content="Your daily habits and lifestyle choices significantly impact your health risk factors." />
           </div>
           <div className="grid md:grid-cols-2 gap-6">
@@ -404,9 +390,6 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       <SelectItem value="heavy">Heavy (6-7 days/week)</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormDescription>
-                    Regular physical activity helps maintain good health
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -431,9 +414,6 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       <SelectItem value="excellent">Excellent (Well-balanced, whole foods)</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormDescription>
-                    Your diet quality affects your overall health
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -458,9 +438,6 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       <SelectItem value="severe">Severe (Constantly stressed)</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormDescription>
-                    Chronic stress can impact your health significantly
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -485,9 +462,6 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       <SelectItem value="active">Very Active (Constant movement)</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormDescription>
-                    Your work activity level affects your daily energy expenditure
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -499,10 +473,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Alcohol Consumption</FormLabel>
-                  <Select 
-                    onValueChange={(value) => field.onChange(value === "true")}
-                    value={String(field.value)}
-                  >
+                  <Select onValueChange={(value) => field.onChange(value === "true")} value={String(field.value)}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Do you consume alcohol?" />
@@ -513,9 +484,6 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       <SelectItem value="true">Yes</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormDescription>
-                    Regular alcohol consumption can affect your health
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -527,10 +495,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Smoking</FormLabel>
-                  <Select
-                    onValueChange={(value) => field.onChange(value === "true")}
-                    value={String(field.value)}
-                  >
+                  <Select onValueChange={(value) => field.onChange(value === "true")} value={String(field.value)}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Do you smoke?" />
@@ -541,9 +506,6 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       <SelectItem value="true">Yes</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormDescription>
-                    Smoking is a major risk factor for many health conditions
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -554,32 +516,13 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
         {/* Medical Records Upload Section */}
         <div className="space-y-4">
           <div className="flex items-center">
-            <h2 className="text-xl font-semibold text-gray-900">Medical Records (Optional)</h2>
+            <h2 className="text-xl font-semibold">Medical Records (Optional)</h2>
             <InfoTooltip content="Upload your medical records for more accurate health predictions and personalized recommendations." />
           </div>
-          <div className="bg-blue-50 p-4 rounded-lg mb-4">
-            <p className="text-sm text-gray-700">
-              You can upload your medical records to receive more personalized health insights and recommendations. 
-              This helps our AI system better understand your health history and provide more accurate predictions.
-            </p>
-            <ul className="list-disc pl-4 mt-2 text-sm text-gray-700">
-              <li>Supported formats: PDF, JPG, PNG</li>
-              <li>Max file size: 10MB</li>
-              <li>Your records are encrypted and stored securely</li>
-            </ul>
-          </div>
-          <div className="mt-4">
-            <input
-              type="file"
-              accept=".pdf,.jpg,.jpeg,.png"
-              className="block w-full text-sm text-gray-500
-                file:mr-4 file:py-2 file:px-4
-                file:rounded-full file:border-0
-                file:text-sm file:font-semibold
-                file:bg-blue-50 file:text-blue-700
-                hover:file:bg-blue-100"
-            />
-          </div>
+          <p className="text-sm text-gray-600 mb-4">
+            Upload your medical records for AI-powered analysis and more accurate health predictions.
+          </p>
+          <MedicalRecordsUpload />
         </div>
 
         <Button
