@@ -28,7 +28,10 @@ export function setupAuth(app: Express) {
     saveUninitialized: false,
     store: storage.sessionStore,
     cookie: {
-      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax'
     }
   }));
 
@@ -76,12 +79,15 @@ export function setupAuthRoutes(app: Express) {
         return res.status(400).json({ message: "Username and password are required" });
       }
 
+      console.log(`Registration attempt for username: ${username}`);
+
       // Validate using schema
       const data = insertUserSchema.parse(req.body);
 
       // Check existing user
       const existingUser = await storage.getUserByUsername(username);
       if (existingUser) {
+        console.log(`Registration failed: Username ${username} already exists`);
         return res.status(400).json({ message: "Username already exists" });
       }
 
@@ -92,13 +98,25 @@ export function setupAuthRoutes(app: Express) {
         password: hashedPassword
       });
 
+      console.log(`User ${username} created successfully`);
+
       // Log user in after registration
       req.login(user, (err) => {
         if (err) {
-          return res.status(500).json({ message: "Registration successful but login failed" });
+          console.error("Auto login after registration failed:", err);
+          return res.status(201).json({ 
+            message: "Registration successful but login failed. Please log in manually.",
+            success: true,
+            id: user.id,
+            username: user.username,
+            loginRequired: true
+          });
         }
 
-        return res.json({
+        console.log(`User ${username} automatically logged in after registration`);
+        return res.status(201).json({
+          message: "Registration successful",
+          success: true,
           id: user.id,
           username: user.username,
           fullName: user.fullName,
@@ -112,7 +130,8 @@ export function setupAuthRoutes(app: Express) {
     } catch (error: any) {
       console.error('Registration error:', error);
       return res.status(400).json({ 
-        message: error.message || "Registration failed"
+        message: error.message || "Registration failed",
+        success: false
       });
     }
   });
@@ -123,19 +142,25 @@ export function setupAuthRoutes(app: Express) {
       return res.status(400).json({ message: "Username and password are required" });
     }
 
+    console.log(`Login attempt for username: ${username}`);
+
     passport.authenticate("local", (err: any, user: any) => {
       if (err) {
+        console.error("Login authentication error:", err);
         return res.status(500).json({ message: "Server error" });
       }
       if (!user) {
+        console.log(`Login failed: Invalid credentials for ${username}`);
         return res.status(401).json({ message: "Invalid username or password" });
       }
 
-      req.login(user, (err) => {
-        if (err) {
+      req.login(user, (loginErr) => {
+        if (loginErr) {
+          console.error("Login session error:", loginErr);
           return res.status(500).json({ message: "Login failed" });
         }
 
+        console.log(`User ${username} logged in successfully`);
         return res.json({
           id: user.id,
           username: user.username,

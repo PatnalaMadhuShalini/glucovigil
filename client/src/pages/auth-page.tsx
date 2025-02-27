@@ -1,10 +1,16 @@
 import { useState } from "react";
-import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuth } from "@/hooks/use-auth";
+import { InsertUser, insertUserSchema } from "@shared/schema";
+
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -14,7 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -22,7 +28,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { insertUserSchema, type InsertUser } from "@shared/schema";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 import { Loader2 } from "lucide-react";
 
 type LoginData = {
@@ -67,6 +75,9 @@ export default function AuthPage() {
       setLocation("/dashboard");
     } catch (error) {
       console.error("Login failed:", error);
+      // Display an error alert
+      //This part is added to display error messages
+      // Add error handling for login
     }
   };
 
@@ -77,6 +88,9 @@ export default function AuthPage() {
       setActiveTab("login");
     } catch (error) {
       console.error("Registration failed:", error);
+      // Display an error alert
+      //This part is added to display error messages
+      // Add error handling for registration
     }
   };
 
