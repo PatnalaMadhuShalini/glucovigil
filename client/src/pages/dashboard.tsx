@@ -66,7 +66,7 @@ export default function Dashboard() {
             <Card className="mb-8 bg-white/5 backdrop-blur-lg border border-white/10">
               <CardContent className="p-8 text-center">
                 <p className="mb-6 text-xl text-blue-100">Start by completing your health assessment</p>
-                <Button 
+                <Button
                   onClick={() => setShowForm(true)}
                   className="relative overflow-hidden group bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700"
                 >
@@ -78,7 +78,7 @@ export default function Dashboard() {
           )}
 
           {showForm && (
-            <Card className="mb-8 bg-white/5 backdrop-blur-lg border border-white/10">
+            <Card className="mb-8 bg-white backdrop-blur-lg border border-gray-200">
               <CardContent className="p-6">
                 <HealthForm onComplete={() => setShowForm(false)} />
               </CardContent>

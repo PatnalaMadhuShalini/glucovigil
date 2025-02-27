@@ -37,7 +37,7 @@ const InfoTooltip = ({ content }: { content: string }) => (
   <TooltipProvider>
     <Tooltip>
       <TooltipTrigger asChild>
-        <HelpCircle className="h-4 w-4 ml-2 text-muted-foreground inline-block cursor-help" />
+        <HelpCircle className="h-4 w-4 ml-2 text-gray-500 inline-block cursor-help" />
       </TooltipTrigger>
       <TooltipContent>
         <p className="max-w-xs text-sm">{content}</p>
@@ -154,7 +154,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
         {/* Demographics Section */}
         <div className="space-y-6">
           <div className="flex items-center">
-            <h2 className="text-xl font-semibold">Personal Information</h2>
+            <h2 className="text-xl font-semibold text-gray-900">Personal Information</h2>
             <InfoTooltip content="Basic information about you that helps us provide more accurate health insights." />
           </div>
           <div className="grid md:grid-cols-3 gap-4">
@@ -223,7 +223,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
         {/* Physical Measurements Section */}
         <div className="space-y-6">
           <div className="flex items-center">
-            <h2 className="text-xl font-semibold">Physical Measurements</h2>
+            <h2 className="text-xl font-semibold text-gray-900">Physical Measurements</h2>
             <InfoTooltip content="Your physical measurements help us calculate important health indicators like BMI." />
           </div>
           <div className="grid md:grid-cols-2 gap-6">
@@ -278,11 +278,11 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
         {/* Blood Pressure and Sugar Section */}
         <div className="space-y-6">
           <div className="flex items-center">
-            <h2 className="text-xl font-semibold">Blood Pressure & Sugar</h2>
+            <h2 className="text-xl font-semibold text-gray-900">Blood Pressure & Sugar</h2>
             <InfoTooltip content="These vital measurements help assess your cardiovascular health and diabetes risk." />
           </div>
 
-          <div className="bg-blue-50 p-4 rounded-lg mb-4">
+          <div className="bg-blue-50 p-4 rounded-lg mb-4 text-gray-700">
             <h3 className="font-medium mb-2">Where to find these numbers?</h3>
             <ul className="list-disc pl-4 space-y-2 text-sm">
               <li>Blood pressure can be measured at home with a blood pressure monitor, at a pharmacy, or during your last doctor's visit</li>
@@ -367,7 +367,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
         {/* Lifestyle Section */}
         <div className="space-y-6">
           <div className="flex items-center">
-            <h2 className="text-xl font-semibold">Lifestyle Factors</h2>
+            <h2 className="text-xl font-semibold text-gray-900">Lifestyle Factors</h2>
             <InfoTooltip content="Your daily habits and lifestyle choices significantly impact your health risk factors." />
           </div>
           <div className="grid md:grid-cols-2 gap-6">
@@ -516,7 +516,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
         {/* Medical Records Upload Section */}
         <div className="space-y-4">
           <div className="flex items-center">
-            <h2 className="text-xl font-semibold">Medical Records (Optional)</h2>
+            <h2 className="text-xl font-semibold text-gray-900">Medical Records (Optional)</h2>
             <InfoTooltip content="Upload your medical records for more accurate health predictions and personalized recommendations." />
           </div>
           <p className="text-sm text-gray-600 mb-4">
