@@ -5,6 +5,10 @@ import { createServer } from "http";
 import { setupAuth, setupAuthRoutes } from "./auth";
 import { registerRoutes } from "./routes";
 
+console.log('Starting server process with PID:', process.pid);
+console.log('Current working directory:', process.cwd());
+console.log('Node environment:', process.env.NODE_ENV || 'development');
+
 // Create Express app
 const app = express();
 const apiRouter = express.Router();

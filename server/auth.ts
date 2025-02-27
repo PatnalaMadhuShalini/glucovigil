@@ -121,7 +121,7 @@ export function setupAuthRoutes(router: Router) {
           email: user.email
         });
       });
-    } catch (err) {
+    } catch (err: any) {
       console.error("Registration error:", err);
       if (err.errors) {
         return res.status(400).json({ message: "Validation error", errors: err.errors });
@@ -131,7 +131,7 @@ export function setupAuthRoutes(router: Router) {
   });
 
   router.post("/login", (req, res, next) => {
-    passport.authenticate("local", (err, user, info) => {
+    passport.authenticate("local", (err: any, user: any, info: any) => {
       if (err) {
         console.error("Login error:", err);
         return res.status(500).json({ message: "Internal server error" });
@@ -154,27 +154,55 @@ export function setupAuthRoutes(router: Router) {
     })(req, res, next);
   });
 
-  router.post("/api/logout", (req, res) => {
+  router.post("/logout", (req, res) => {
+    console.log("Logout endpoint called, session ID:", req.sessionID);
+
+    if (!req.isAuthenticated()) {
+      console.log("User not authenticated during logout attempt");
+      return res.status(200).json({ message: "Not logged in" });
+    }
+
     const sessionId = req.sessionID;
-    req.logout((err) => {
-      if (err) {
-        console.error("Logout error:", err);
-        return res.status(500).json({ message: "Error during logout" });
-      }
-      req.session.destroy((err) => {
+
+    // Use a promise to handle the logout process
+    new Promise<void>((resolve, reject) => {
+      req.logout((err) => {
         if (err) {
-          console.error("Session destruction error:", err);
-          return res.status(500).json({ message: "Error clearing session" });
+          console.error("Logout error:", err);
+          reject(err);
+          return;
         }
-        res.clearCookie('gluco.sid', {
-          path: '/',
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: 'lax'
-        });
-        console.info(`Session ${sessionId} destroyed successfully`);
-        res.sendStatus(200);
+        resolve();
       });
+    })
+    .then(() => {
+      // Destroy the session after successful logout
+      return new Promise<void>((resolve, reject) => {
+        req.session.destroy((err) => {
+          if (err) {
+            console.error("Session destruction error:", err);
+            reject(err);
+            return;
+          }
+          console.info(`Session ${sessionId} destroyed successfully`);
+          resolve();
+        });
+      });
+    })
+    .then(() => {
+      // Clear the cookie after session is destroyed
+      res.clearCookie('gluco.sid', {
+        path: '/',
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: 'lax'
+      });
+      console.log("Cookie cleared successfully");
+      res.status(200).json({ message: "Logged out successfully" });
+    })
+    .catch((err) => {
+      console.error("Complete logout process error:", err);
+      res.status(500).json({ message: "Error during logout process" });
     });
   });
 

@@ -77,9 +77,9 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen flex bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen flex bg-gradient-to-br from-sky-50 to-sky-100">
       <div className="flex-1 flex items-center justify-center p-8">
-        <Card className="w-full max-w-md shadow-lg">
+        <Card className="w-full max-w-md shadow-lg border border-sky-100">
           <CardHeader>
             <div className="flex justify-center mb-6">
               <img
@@ -88,7 +88,7 @@ export default function AuthPage() {
                 className="h-32 w-auto"
               />
             </div>
-            <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+            <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-sky-600 to-sky-700 bg-clip-text text-transparent">
               Welcome to GlucoSmart
             </CardTitle>
           </CardHeader>
@@ -133,7 +133,7 @@ export default function AuthPage() {
                     />
                     <Button
                       type="submit"
-                      className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
+                      className="w-full bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700"
                       disabled={loginMutation.isPending}
                     >
                       {loginMutation.isPending ? (
@@ -260,7 +260,7 @@ export default function AuthPage() {
                     />
                     <Button
                       type="submit"
-                      className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
+                      className="w-full bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700"
                       disabled={registerMutation.isPending}
                     >
                       {registerMutation.isPending ? (
@@ -280,7 +280,7 @@ export default function AuthPage() {
         </Card>
       </div>
 
-      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-blue-500 to-cyan-500 items-center justify-center p-12 text-white">
+      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-sky-500 to-sky-600 items-center justify-center p-12 text-white">
         <div className="max-w-lg">
           <h1 className="text-4xl font-bold mb-6">
             Take Control of Your Health Journey
