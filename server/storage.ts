@@ -31,8 +31,8 @@ export class DatabaseStorage implements IStorage {
         .limit(1);
       return user;
     } catch (err) {
-      console.error("Error getting user by ID:", err);
-      throw err;
+      console.error('Failed to get user by ID:', err);
+      throw new Error('Failed to get user');
     }
   }
 
@@ -45,8 +45,8 @@ export class DatabaseStorage implements IStorage {
         .limit(1);
       return user;
     } catch (err) {
-      console.error("Error getting user by username:", err);
-      throw err;
+      console.error('Failed to get user by username:', err);
+      throw new Error('Failed to get user');
     }
   }
 
@@ -63,10 +63,15 @@ export class DatabaseStorage implements IStorage {
           verified: false
         })
         .returning();
+
+      if (!newUser) {
+        throw new Error('User creation failed');
+      }
+
       return newUser;
     } catch (err) {
-      console.error("Error creating user:", err);
-      throw err;
+      console.error('Failed to create user:', err);
+      throw new Error('Failed to create user account');
     }
   }
 }

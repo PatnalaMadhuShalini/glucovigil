@@ -10,7 +10,6 @@ import { insertUserSchema } from "@shared/schema";
 const scryptAsync = promisify(scrypt);
 
 export function setupAuth(app: Express) {
-  // Basic session setup
   app.use(session({
     secret: 'secret',
     resave: false,
@@ -21,7 +20,6 @@ export function setupAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Simple passport strategy
   passport.use(new LocalStrategy(async (username, password, done) => {
     try {
       const user = await storage.getUserByUsername(username);
@@ -29,7 +27,6 @@ export function setupAuth(app: Express) {
         return done(null, false);
       }
 
-      // Simple password check
       const [hash, salt] = user.password.split('.');
       const buf = await scryptAsync(password, salt, 64) as Buffer;
 
@@ -57,7 +54,67 @@ export function setupAuth(app: Express) {
 }
 
 export function setupAuthRoutes(app: Express) {
-  // Simple login route
+  // Register route with explicit error handling
+  app.post("/api/register", async (req, res) => {
+    try {
+      // Validate input
+      if (!req.body.username || !req.body.password) {
+        return res.status(400).json({ message: "Username and password are required" });
+      }
+
+      const data = insertUserSchema.parse(req.body);
+
+      // Check for existing user
+      const existingUser = await storage.getUserByUsername(data.username);
+      if (existingUser) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
+
+      // Hash password
+      const salt = randomBytes(16).toString('hex');
+      const buf = await scryptAsync(data.password, salt, 64) as Buffer;
+      const hashedPassword = `${buf.toString('hex')}.${salt}`;
+
+      // Create user with basic data
+      const userData = {
+        ...data,
+        password: hashedPassword,
+        username: data.username.toLowerCase().trim()
+      };
+
+      const user = await storage.createUser(userData);
+
+      // Return success response
+      return res.status(201).json({
+        id: user.id,
+        username: user.username,
+        fullName: user.fullName,
+        email: user.email,
+        phone: user.phone,
+        gender: user.gender,
+        place: user.place
+      });
+
+    } catch (error: any) {
+      console.error('Registration error:', error);
+
+      // Handle validation errors
+      if (error.errors) {
+        return res.status(400).json({ 
+          message: "Validation error", 
+          errors: error.errors 
+        });
+      }
+
+      // Handle other errors
+      return res.status(500).json({ 
+        message: "Registration failed",
+        error: error.message 
+      });
+    }
+  });
+
+  // Login route
   app.post("/api/login", (req, res, next) => {
     passport.authenticate("local", (err: any, user: any) => {
       if (err) {
@@ -71,7 +128,8 @@ export function setupAuthRoutes(app: Express) {
         if (err) {
           return res.status(500).json({ message: "Login failed" });
         }
-        res.json({
+
+        return res.json({
           id: user.id,
           username: user.username,
           fullName: user.fullName,
@@ -84,54 +142,19 @@ export function setupAuthRoutes(app: Express) {
     })(req, res, next);
   });
 
-  // Simple register route
-  app.post("/api/register", async (req, res) => {
-    try {
-      const data = insertUserSchema.parse(req.body);
-
-      // Check for existing user
-      const existingUser = await storage.getUserByUsername(data.username);
-      if (existingUser) {
-        return res.status(400).json({ message: "Username already exists" });
-      }
-
-      // Create hash
-      const salt = randomBytes(16).toString('hex');
-      const buf = await scryptAsync(data.password, salt, 64) as Buffer;
-      const hashedPassword = `${buf.toString('hex')}.${salt}`;
-
-      // Create user
-      const user = await storage.createUser({
-        ...data,
-        password: hashedPassword
-      });
-
-      res.json({
-        id: user.id,
-        username: user.username,
-        fullName: user.fullName,
-        email: user.email,
-        phone: user.phone,
-        gender: user.gender,
-        place: user.place
-      });
-    } catch (error: any) {
-      res.status(400).json({ message: error.message });
-    }
-  });
-
-  // Simple logout route
+  // Logout route
   app.post("/api/logout", (req, res) => {
     req.logout(() => {
       res.sendStatus(200);
     });
   });
 
-  // Get user route
+  // Get current user route
   app.get("/api/user", (req, res) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "Not authenticated" });
     }
+
     const user = req.user as any;
     res.json({
       id: user.id,
