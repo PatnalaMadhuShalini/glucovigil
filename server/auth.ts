@@ -32,7 +32,7 @@ export function setupAuth(app: Express) {
   passport.use(
     new LocalStrategy(async (username, password, done) => {
       try {
-        // Trim username to handle whitespace issues
+        // Ensure username is trimmed
         username = username.trim();
         console.log('[Auth] Attempting login for:', username);
 
