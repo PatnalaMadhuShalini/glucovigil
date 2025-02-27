@@ -7,7 +7,6 @@ import { registerRoutes } from "./routes";
 
 // Create Express app
 const app = express();
-const apiRouter = express.Router();
 
 // Basic middleware
 app.use(express.json());
@@ -16,13 +15,12 @@ app.use(express.urlencoded({ extended: false }));
 // Setup core auth (session, passport) on main app
 setupAuth(app);
 
-// Mount API router
-app.use('/api', apiRouter);
-
-// Setup auth routes directly on the app since they need session access
+// Setup auth routes directly on the app
 setupAuthRoutes(app);
 
-// Register API routes
+// Mount API router and register API routes
+const apiRouter = express.Router();
+app.use('/api', apiRouter);
 registerRoutes(apiRouter);
 
 // Test route to verify Express is working
@@ -52,16 +50,6 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
         return;
       }
       next();
-    });
-
-    // Catch-all handler for unmatched API routes
-    app.all("/api/*", (req, res) => {
-      log(`Unmatched API route: ${req.method} ${req.path}`);
-      return res.status(404).json({
-        message: "API endpoint not found",
-        path: req.path,
-        method: req.method
-      });
     });
 
     // Try different ports if default is in use

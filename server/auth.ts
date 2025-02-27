@@ -90,46 +90,6 @@ export function setupAuth(app: Express) {
 }
 
 export function setupAuthRoutes(router: Router) {
-  router.post("/register", async (req, res) => {
-    try {
-      // Validate the request body using Zod schema
-      const validatedData = insertUserSchema.parse(req.body);
-
-      // Check if user already exists
-      const existingUser = await storage.getUserByUsername(validatedData.username);
-      if (existingUser) {
-        return res.status(400).json({ message: "Username already exists" });
-      }
-
-      // Hash password and create user
-      const hashedPassword = await hashPassword(validatedData.password);
-      const user = await storage.createUser({
-        ...validatedData,
-        password: hashedPassword,
-      });
-
-      // Log the user in after registration
-      req.login(user, (err) => {
-        if (err) {
-          console.error("Login error after registration:", err);
-          return res.status(500).json({ message: "Error during login after registration" });
-        }
-        return res.status(201).json({
-          id: user.id,
-          username: user.username,
-          fullName: user.fullName,
-          email: user.email
-        });
-      });
-    } catch (err) {
-      console.error("Registration error:", err);
-      if (err.errors) {
-        return res.status(400).json({ message: "Validation error", errors: err.errors });
-      }
-      res.status(500).json({ message: "Error during registration" });
-    }
-  });
-
   router.post("/login", (req, res, next) => {
     passport.authenticate("local", (err, user, info) => {
       if (err) {
@@ -137,7 +97,7 @@ export function setupAuthRoutes(router: Router) {
         return res.status(500).json({ message: "Internal server error" });
       }
       if (!user) {
-        return res.status(401).json({ message: info.message || "Authentication failed" });
+        return res.status(401).json({ message: info?.message || "Authentication failed" });
       }
       req.login(user, (err) => {
         if (err) {
@@ -148,14 +108,55 @@ export function setupAuthRoutes(router: Router) {
           id: user.id,
           username: user.username,
           fullName: user.fullName,
-          email: user.email
+          email: user.email,
+          phone: user.phone,
+          gender: user.gender,
+          place: user.place
         });
       });
     })(req, res, next);
   });
 
-  router.post("/api/logout", (req, res) => {
-    const sessionId = req.sessionID;
+  router.post("/register", async (req, res) => {
+    try {
+      const validatedData = insertUserSchema.parse(req.body);
+
+      const existingUser = await storage.getUserByUsername(validatedData.username);
+      if (existingUser) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
+
+      const hashedPassword = await hashPassword(validatedData.password);
+      const user = await storage.createUser({
+        ...validatedData,
+        password: hashedPassword,
+      });
+
+      req.login(user, (err) => {
+        if (err) {
+          console.error("Login error after registration:", err);
+          return res.status(500).json({ message: "Error during login after registration" });
+        }
+        return res.status(201).json({
+          id: user.id,
+          username: user.username,
+          fullName: user.fullName,
+          email: user.email,
+          phone: user.phone,
+          gender: user.gender,
+          place: user.place
+        });
+      });
+    } catch (err) {
+      console.error("Registration error:", err);
+      if (err instanceof Error) {
+        return res.status(400).json({ message: err.message });
+      }
+      res.status(500).json({ message: "Error during registration" });
+    }
+  });
+
+  router.post("/logout", (req, res) => {
     req.logout((err) => {
       if (err) {
         console.error("Logout error:", err);
@@ -172,7 +173,6 @@ export function setupAuthRoutes(router: Router) {
           secure: process.env.NODE_ENV === "production",
           sameSite: 'lax'
         });
-        console.info(`Session ${sessionId} destroyed successfully`);
         res.sendStatus(200);
       });
     });
@@ -187,7 +187,10 @@ export function setupAuthRoutes(router: Router) {
       id: user.id,
       username: user.username,
       fullName: user.fullName,
-      email: user.email
+      email: user.email,
+      phone: user.phone,
+      gender: user.gender,
+      place: user.place
     });
   });
 }
