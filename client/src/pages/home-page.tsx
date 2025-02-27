@@ -8,12 +8,12 @@ export default function HomePage() {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-900 via-indigo-900 to-violet-900">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-700 via-indigo-700 to-violet-700">
       {/* Subtle animated gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-indigo-500/10 to-violet-500/10 animate-gradient-xy" />
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-indigo-400/10 to-violet-400/10 animate-gradient-xy" />
 
       {/* Refined grid pattern */}
-      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-30 [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-20 [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
 
       <div className="relative">
         {/* Hero Section */}
@@ -29,7 +29,7 @@ export default function HomePage() {
                 <Sparkles className="absolute -top-4 -right-4 h-6 w-6 text-blue-200 animate-pulse-subtle" />
               </div>
             </div>
-            <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-200 via-indigo-100 to-violet-200 bg-clip-text text-transparent drop-shadow-lg">
+            <h1 className="text-5xl font-bold mb-6 text-white drop-shadow-lg">
               Welcome to GlucoSmart
             </h1>
             <p className="text-xl font-medium text-blue-100 max-w-3xl mx-auto leading-relaxed mb-8">
@@ -69,12 +69,12 @@ export default function HomePage() {
                 description: "Smart health companion powered by AI"
               }
             ].map((feature, index) => (
-              <Card key={index} className="group transform hover:scale-102 transition-all duration-500 bg-white/10 backdrop-blur-sm border border-white/20 overflow-hidden">
+              <Card key={index} className="group transform hover:scale-102 transition-all duration-500 bg-white/20 backdrop-blur-sm border border-white/30 overflow-hidden">
                 <CardContent className="p-6 relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-violet-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <feature.icon className="h-10 w-10 text-blue-300 mb-4 transform group-hover:scale-105 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-violet-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <feature.icon className="h-10 w-10 text-blue-200 mb-4 transform group-hover:scale-105 transition-transform duration-500" />
                   <h2 className="text-lg font-semibold mb-2 text-white">{feature.title}</h2>
-                  <p className="text-sm text-blue-100 leading-relaxed">
+                  <p className="text-sm text-blue-50 leading-relaxed">
                     {feature.description}
                   </p>
                 </CardContent>
