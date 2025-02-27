@@ -4,6 +4,7 @@ import { createServer } from "http";
 import { setupAuth, setupAuthRoutes } from "./auth";
 import { registerRoutes } from "./routes";
 import { testDatabaseConnection } from "./db";
+import { setupVite } from "./vite";
 
 // Add global error handlers
 process.on('uncaughtException', (error) => {
@@ -68,6 +69,18 @@ async function startServer() {
         reject(error);
       });
     });
+
+    // Setup Vite after server is running
+    if (process.env.NODE_ENV !== "production") {
+      console.log('Setting up Vite development server...');
+      try {
+        await setupVite(app, server);
+        console.log('Vite setup completed successfully');
+      } catch (error) {
+        console.error('Vite setup failed:', error);
+        throw error;
+      }
+    }
 
   } catch (error) {
     console.error('Server initialization failed:', error);
