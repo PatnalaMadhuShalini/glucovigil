@@ -1,12 +1,77 @@
 import type { Express } from "express";
 import { Router } from "express";
 import { storage } from "./storage";
+import { healthDataSchema } from "@shared/schema";
+import { ZodError } from "zod";
 
 export async function registerRoutes(router: Router): Promise<void> {
   // Basic health check endpoint
   router.get("/ping", (req, res) => {
     console.log("Ping endpoint hit");
     res.json({ status: "ok", timestamp: new Date().toISOString() });
+  });
+
+  // Submit health data
+  router.post("/health-data", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    try {
+      console.log("Received health data:", req.body);
+      const data = healthDataSchema.parse(req.body);
+
+      // Calculate risk and predictions
+      const prediction = calculateDiabetesRisk(data);
+
+      // Get existing achievements
+      const existingData = await storage.getHealthDataByUserId(req.user!.id);
+      const existingAchievements = existingData.length > 0 ? existingData[0].achievements : [];
+
+      // Check and award achievements
+      const achievements = checkAndAwardAchievements(data, existingAchievements);
+
+      const healthData = await storage.createHealthData(req.user!.id, {
+        ...data,
+        prediction,
+        achievements,
+        createdAt: new Date().toISOString()
+      });
+
+      console.log("Health data saved successfully:", healthData);
+      res.status(201).json(healthData);
+    } catch (err) {
+      console.error("Error processing health data:", err);
+      if (err instanceof ZodError) {
+        res.status(400).json({ 
+          message: "Invalid data format",
+          errors: err.errors 
+        });
+      } else {
+        res.status(500).json({ 
+          message: "Failed to save health data",
+          error: err instanceof Error ? err.message : "Unknown error"
+        });
+      }
+    }
+  });
+
+  // Get user's health data
+  router.get("/health-data", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    try {
+      const data = await storage.getHealthDataByUserId(req.user!.id);
+      res.json(data);
+    } catch (err) {
+      console.error("Error fetching health data:", err);
+      res.status(500).json({ 
+        message: "Failed to fetch health data",
+        error: err instanceof Error ? err.message : "Unknown error"
+      });
+    }
   });
 
   // Basic protected endpoint to test auth
@@ -93,21 +158,6 @@ function generateRecommendations(riskScore: number, data: any) {
     );
   }
 
-  // Lifestyle recommendations
-  if (data.lifestyle.smoking) {
-    recommendations.push(
-      "Consider smoking cessation programs or nicotine replacement therapy",
-      "Consult your healthcare provider about smoking cessation options"
-    );
-  }
-
-  if (data.lifestyle.alcohol) {
-    recommendations.push(
-      "Limit alcohol consumption",
-      "Consider tracking your drinks and setting weekly limits"
-    );
-  }
-
   // Additional recommendations for high risk
   if (riskScore > 5) {
     recommendations.push(
@@ -120,8 +170,16 @@ function generateRecommendations(riskScore: number, data: any) {
   return recommendations;
 }
 
-function checkAndAwardAchievements(data: any, existingAchievements: any[] = []): Achievement[] {
-  const achievements: Achievement[] = [...(existingAchievements || [])];
+interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  unlockedAt: string;
+}
+
+function checkAndAwardAchievements(data: any, existingAchievements: Achievement[] = []): Achievement[] {
+  const achievements = [...(existingAchievements || [])];
   const now = new Date().toISOString();
 
   // First Time Health Check Achievement
@@ -194,47 +252,4 @@ function checkAndAwardAchievements(data: any, existingAchievements: any[] = []):
   }
 
   return achievements;
-}
-
-async function extractHealthData(text: string) {
-  // Example patterns to extract health data
-  const bloodSugarPattern = /blood sugar[:\s]+(\d+)/i;
-  const bloodPressurePattern = /blood pressure[:\s]+(\d+)\/(\d+)/i;
-  const heightPattern = /height[:\s]+(\d+(?:\.\d+)?)\s*cm/i;
-  const weightPattern = /weight[:\s]+(\d+(?:\.\d+)?)\s*kg/i;
-
-  const extractedData: any = {};
-
-  const bloodSugarMatch = text.match(bloodSugarPattern);
-  if (bloodSugarMatch) {
-    extractedData.bloodSugar = parseFloat(bloodSugarMatch[1]);
-  }
-
-  const bloodPressureMatch = text.match(bloodPressurePattern);
-  if (bloodPressureMatch) {
-    extractedData.bloodPressure = {
-      systolic: parseInt(bloodPressureMatch[1]),
-      diastolic: parseInt(bloodPressureMatch[2])
-    };
-  }
-
-  const heightMatch = text.match(heightPattern);
-  if (heightMatch) {
-    extractedData.height = parseFloat(heightMatch[1]);
-  }
-
-  const weightMatch = text.match(weightPattern);
-  if (weightMatch) {
-    extractedData.weight = parseFloat(weightMatch[1]);
-  }
-
-  return Object.keys(extractedData).length > 0 ? extractedData : null;
-}
-
-interface Achievement {
-  id: string;
-  name: string;
-  description: string;
-  icon: string;
-  unlockedAt: string;
 }
