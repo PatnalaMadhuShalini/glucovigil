@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="800" height="1000" viewBox="0 0 800 1000">
+  <!-- Styles -->
+  <style>
+    .background { fill: white; }
+    .title { font-family: Arial; font-size: 18px; font-weight: bold; fill: #37474f; text-anchor: middle; }
+    .class { fill: #e8f5e9; stroke: #4caf50; stroke-width: 2; }
+    .class-name { font-family: Arial; font-size: 14px; font-weight: bold; fill: #2e7d32; text-anchor: middle; }
+    .class-section { stroke: #4caf50; stroke-width: 1; }
+    .attribute { font-family: Arial; font-size: 12px; fill: #333333; text-anchor: start; }
+    .method { font-family: Arial; font-size: 12px; fill: #333333; text-anchor: start; }
+    .relation { stroke: #546e7a; stroke-width: 1.5; }
+    .arrow-end { fill: white; stroke: #546e7a; stroke-width: 1.5; }
+    .diamond-end { fill: white; stroke: #546e7a; stroke-width: 1.5; }
+    .filled-diamond-end { fill: #546e7a; stroke: #546e7a; stroke-width: 1.5; }
+    .cardinality { font-family: Arial; font-size: 11px; fill: #546e7a; }
+    .package { fill: #eceff1; stroke: #78909c; stroke-width: 1; stroke-dasharray: 5,5; }
+    .package-name { font-family: Arial; font-size: 14px; font-style: italic; fill: #546e7a; text-anchor: middle; }
+  </style>
+  
+  <!-- Background -->
+  <rect class="background" width="100%" height="100%" />
+  
+  <!-- Title -->
+  <text class="title" x="400" y="40">GlucoSmart Class Diagram</text>
+  
+  <!-- Data Model Package -->
+  <rect class="package" x="50" y="80" width="700" height="420" />
+  <text class="package-name" x="400" y="100">Data Model</text>
+  
+  <!-- Components Package -->
+  <rect class="package" x="50" y="520" width="700" height="450" />
+  <text class="package-name" x="400" y="540">Components</text>
+  
+  <!-- Classes in Data Model -->
+  <!-- User Class -->
+  <rect class="class" x="80" y="120" width="180" height="140" />
+  <text class="class-name" x="170" y="140">User</text>
+  <line class="class-section" x1="80" y1="150" x2="260" y2="150" />
+  <text class="attribute" x="90" y="170">+ id: number</text>
+  <text class="attribute" x="90" y="190">+ username: string</text>
+  <text class="attribute" x="90" y="210">+ email: string</text>
+  <text class="attribute" x="90" y="230">+ password: string</text>
+  <line class="class-section" x1="80" y1="240" x2="260" y2="240" />
+  
+  <!-- Health Data Class -->
+  <rect class="class" x="320" y="120" width="200" height="180" />
+  <text class="class-name" x="420" y="140">HealthData</text>
+  <line class="class-section" x1="320" y1="150" x2="520" y2="150" />
+  <text class="attribute" x="330" y="170">+ id: number</text>
+  <text class="attribute" x="330" y="190">+ userId: number</text>
+  <text class="attribute" x="330" y="210">+ demographics: Demographics</text>
+  <text class="attribute" x="330" y="230">+ physiological: Physiological</text>
+  <text class="attribute" x="330" y="250">+ lifestyle: Lifestyle</text>
+  <text class="attribute" x="330" y="270">+ prediction: Prediction</text>
+  <line class="class-section" x1="320" y1="280" x2="520" y2="280" />
+  
+  <!-- Symptoms Class -->
+  <rect class="class" x="80" y="300" width="180" height="160" />
+  <text class="class-name" x="170" y="320">Symptoms</text>
+  <line class="class-section" x1="80" y1="330" x2="260" y2="330" />
+  <text class="attribute" x="90" y="350">+ id: number</text>
+  <text class="attribute" x="90" y="370">+ userId: number</text>
+  <text class="attribute" x="90" y="390">+ description: string</text>
+  <text class="attribute" x="90" y="410">+ severity: number</text>
+  <text class="attribute" x="90" y="430">+ recordedAt: string</text>
+  <line class="class-section" x1="80" y1="440" x2="260" y2="440" />
+  
+  <!-- Medical Record Class -->
+  <rect class="class" x="320" y="320" width="200" height="140" />
+  <text class="class-name" x="420" y="340">MedicalRecord</text>
+  <line class="class-section" x1="320" y1="350" x2="520" y2="350" />
+  <text class="attribute" x="330" y="370">+ id: number</text>
+  <text class="attribute" x="330" y="390">+ userId: number</text>
+  <text class="attribute" x="330" y="410">+ fileData: Buffer</text>
+  <text class="attribute" x="330" y="430">+ extractedData: ExtractedData</text>
+  <line class="class-section" x1="320" y1="440" x2="520" y2="440" />
+  
+  <!-- Achievement Class -->
+  <rect class="class" x="560" y="320" width="180" height="140" />
+  <text class="class-name" x="650" y="340">Achievement</text>
+  <line class="class-section" x1="560" y1="350" x2="740" y2="350" />
+  <text class="attribute" x="570" y="370">+ id: string</text>
+  <text class="attribute" x="570" y="390">+ name: string</text>
+  <text class="attribute" x="570" y="410">+ description: string</text>
+  <text class="attribute" x="570" y="430">+ unlockedAt: string</text>
+  <line class="class-section" x1="560" y1="440" x2="740" y2="440" />
+  
+  <!-- Feedback Class -->
+  <rect class="class" x="560" y="120" width="180" height="140" />
+  <text class="class-name" x="650" y="140">Feedback</text>
+  <line class="class-section" x1="560" y1="150" x2="740" y2="150" />
+  <text class="attribute" x="570" y="170">+ id: number</text>
+  <text class="attribute" x="570" y="190">+ userId: number</text>
+  <text class="attribute" x="570" y="210">+ rating: number</text>
+  <text class="attribute" x="570" y="230">+ comment: string</text>
+  <line class="class-section" x1="560" y1="240" x2="740" y2="240" />
+  
+  <!-- Classes in Components -->
+  <!-- Auth Provider -->
+  <rect class="class" x="80" y="560" width="180" height="120" />
+  <text class="class-name" x="170" y="580">AuthProvider</text>
+  <line class="class-section" x1="80" y1="590" x2="260" y2="590" />
+  <text class="attribute" x="90" y="610">- user: User | null</text>
+  <line class="class-section" x1="80" y1="620" x2="260" y2="620" />
+  <text class="method" x="90" y="640">+ loginMutation()</text>
+  <text class="method" x="90" y="660">+ logoutMutation()</text>
+  
+  <!-- Health Form Component -->
+  <rect class="class" x="320" y="560" width="200" height="160" />
+  <text class="class-name" x="420" y="580">HealthForm</text>
+  <line class="class-section" x1="320" y1="590" x2="520" y2="590" />
+  <text class="attribute" x="330" y="610">- formData: FormData</text>
+  <text class="attribute" x="330" y="630">- isSubmitting: boolean</text>
+  <line class="class-section" x1="320" y1="640" x2="520" y2="640" />
+  <text class="method" x="330" y="660">+ handleSubmit(event)</text>
+  <text class="method" x="330" y="680">+ validateForm(): boolean</text>
+  <text class="method" x="330" y="700">+ submitHealthData()</text>
+  
+  <!-- Risk Display Component -->
+  <rect class="class" x="80" y="720" width="180" height="120" />
+  <text class="class-name" x="170" y="740">RiskDisplay</text>
+  <line class="class-section" x1="80" y1="750" x2="260" y2="750" />
+  <text class="attribute" x="90" y="770">- prediction: Prediction</text>
+  <line class="class-section" x1="80" y1="780" x2="260" y2="780" />
+  <text class="method" x="90" y="800">+ renderRiskLevel()</text>
+  <text class="method" x="90" y="820">+ renderRecommendations()</text>
+  
+  <!-- Medical Records Upload -->
+  <rect class="class" x="320" y="760" width="200" height="140" />
+  <text class="class-name" x="420" y="780">MedicalRecordsUpload</text>
+  <line class="class-section" x1="320" y1="790" x2="520" y2="790" />
+  <text class="attribute" x="330" y="810">- fileData: File | null</text>
+  <text class="attribute" x="330" y="830">- isUploading: boolean</text>
+  <line class="class-section" x1="320" y1="840" x2="520" y2="840" />
+  <text class="method" x="330" y="860">+ handleFileChange(event)</text>
+  <text class="method" x="330" y="880">+ uploadFile()</text>
+  
+  <!-- Achievement Display -->
+  <rect class="class" x="560" y="560" width="180" height="120" />
+  <text class="class-name" x="650" y="580">Achievements</text>
+  <line class="class-section" x1="560" y1="590" x2="740" y2="590" />
+  <text class="attribute" x="570" y="610">- achievements: Achievement[]</text>
+  <line class="class-section" x1="560" y1="620" x2="740" y2="620" />
+  <text class="method" x="570" y="640">+ fetchAchievements()</text>
+  <text class="method" x="570" y="660">+ renderAchievements()</text>
+  
+  <!-- Chat Assistant -->
+  <rect class="class" x="560" y="720" width="180" height="160" />
+  <text class="class-name" x="650" y="740">ChatAssistant</text>
+  <line class="class-section" x1="560" y1="750" x2="740" y2="750" />
+  <text class="attribute" x="570" y="770">- isOpen: boolean</text>
+  <text class="attribute" x="570" y="790">- messages: Message[]</text>
+  <line class="class-section" x1="560" y1="800" x2="740" y2="800" />
+  <text class="method" x="570" y="820">+ toggle()</text>
+  <text class="method" x="570" y="840">+ sendMessage(text)</text>
+  <text class="method" x="570" y="860">+ processResponse()</text>
+  
+  <!-- Relationships -->
+  <!-- User to HealthData -->
+  <path class="relation" d="M260,170 L320,170" />
+  <text class="cardinality" x="270" y="160">1</text>
+  <text class="cardinality" x="310" y="160">0..*</text>
+  
+  <!-- User to Symptoms -->
+  <path class="relation" d="M170,260 L170,300" />
+  <text class="cardinality" x="180" y="280">1</text>
+  <text class="cardinality" x="180" y="300">0..*</text>
+  
+  <!-- User to MedicalRecord -->
+  <path class="relation" d="M260,200 L290,200 L290,390 L320,390" />
+  <text class="cardinality" x="270" y="200">1</text>
+  <text class="cardinality" x="310" y="390">0..*</text>
+  
+  <!-- User to Achievement -->
+  <path class="relation" d="M260,180 L290,180 L290,240 L650,240 L650,320" />
+  <text class="cardinality" x="270" y="180">1</text>
+  <text class="cardinality" x="660" y="310">0..*</text>
+  
+  <!-- User to Feedback -->
+  <path class="relation" d="M260,150 L560,150" />
+  <text class="cardinality" x="270" y="140">1</text>
+  <text class="cardinality" x="550" y="140">0..*</text>
+  
+  <!-- Component Relationships -->
+  <!-- AuthProvider and Components -->
+  <path class="relation" d="M170,680 L170,700 L420,700 L420,720" />
+  <path class="relation" d="M170,680 L170,700 L650,700 L650,720" />
+  
+  <!-- HealthForm to RiskDisplay -->
+  <path class="relation" d="M420,720 L420,740 L260,740" />
+</svg>
