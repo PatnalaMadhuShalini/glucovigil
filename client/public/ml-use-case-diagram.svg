@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="800" height="600" viewBox="0 0 800 600">
+  <!-- Styles -->
+  <style>
+    .actor { fill: #f0f8ff; stroke: #4682b4; stroke-width: 2; }
+    .usecase { fill: #e6f7ff; stroke: #1890ff; stroke-width: 2; }
+    .usecase-future { fill: #f0f5ff; stroke: #1890ff; stroke-dasharray: 5,5; stroke-width: 2; }
+    .system { fill: none; stroke: #096dd9; stroke-width: 2; stroke-dasharray: 10,5; }
+    .connection { stroke: #8c8c8c; stroke-width: 1.5; marker-end: url(#arrow); }
+    .connection-future { stroke: #8c8c8c; stroke-width: 1.5; stroke-dasharray: 5,5; marker-end: url(#arrow); }
+    .label { font-family: Arial; font-size: 12px; fill: #262626; }
+    .system-label { font-family: Arial; font-size: 14px; font-weight: bold; fill: #096dd9; }
+    .actor-label { font-family: Arial; font-size: 14px; fill: #262626; text-anchor: middle; }
+    .usecase-label { font-family: Arial; font-size: 12px; fill: #262626; text-anchor: middle; }
+    .usecase-future-label { font-family: Arial; font-size: 12px; fill: #595959; text-anchor: middle; }
+    .phase-label { font-family: Arial; font-size: 14px; font-weight: bold; fill: #096dd9; text-anchor: start; }
+  </style>
+  
+  <!-- Arrow Marker Definition -->
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#8c8c8c"/>
+    </marker>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="white"/>
+  
+  <!-- System Boundary -->
+  <rect x="150" y="50" width="500" height="500" rx="20" ry="20" class="system"/>
+  <text x="400" y="80" class="system-label" text-anchor="middle">GlucoSmart ML/AI System</text>
+  
+  <!-- Actors -->
+  <circle cx="80" cy="200" r="30" class="actor"/>
+  <text x="80" y="200" class="actor-label">User</text>
+  <circle cx="80" cy="400" r="30" class="actor"/>
+  <text x="80" y="400" class="actor-label">Healthcare Provider</text>
+  <circle cx="720" cy="300" r="30" class="actor"/>
+  <text x="720" y="300" class="actor-label">ML System</text>
+  
+  <!-- Phase Labels -->
+  <text x="170" y="120" class="phase-label">Current Functionality:</text>
+  <text x="170" y="300" class="phase-label">Planned Phase 1:</text>
+  <text x="170" y="420" class="phase-label">Planned Phase 2-3:</text>
+  
+  <!-- Current Use Cases -->
+  <ellipse cx="300" cy="150" rx="80" ry="30" class="usecase"/>
+  <text x="300" y="155" class="usecase-label">Rule-based Risk Assessment</text>
+  <ellipse cx="500" cy="150" rx="80" ry="30" class="usecase"/>
+  <text x="500" y="155" class="usecase-label">Pattern Matching Data Extraction</text>
+  <ellipse cx="400" cy="220" rx="80" ry="30" class="usecase"/>
+  <text x="400" y="225" class="usecase-label">Personalized Recommendations</text>
+  
+  <!-- Phase 1 Use Cases -->
+  <ellipse cx="300" cy="350" rx="80" ry="30" class="usecase-future"/>
+  <text x="300" y="355" class="usecase-future-label">Predictive Risk Modeling</text>
+  <ellipse cx="500" cy="350" rx="80" ry="30" class="usecase-future"/>
+  <text x="500" y="355" class="usecase-future-label">Health Metric Trend Analysis</text>
+  
+  <!-- Phase 2-3 Use Cases -->
+  <ellipse cx="300" cy="460" rx="80" ry="30" class="usecase-future"/>
+  <text x="300" y="465" class="usecase-future-label">NLP Document Understanding</text>
+  <ellipse cx="500" cy="460" rx="80" ry="30" class="usecase-future"/>
+  <text x="500" y="465" class="usecase-future-label">Glucose Fluctuation Prediction</text>
+  <ellipse cx="400" cy="520" rx="80" ry="30" class="usecase-future"/>
+  <text x="400" y="525" class="usecase-future-label">Multi-modal Health Analysis</text>
+  
+  <!-- Current Connections -->
+  <line x1="110" y1="200" x2="220" y2="150" class="connection"/>
+  <line x1="110" y1="200" x2="320" y2="220" class="connection"/>
+  <line x1="110" y1="400" x2="220" y2="350" class="connection-future"/>
+  <line x1="110" y1="400" x2="240" y2="460" class="connection-future"/>
+  
+  <line x1="580" y1="150" x2="690" y2="300" class="connection"/>
+  <line x1="480" y1="220" x2="690" y2="300" class="connection"/>
+  <line x1="380" y1="350" x2="690" y2="300" class="connection-future"/>
+  <line x1="580" y1="350" x2="690" y2="300" class="connection-future"/>
+  <line x1="380" y1="460" x2="690" y2="300" class="connection-future"/>
+  <line x1="580" y1="460" x2="690" y2="300" class="connection-future"/>
+  <line x1="480" y1="520" x2="690" y2="300" class="connection-future"/>
+  
+  <!-- Include/Extend Relationships -->
+  <line x1="300" y1="180" x2="400" y2="190" class="connection"/>
+  <text x="335" y="175" class="label">«include»</text>
+  <line x1="500" y1="180" x2="400" y2="190" class="connection"/>
+  <text x="465" y="175" class="label">«include»</text>
+  
+  <line x1="300" y1="380" x2="500" y2="380" class="connection-future"/>
+  <text x="400" y="375" class="label">«extend»</text>
+  
+  <line x1="300" y1="490" x2="400" y2="490" class="connection-future"/>
+  <text x="335" y="485" class="label">«include»</text>
+  <line x1="500" y1="490" x2="400" y2="490" class="connection-future"/>
+  <text x="465" y="485" class="label">«include»</text>
+</svg>
