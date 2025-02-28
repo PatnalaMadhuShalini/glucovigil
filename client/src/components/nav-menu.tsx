@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "./ui/button";
 import { Link, useLocation } from "wouter";
-import { User, Home, LayoutDashboard, LogOut } from "lucide-react";
+import { User, Home, LayoutDashboard, LogOut, FileText } from "lucide-react";
 
 export default function NavMenu() {
   const { user, logoutMutation } = useAuth();
@@ -43,34 +43,46 @@ export default function NavMenu() {
               </a>
             </Link>
 
-            {user && (
-              <div className="ml-8 flex items-center space-x-2">
-                <Link href="/">
-                  <a className={linkClass('/')} title="Home">
-                    <span className="flex items-center gap-2">
-                      <Home className="h-4 w-4" />
-                      Home
-                    </span>
-                  </a>
-                </Link>
-                <Link href="/dashboard">
-                  <a className={linkClass('/dashboard')} title="Dashboard">
-                    <span className="flex items-center gap-2">
-                      <LayoutDashboard className="h-4 w-4" />
-                      Dashboard
-                    </span>
-                  </a>
-                </Link>
-                <Link href="/profile">
-                  <a className={linkClass('/profile')} title="Profile">
-                    <span className="flex items-center gap-2">
-                      <User className="h-4 w-4" />
-                      Profile
-                    </span>
-                  </a>
-                </Link>
-              </div>
-            )}
+            <div className="ml-8 flex items-center space-x-2">
+              <Link href="/">
+                <a className={linkClass('/')} title="Home">
+                  <span className="flex items-center gap-2">
+                    <Home className="h-4 w-4" />
+                    Home
+                  </span>
+                </a>
+              </Link>
+
+              {user && (
+                <>
+                  <Link href="/dashboard">
+                    <a className={linkClass('/dashboard')} title="Dashboard">
+                      <span className="flex items-center gap-2">
+                        <LayoutDashboard className="h-4 w-4" />
+                        Dashboard
+                      </span>
+                    </a>
+                  </Link>
+                  <Link href="/profile">
+                    <a className={linkClass('/profile')} title="Profile">
+                      <span className="flex items-center gap-2">
+                        <User className="h-4 w-4" />
+                        Profile
+                      </span>
+                    </a>
+                  </Link>
+                </>
+              )}
+
+              <Link href="/documentation">
+                <a className={linkClass('/documentation')} title="Documentation">
+                  <span className="flex items-center gap-2">
+                    <FileText className="h-4 w-4" />
+                    Documentation
+                  </span>
+                </a>
+              </Link>
+            </div>
           </div>
 
           <div className="flex items-center">

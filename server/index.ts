@@ -5,9 +5,23 @@ import { createServer } from "http";
 import { setupAuth, setupAuthRoutes } from "./auth";
 import { registerRoutes } from "./routes";
 
+// Start with detailed logging for diagnostics
 console.log('Starting server process with PID:', process.pid);
 console.log('Current working directory:', process.cwd());
 console.log('Node environment:', process.env.NODE_ENV || 'development');
+
+// Check for active ports to detect port conflicts early
+async function isPortInUse(port: number): Promise<boolean> {
+  return new Promise((resolve) => {
+    const net = require('net');
+    const tester = net.createServer()
+      .once('error', () => resolve(true))
+      .once('listening', () => {
+        tester.once('close', () => resolve(false)).close();
+      })
+      .listen(port, '0.0.0.0');
+  });
+}
 
 // Create Express app
 const app = express();
@@ -76,7 +90,6 @@ apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   res.status(status).json({ message });
 });
 
-
 (async () => {
   try {
     log('Starting server initialization...');
@@ -84,9 +97,6 @@ apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     // Setup auth routes and register API routes on the router
     setupAuthRoutes(apiRouter);
     await registerRoutes(apiRouter);
-
-    // Create HTTP server
-    const server = createServer(app);
 
     // Add middleware to skip Vite/static for API routes
     app.use((req, res, next) => {
@@ -107,34 +117,31 @@ apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       });
     });
 
-    // Try different ports if default is in use
+    // Improved port selection strategy
     const ports = [5000, 5001, 5002, 5003];
-    let port: number | undefined;
+    let selectedPort: number | undefined;
 
-    for (const p of ports) {
-      try {
-        log(`Attempting to start server on port ${p}...`);
-        await server.listen({
-          port: p,
-          host: "0.0.0.0",
-        });
-        port = p;
-        log(`Successfully bound to port ${p}`);
+    // Check all ports first before trying to bind
+    for (const port of ports) {
+      log(`Checking if port ${port} is available...`);
+      const inUse = await isPortInUse(port);
+      if (!inUse) {
+        selectedPort = port;
+        log(`Found available port: ${port}`);
         break;
-      } catch (error) {
-        if (error instanceof Error && 'code' in error && error.code === 'EADDRINUSE') {
-          log(`Port ${p} is in use, trying next port...`);
-          continue;
-        }
-        throw error;
+      } else {
+        log(`Port ${port} is already in use`);
       }
     }
 
-    if (!port) {
-      throw new Error('All ports are in use');
+    if (!selectedPort) {
+      throw new Error('All ports are in use. Please free up a port and try again.');
     }
 
-    // Setup Vite/static serving after API routes are established
+    // Create HTTP server only when ready to start
+    const server = createServer(app);
+
+    // Setup Vite/static serving before starting the server
     if (app.get("env") === "development") {
       log('Setting up Vite development server...');
       await setupVite(app, server);
@@ -151,7 +158,18 @@ apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       res.status(status).json({ message });
     });
 
-    log(`Server running at http://0.0.0.0:${port}`);
+    // Start server on the selected port with proper error handling
+    server.listen(selectedPort, '0.0.0.0', () => {
+      log(`Server running at http://0.0.0.0:${selectedPort}`);
+    }).on('error', (err: Error & { code?: string }) => {
+      if (err.code === 'EADDRINUSE') {
+        log(`Port ${selectedPort} is suddenly in use, server failed to start`);
+      } else {
+        log(`Failed to start server: ${err.message}`);
+      }
+      process.exit(1);
+    });
+
   } catch (error) {
     if (error instanceof Error) {
       log('Failed to start server:', error.message);

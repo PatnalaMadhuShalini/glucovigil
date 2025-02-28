@@ -8,6 +8,7 @@ import Dashboard from "@/pages/dashboard";
 import AuthPage from "@/pages/auth-page";
 import ProfilePage from "@/pages/profile-page";
 import NotFound from "@/pages/not-found";
+import DocumentationPage from "@/pages/documentation-page";
 import { ProtectedRoute } from "./lib/protected-route";
 import ChatAssistant from "@/components/chat-assistant";
 import NavMenu from "@/components/nav-menu";
@@ -18,6 +19,7 @@ function Router() {
       <Route path="/auth" component={AuthPage} />
       <ProtectedRoute path="/dashboard" component={Dashboard} />
       <ProtectedRoute path="/profile" component={ProfilePage} />
+      <Route path="/documentation" component={DocumentationPage} />
       <Route path="/" component={HomePage} />
       <Route component={NotFound} />
     </Switch>
