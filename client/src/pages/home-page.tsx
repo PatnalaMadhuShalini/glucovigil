@@ -72,7 +72,7 @@ export default function HomePage() {
           ))}
         </div>
 
-        {/* New Information Section */}
+        {/* How GlucoSmart Works section - Updated with direct links */}
         <div className="mb-20">
           <h2 className="text-3xl font-semibold text-center text-gray-800 mb-10">How GlucoSmart Works</h2>
           <div className="grid md:grid-cols-3 gap-8">
@@ -81,29 +81,34 @@ export default function HomePage() {
                 step: 1,
                 icon: User,
                 title: "Create Your Profile",
-                description: "Enter your basic information and health metrics to get started with personalized health tracking."
+                description: "Enter your basic information and health metrics to get started with personalized health tracking.",
+                link: "/profile-creation"
               },
               {
                 step: 2,
                 icon: Activity,
                 title: "Get Personalized Analysis",
-                description: "Our AI analyzes your data to provide risk assessments and tailored health recommendations."
+                description: "Our AI analyzes your data to provide risk assessments and tailored health recommendations.",
+                link: "/analysis"
               },
               {
                 step: 3,
                 icon: CheckCircle,
                 title: "Track Your Progress",
-                description: "Monitor your health improvements over time and achieve your wellness goals with our comprehensive tracking tools."
+                description: "Monitor your health improvements over time and achieve your wellness goals with our comprehensive tracking tools.",
+                link: "/progress"
               }
             ].map((item, index) => (
-              <div key={index} className="bg-white rounded-lg p-6 shadow-lg border border-sky-100 relative overflow-hidden">
-                <div className="absolute top-0 right-0 bg-sky-100 w-16 h-16 flex items-center justify-center rounded-bl-lg">
-                  <span className="text-2xl font-bold text-sky-700">{item.step}</span>
+              <Link key={index} href={item.link}>
+                <div className="bg-white rounded-lg p-6 shadow-lg border border-sky-100 relative overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer">
+                  <div className="absolute top-0 right-0 bg-sky-100 w-16 h-16 flex items-center justify-center rounded-bl-lg">
+                    <span className="text-2xl font-bold text-sky-700">{item.step}</span>
+                  </div>
+                  <item.icon className="h-12 w-12 text-sky-600 mb-4" />
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">{item.title}</h3>
+                  <p className="text-gray-600">{item.description}</p>
                 </div>
-                <item.icon className="h-12 w-12 text-sky-600 mb-4" />
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">{item.title}</h3>
-                <p className="text-gray-600">{item.description}</p>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
