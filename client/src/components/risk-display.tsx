@@ -91,7 +91,7 @@ export default function RiskDisplay({ data }: RiskDisplayProps) {
                 <li>Processed Foods: {data.lifestyle.diet.processedFoods} servings</li>
                 <li>Sugary Drinks: {data.lifestyle.diet.sugaryDrinks} servings</li>
                 <li>Stress Level: {data.lifestyle.stressLevel}</li>
-                <li>Sleep: {data.lifestyle.sleep.hoursPerNight} hours/night ({data.lifestyle.sleep.quality})</li>
+                <li>Sleep: {data.lifestyle.sleep?.hoursPerNight || 0} hours/night ({data.lifestyle.sleep?.quality || 'unknown'})</li>
                 <li>Work Style: {data.lifestyle.workStyle}</li>
               </ul>
             </div>

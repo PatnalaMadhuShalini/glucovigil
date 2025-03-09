@@ -20,8 +20,10 @@ export default function Dashboard() {
   const [showForm, setShowForm] = useState(false);
   const [showSymptomWizard, setShowSymptomWizard] = useState(false);
 
-  const { data: healthData, isLoading } = useQuery<HealthDataWithPrediction[]>({
+  const { data: healthData, isLoading, error } = useQuery<HealthDataWithPrediction[]>({
     queryKey: ["/api/health-data"],
+    retry: 2,
+    staleTime: 30000,
   });
 
   if (isLoading) {
@@ -35,12 +37,23 @@ export default function Dashboard() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="min-h-screen p-8 bg-gradient-to-br from-sky-100 via-white to-sky-100">
+        <Alert variant="destructive">
+          <AlertDescription>
+            Failed to load health data. Please try refreshing the page.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
   const latestData = healthData?.[healthData.length - 1];
   const showRiskAlert = latestData?.prediction?.level === "high";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-100 via-white to-sky-200">
-      {/* Decorative background elements */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-20 [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
       <div className="absolute inset-0 bg-gradient-to-br from-sky-500/10 via-blue-500/10 to-indigo-500/10 animate-gradient-xy" />
 
@@ -66,7 +79,7 @@ export default function Dashboard() {
             </Alert>
           )}
 
-          {!showForm && !healthData?.length && (
+          {!showForm && (!healthData || healthData.length === 0) && (
             <Card className="mb-8 bg-white shadow-xl border-2 border-sky-100">
               <CardContent className="p-8 text-center">
                 <p className="mb-6 text-xl text-gray-700">Start by completing your health assessment</p>
@@ -92,7 +105,7 @@ export default function Dashboard() {
             </Card>
           )}
 
-          {healthData && healthData.length > 0 && (
+          {healthData && healthData.length > 0 && latestData && (
             <>
               <div className="grid md:grid-cols-2 gap-8 mb-8">
                 <RiskDisplay data={latestData} />
