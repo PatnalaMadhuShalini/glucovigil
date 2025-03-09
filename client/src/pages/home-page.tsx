@@ -30,9 +30,20 @@ export default function HomePage() {
           <h1 className="text-5xl font-medium mb-6 animate-text-gradient bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 bg-[length:400%_100%] bg-clip-text text-transparent drop-shadow"> {/*Added animated color-changing text*/}
             Welcome to GlucoSmart
           </h1>
-          <p className="text-xl font-light text-gray-800 max-w-3xl mx-auto leading-relaxed"> {/*Improved contrast*/}
+          <p className="text-xl font-light text-gray-800 max-w-3xl mx-auto leading-relaxed mb-8"> {/*Improved contrast*/}
             Your intelligent companion for diabetes risk assessment and personalized health management
           </p>
+
+          {/* Get Started Button moved here */}
+          <Link href={user ? "/dashboard" : "/auth"}>
+            <Button className="relative overflow-hidden group bg-gradient-to-r from-sky-600/90 to-sky-700/90 hover:from-sky-700 hover:to-sky-800 text-gray-100 px-10 py-4 rounded-lg text-lg font-normal shadow-md hover:shadow-lg transition-all duration-500">
+              <span className="relative z-10">
+                {user ? "Go to Dashboard" : "Get Started"}
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-sky-500/30 to-sky-600/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-[url('/sparkles.svg')] bg-center opacity-0 group-hover:opacity-10 transition-opacity duration-500" />
+            </Button>
+          </Link>
         </div>
 
         {/* Key Features Section */}
@@ -146,18 +157,6 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="text-center">
-          <Link href={user ? "/dashboard" : "/auth"}>
-            <Button className="relative overflow-hidden group bg-gradient-to-r from-sky-600/90 to-sky-700/90 hover:from-sky-700 hover:to-sky-800 text-gray-100 px-10 py-4 rounded-lg text-lg font-normal shadow-md hover:shadow-lg transition-all duration-500"> {/*Brighter button*/}
-              <span className="relative z-10">
-                {user ? "Go to Dashboard" : "Get Started"}
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-sky-500/30 to-sky-600/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="absolute inset-0 bg-[url('/sparkles.svg')] bg-center opacity-0 group-hover:opacity-10 transition-opacity duration-500" />
-            </Button>
-          </Link>
         </div>
 
         <footer className="mt-24 py-8 border-t border-gray-200"> {/*Brighter border*/}
