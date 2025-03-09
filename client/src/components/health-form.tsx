@@ -54,48 +54,23 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
     demographics: {
       age: 0,
       gender: "male",
-      ethnicity: "other",
-      familyHistory: {
-        parents: false,
-        siblings: false,
-        children: false
-      },
-      gestationalDiabetes: false
+      ethnicity: "",
     },
     physiological: {
       height: 0,
       weight: 0,
-      waistCircumference: 0,
       bloodPressure: {
         systolic: 0,
         diastolic: 0,
       },
       bloodSugar: 0,
-      priorPrediabetes: false,
-      heartDisease: false
     },
     lifestyle: {
-      exercise: {
-        frequency: "none",
-        intensity: "light",
-        minutesPerWeek: 0
-      },
-      diet: {
-        quality: "fair",
-        fruitsVegetables: 0,
-        processedFoods: 0,
-        sugaryDrinks: 0
-      },
-      sleep: {
-        hoursPerNight: 7,
-        quality: "fair"
-      },
+      exercise: "none",
+      diet: "fair",
       stressLevel: "moderate",
       workStyle: "sedentary",
-      alcohol: {
-        frequency: "none",
-        drinksPerWeek: 0
-      },
+      alcohol: false,
       smoking: false
     },
   };
@@ -154,32 +129,27 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
           age: Number(formData.demographics.age),
           gender: formData.demographics.gender,
           ethnicity: formData.demographics.ethnicity,
-          familyHistory: formData.demographics.familyHistory,
-          gestationalDiabetes: formData.demographics.gestationalDiabetes === true,
         },
         physiological: {
           height: Number(formData.physiological.height),
           weight: Number(formData.physiological.weight),
-          waistCircumference: Number(formData.physiological.waistCircumference),
           bloodPressure: {
             systolic: Number(formData.physiological.bloodPressure.systolic),
             diastolic: Number(formData.physiological.bloodPressure.diastolic),
           },
           bloodSugar: Number(formData.physiological.bloodSugar),
-          priorPrediabetes: formData.physiological.priorPrediabetes === true,
-          heartDisease: formData.physiological.heartDisease === true
         },
         lifestyle: {
           exercise: formData.lifestyle.exercise,
           diet: formData.lifestyle.diet,
-          sleep: formData.lifestyle.sleep,
           stressLevel: formData.lifestyle.stressLevel,
           workStyle: formData.lifestyle.workStyle,
-          alcohol: formData.lifestyle.alcohol,
+          alcohol: formData.lifestyle.alcohol === true,
           smoking: formData.lifestyle.smoking === true
         }
       };
 
+      // Log the data being submitted for debugging
       console.log("Submitting health data:", transformedData);
       mutation.mutate(transformedData);
     } catch (error) {
@@ -197,6 +167,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
           </Alert>
         )}
 
+        {/* Demographics Section */}
         <div className="space-y-6">
           <div className="flex items-center">
             <h2 className="text-xl font-semibold">Personal Information</h2>
@@ -262,93 +233,10 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="demographics.familyHistory.parents"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Family History: Parents</FormLabel>
-                  <Select onValueChange={(value) => field.onChange(value === 'true')} value={field.value ? field.value.toString() : "false"}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="true">Yes</SelectItem>
-                      <SelectItem value="false">No</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="demographics.familyHistory.siblings"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Family History: Siblings</FormLabel>
-                  <Select onValueChange={(value) => field.onChange(value === 'true')} value={field.value ? field.value.toString() : "false"}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="true">Yes</SelectItem>
-                      <SelectItem value="false">No</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="demographics.familyHistory.children"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Family History: Children</FormLabel>
-                  <Select onValueChange={(value) => field.onChange(value === 'true')} value={field.value ? field.value.toString() : "false"}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="true">Yes</SelectItem>
-                      <SelectItem value="false">No</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="demographics.gestationalDiabetes"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Gestational Diabetes</FormLabel>
-                  <Select onValueChange={(value) => field.onChange(value === 'true')} value={field.value ? field.value.toString() : "false"}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="true">Yes</SelectItem>
-                      <SelectItem value="false">No</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </div>
         </div>
 
+        {/* Physical Measurements Section */}
         <div className="space-y-6">
           <div className="flex items-center">
             <h2 className="text-xl font-semibold">Physical Measurements</h2>
@@ -400,28 +288,10 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="physiological.waistCircumference"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Waist Circumference (cm)</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      min="0"
-                      {...field}
-                      value={field.value || ""}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </div>
         </div>
 
+        {/* Blood Pressure and Sugar Section */}
         <div className="space-y-6">
           <div className="flex items-center">
             <h2 className="text-xl font-semibold">Blood Pressure & Sugar</h2>
@@ -507,51 +377,10 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="physiological.priorPrediabetes"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Prior Prediabetes Diagnosis</FormLabel>
-                  <Select onValueChange={(value) => field.onChange(value === 'true')} value={field.value ? field.value.toString() : "false"}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="true">Yes</SelectItem>
-                      <SelectItem value="false">No</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="physiological.heartDisease"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Heart Disease Diagnosis</FormLabel>
-                  <Select onValueChange={(value) => field.onChange(value === 'true')} value={field.value ? field.value.toString() : "false"}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="true">Yes</SelectItem>
-                      <SelectItem value="false">No</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </div>
         </div>
 
+        {/* Lifestyle Section */}
         <div className="space-y-6">
           <div className="flex items-center">
             <h2 className="text-xl font-semibold">Lifestyle Factors</h2>
@@ -560,21 +389,21 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
           <div className="grid md:grid-cols-2 gap-6">
             <FormField
               control={form.control}
-              name="lifestyle.exercise.frequency"
+              name="lifestyle.exercise"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Exercise Frequency</FormLabel>
+                  <FormLabel>Exercise Level</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select exercise frequency" />
+                        <SelectValue placeholder="Select exercise level" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="none">None</SelectItem>
-                      <SelectItem value="occasional">Occasional (1-2 times/month)</SelectItem>
-                      <SelectItem value="regular">Regular (1-2 times/week)</SelectItem>
-                      <SelectItem value="frequent">Frequent (3+ times/week)</SelectItem>
+                      <SelectItem value="none">None (No regular exercise)</SelectItem>
+                      <SelectItem value="light">Light (1-2 days/week)</SelectItem>
+                      <SelectItem value="moderate">Moderate (3-5 days/week)</SelectItem>
+                      <SelectItem value="heavy">Heavy (6-7 days/week)</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -584,53 +413,10 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
 
             <FormField
               control={form.control}
-              name="lifestyle.exercise.intensity"
+              name="lifestyle.diet"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Exercise Intensity</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select exercise intensity" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="light">Light</SelectItem>
-                      <SelectItem value="moderate">Moderate</SelectItem>
-                      <SelectItem value="vigorous">Vigorous</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="lifestyle.exercise.minutesPerWeek"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Minutes of Exercise per Week</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      min="0"
-                      {...field}
-                      value={field.value || ""}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="lifestyle.diet.quality"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Overall Diet Quality</FormLabel>
+                  <FormLabel>Diet Quality</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
@@ -638,73 +424,17 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="poor">Poor</SelectItem>
-                      <SelectItem value="fair">Fair</SelectItem>
-                      <SelectItem value="good">Good</SelectItem>
-                      <SelectItem value="excellent">Excellent</SelectItem>
+                      <SelectItem value="poor">Poor (Mostly processed foods)</SelectItem>
+                      <SelectItem value="fair">Fair (Mix of healthy and processed)</SelectItem>
+                      <SelectItem value="good">Good (Mostly whole foods)</SelectItem>
+                      <SelectItem value="excellent">Excellent (Well-balanced, whole foods)</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="lifestyle.diet.fruitsVegetables"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Daily Servings of Fruits & Vegetables</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      min="0"
-                      {...field}
-                      value={field.value || ""}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lifestyle.diet.processedFoods"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Daily Servings of Processed Foods</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      min="0"
-                      {...field}
-                      value={field.value || ""}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lifestyle.diet.sugaryDrinks"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Daily Servings of Sugary Drinks</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      min="0"
-                      {...field}
-                      value={field.value || ""}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
             <FormField
               control={form.control}
               name="lifestyle.stressLevel"
@@ -728,6 +458,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="lifestyle.workStyle"
@@ -751,106 +482,44 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
-              name="lifestyle.alcohol.frequency"
+              name="lifestyle.alcohol"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Alcohol Consumption Frequency</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <FormLabel>Alcohol Consumption</FormLabel>
+                  <Select onValueChange={(value) => field.onChange(value === "true")} value={String(field.value)}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select frequency" />
+                        <SelectValue placeholder="Do you consume alcohol?" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="none">None</SelectItem>
-                      <SelectItem value="occasional">Occasional (1-2 times/month)</SelectItem>
-                      <SelectItem value="regular">Regular (1-2 times/week)</SelectItem>
-                      <SelectItem value="frequent">Frequent (3+ times/week)</SelectItem>
+                      <SelectItem value="false">No</SelectItem>
+                      <SelectItem value="true">Yes</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="lifestyle.alcohol.drinksPerWeek"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Average Alcoholic Drinks per Week</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      min="0"
-                      {...field}
-                      value={field.value || ""}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
             <FormField
               control={form.control}
               name="lifestyle.smoking"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Smoking</FormLabel>
-                  <Select onValueChange={(value) => field.onChange(value === 'true')} value={field.value ? field.value.toString() : "false"}>
+                  <Select onValueChange={(value) => field.onChange(value === "true")} value={String(field.value)}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Do you smoke?" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="true">Yes</SelectItem>
                       <SelectItem value="false">No</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lifestyle.sleep.hoursPerNight"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Hours of Sleep per Night</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      min="0"
-                      max="24"
-                      {...field}
-                      value={field.value || ""}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lifestyle.sleep.quality"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Sleep Quality</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select sleep quality" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="poor">Poor</SelectItem>
-                      <SelectItem value="fair">Fair</SelectItem>
-                      <SelectItem value="good">Good</SelectItem>
-                      <SelectItem value="excellent">Excellent</SelectItem>
+                      <SelectItem value="true">Yes</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -860,6 +529,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
           </div>
         </div>
 
+        {/* Medical Records Upload Section */}
         <div className="space-y-4">
           <div className="flex items-center">
             <h2 className="text-xl font-semibold">Medical Records (Optional)</h2>

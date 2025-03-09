@@ -72,54 +72,29 @@ export const symptomSchema = z.object({
 export type Symptom = z.infer<typeof symptomSchema>;
 
 
-// Update HealthData schema to include comprehensive risk factors
+// Update HealthData schema to include all required fields
 export const healthDataSchema = z.object({
   demographics: z.object({
     age: z.number().int().min(0).max(120),
     gender: z.enum(["male", "female", "other"]),
-    ethnicity: z.enum(["asian", "african", "hispanic", "white", "pacific_islander", "native_american", "other"]),
-    familyHistory: z.object({
-      parents: z.boolean(),
-      siblings: z.boolean(),
-      children: z.boolean()
-    }),
-    gestationalDiabetes: z.boolean().optional(),
+    ethnicity: z.string().min(1, "Ethnicity is required"),
   }),
   physiological: z.object({
     height: z.number().min(100, "Height must be at least 100 cm").max(250, "Height must be less than 250 cm"),
     weight: z.number().min(30, "Weight must be at least 30 kg").max(300, "Weight must be less than 300 kg"),
-    waistCircumference: z.number().min(50, "Waist must be at least 50 cm").max(200, "Waist must be less than 200 cm"),
     bloodPressure: z.object({
       systolic: z.number().min(70, "Systolic must be at least 70").max(200, "Systolic must be less than 200"),
       diastolic: z.number().min(40, "Diastolic must be at least 40").max(130, "Diastolic must be less than 130")
     }),
     bloodSugar: z.number().min(50, "Blood sugar must be at least 50 mg/dL").max(300, "Blood sugar must be less than 300 mg/dL"),
-    priorPrediabetes: z.boolean(),
-    heartDisease: z.boolean(),
   }),
   lifestyle: z.object({
-    exercise: z.object({
-      frequency: z.enum(["none", "occasional", "regular", "frequent"]),
-      intensity: z.enum(["light", "moderate", "vigorous"]),
-      minutesPerWeek: z.number().min(0).max(1000)
-    }),
-    diet: z.object({
-      quality: z.enum(["poor", "fair", "good", "excellent"]),
-      fruitsVegetables: z.number().min(0, "Servings must be non-negative"),
-      processedFoods: z.number().min(0, "Servings must be non-negative"),
-      sugaryDrinks: z.number().min(0, "Servings must be non-negative")
-    }),
+    exercise: z.enum(["none", "light", "moderate", "heavy"]),
+    diet: z.enum(["poor", "fair", "good", "excellent"]),
     stressLevel: z.enum(["low", "moderate", "high", "severe"]),
-    sleep: z.object({
-      hoursPerNight: z.number().min(0).max(24),
-      quality: z.enum(["poor", "fair", "good", "excellent"])
-    }),
     workStyle: z.enum(["sedentary", "light", "moderate", "active"]),
-    smoking: z.boolean(),
-    alcohol: z.object({
-      frequency: z.enum(["none", "occasional", "regular", "frequent"]),
-      drinksPerWeek: z.number().min(0)
-    })
+    alcohol: z.boolean(),
+    smoking: z.boolean()
   }),
   symptoms: symptomSchema.optional(),
 });
