@@ -177,183 +177,216 @@ export async function registerRoutes(router: Router): Promise<void> {
 function calculateDiabetesRisk(data: any) {
   let riskScore = 0;
   const riskFactors = [];
+  console.log("Starting risk assessment with data:", {
+    demographics: data.demographics,
+    physiological: data.physiological,
+    lifestyle: data.lifestyle
+  });
 
   // Family History (significant risk factor according to ADA)
   if (data.demographics.familyHistory.parents) {
     riskScore += 3;
     riskFactors.push("Parent with diabetes");
+    console.log("Added family history (parent) risk: +3, current score:", riskScore);
   }
   if (data.demographics.familyHistory.siblings) {
     riskScore += 2;
     riskFactors.push("Sibling with diabetes");
+    console.log("Added family history (sibling) risk: +2, current score:", riskScore);
   }
   if (data.demographics.familyHistory.children) {
     riskScore += 2;
     riskFactors.push("Child with diabetes");
+    console.log("Added family history (child) risk: +2, current score:", riskScore);
   }
 
   // Prior Medical History
   if (data.physiological.priorPrediabetes) {
     riskScore += 4;
     riskFactors.push("History of prediabetes");
+    console.log("Added prediabetes history risk: +4, current score:", riskScore);
   }
   if (data.physiological.heartDisease) {
     riskScore += 2;
     riskFactors.push("History of heart disease");
+    console.log("Added heart disease history risk: +2, current score:", riskScore);
   }
   if (data.demographics.gestationalDiabetes) {
     riskScore += 3;
     riskFactors.push("History of gestational diabetes");
+    console.log("Added gestational diabetes history risk: +3, current score:", riskScore);
   }
 
-  // Demographic risk factors (Based on ADA guidelines)
+  // Demographics and Ethnicity
   if (data.demographics.age > 45) {
     riskScore += 2;
     riskFactors.push("Age above 45");
+    console.log("Added age risk (>45): +2, current score:", riskScore);
   }
   if (data.demographics.age > 65) {
     riskScore += 1;
     riskFactors.push("Age above 65");
+    console.log("Added additional age risk (>65): +1, current score:", riskScore);
   }
 
-  // Ethnicity risk assessment (Based on CDC statistics)
   const highRiskEthnicities = ['asian', 'african', 'hispanic', 'pacific_islander', 'native_american'];
   if (highRiskEthnicities.includes(data.demographics.ethnicity.toLowerCase())) {
     riskScore += 2;
     riskFactors.push(`${data.demographics.ethnicity} ethnicity has higher diabetes risk`);
+    console.log("Added ethnicity risk factor: +2, current score:", riskScore);
   }
 
-  // BMI and Waist Circumference Assessment
+  // Physical measurements
   const heightInMeters = data.physiological.height / 100;
   const bmi = data.physiological.weight / (heightInMeters * heightInMeters);
+  console.log("Calculated BMI:", bmi.toFixed(1));
 
   if (bmi > 30) {
     riskScore += 3;
     riskFactors.push("BMI indicates obesity");
+    console.log("Added obesity risk: +3, current score:", riskScore);
   } else if (bmi > 25) {
     riskScore += 2;
     riskFactors.push("BMI indicates overweight");
+    console.log("Added overweight risk: +2, current score:", riskScore);
   }
 
-  // Waist circumference risk (gender-specific thresholds)
+  // Waist circumference (gender-specific)
   const highRiskWaist = data.demographics.gender === 'male' ? 102 : 88; // cm
   if (data.physiological.waistCircumference > highRiskWaist) {
     riskScore += 2;
     riskFactors.push("High-risk waist circumference");
+    console.log("Added waist circumference risk: +2, current score:", riskScore);
   }
 
-  // Blood sugar assessment (Based on ADA criteria)
+  // Blood sugar levels
   if (data.physiological.bloodSugar > 126) {
     riskScore += 4;
     riskFactors.push("Fasting blood sugar above diabetic threshold (>126 mg/dL)");
+    console.log("Added high blood sugar risk: +4, current score:", riskScore);
   } else if (data.physiological.bloodSugar > 100) {
     riskScore += 3;
     riskFactors.push("Fasting blood sugar indicates prediabetes (100-125 mg/dL)");
+    console.log("Added prediabetic blood sugar risk: +3, current score:", riskScore);
   } else if (data.physiological.bloodSugar < 70) {
     riskScore += 2;
     riskFactors.push("Blood sugar below normal range (<70 mg/dL)");
+    console.log("Added low blood sugar risk: +2, current score:", riskScore);
   }
 
-  // Blood pressure assessment (Based on AHA guidelines)
-  const systolic = data.physiological.bloodPressure.systolic;
-  const diastolic = data.physiological.bloodPressure.diastolic;
-
-  if (systolic > 140 || diastolic > 90) {
-    riskScore += 3;
-    riskFactors.push("Stage 2 hypertension");
-  } else if (systolic > 130 || diastolic > 80) {
-    riskScore += 2;
-    riskFactors.push("Stage 1 hypertension");
-  }
-
-  // Exercise assessment (Based on WHO guidelines)
+  // Exercise habits
   const exercise = data.lifestyle.exercise;
   if (exercise.frequency === "none") {
     riskScore += 3;
     riskFactors.push("No physical activity");
+    console.log("Added physical inactivity risk: +3, current score:", riskScore);
   } else {
     if (exercise.minutesPerWeek < 150) {
       riskScore += 2;
       riskFactors.push("Insufficient physical activity (less than 150 minutes/week)");
+      console.log("Added insufficient exercise risk: +2, current score:", riskScore);
     }
     if (exercise.intensity === "light") {
       riskScore += 1;
       riskFactors.push("Low intensity exercise only");
+      console.log("Added low exercise intensity risk: +1, current score:", riskScore);
     }
   }
 
-  // Diet quality assessment
+  // Diet assessment
   const diet = data.lifestyle.diet;
   if (diet.quality === "poor") {
     riskScore += 3;
     riskFactors.push("Poor overall diet quality");
+    console.log("Added poor diet risk: +3, current score:", riskScore);
   } else if (diet.quality === "fair") {
     riskScore += 2;
     riskFactors.push("Fair diet quality");
+    console.log("Added fair diet risk: +2, current score:", riskScore);
   }
 
   if (diet.fruitsVegetables < 5) {
     riskScore += 1;
     riskFactors.push("Low fruit and vegetable intake");
+    console.log("Added low fruits/vegetables risk: +1, current score:", riskScore);
   }
   if (diet.processedFoods > 3) {
     riskScore += 2;
     riskFactors.push("High processed food intake");
+    console.log("Added processed foods risk: +2, current score:", riskScore);
   }
   if (diet.sugaryDrinks > 2) {
     riskScore += 2;
     riskFactors.push("High sugary drink consumption");
+    console.log("Added sugary drinks risk: +2, current score:", riskScore);
   }
 
-  // Sleep assessment
+  // Sleep patterns
   const sleep = data.lifestyle.sleep;
   if (sleep.hoursPerNight < 6 || sleep.hoursPerNight > 9) {
     riskScore += 1;
     riskFactors.push("Suboptimal sleep duration");
+    console.log("Added sleep duration risk: +1, current score:", riskScore);
   }
   if (sleep.quality === "poor") {
     riskScore += 1;
     riskFactors.push("Poor sleep quality");
+    console.log("Added poor sleep quality risk: +1, current score:", riskScore);
   }
 
-  // Stress level impact
+  // Stress level
   if (data.lifestyle.stressLevel === "severe") {
     riskScore += 2;
     riskFactors.push("Severe stress level");
+    console.log("Added severe stress risk: +2, current score:", riskScore);
   } else if (data.lifestyle.stressLevel === "high") {
     riskScore += 1;
     riskFactors.push("High stress level");
+    console.log("Added high stress risk: +1, current score:", riskScore);
   }
 
-  // Work style consideration
+  // Lifestyle and habits
   if (data.lifestyle.workStyle === "sedentary") {
     riskScore += 2;
     riskFactors.push("Sedentary work style");
+    console.log("Added sedentary lifestyle risk: +2, current score:", riskScore);
   }
 
-  // Substance use assessment
   if (data.lifestyle.smoking) {
     riskScore += 3;
     riskFactors.push("Current smoker");
+    console.log("Added smoking risk: +3, current score:", riskScore);
   }
 
   const alcohol = data.lifestyle.alcohol;
   if (alcohol.frequency === "frequent" || alcohol.drinksPerWeek > 14) {
     riskScore += 2;
     riskFactors.push("High alcohol consumption");
+    console.log("Added high alcohol consumption risk: +2, current score:", riskScore);
   } else if (alcohol.frequency === "regular" || alcohol.drinksPerWeek > 7) {
     riskScore += 1;
     riskFactors.push("Moderate alcohol consumption");
+    console.log("Added moderate alcohol consumption risk: +1, current score:", riskScore);
   }
 
-  // Calculate normalized risk score (scale of 0-5)
-  const maxPossibleScore = 50; // Updated max score based on all factors
+  // Calculate final risk score
+  const maxPossibleScore = 50;
   const normalizedScore = Math.min(5, (riskScore / maxPossibleScore) * 5);
+  console.log("Final risk calculation:", {
+    rawScore: riskScore,
+    maxPossible: maxPossibleScore,
+    normalizedScore: normalizedScore.toFixed(2)
+  });
 
-  // Determine risk level based on normalized score
   const level: "low" | "moderate" | "high" =
     normalizedScore <= 2 ? "low" :
-      normalizedScore <= 3.5 ? "moderate" : "high";
+    normalizedScore <= 3.5 ? "moderate" : "high";
+
+  console.log("Risk assessment complete:", {
+    level,
+    totalRiskFactors: riskFactors.length,
+    normalizedScore: normalizedScore.toFixed(2)
+  });
 
   return {
     score: normalizedScore,
