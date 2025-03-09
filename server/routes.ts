@@ -178,6 +178,34 @@ function calculateDiabetesRisk(data: any) {
   let riskScore = 0;
   const riskFactors = [];
 
+  // Family History (significant risk factor according to ADA)
+  if (data.demographics.familyHistory.parents) {
+    riskScore += 3;
+    riskFactors.push("Parent with diabetes");
+  }
+  if (data.demographics.familyHistory.siblings) {
+    riskScore += 2;
+    riskFactors.push("Sibling with diabetes");
+  }
+  if (data.demographics.familyHistory.children) {
+    riskScore += 2;
+    riskFactors.push("Child with diabetes");
+  }
+
+  // Prior Medical History
+  if (data.physiological.priorPrediabetes) {
+    riskScore += 4;
+    riskFactors.push("History of prediabetes");
+  }
+  if (data.physiological.heartDisease) {
+    riskScore += 2;
+    riskFactors.push("History of heart disease");
+  }
+  if (data.demographics.gestationalDiabetes) {
+    riskScore += 3;
+    riskFactors.push("History of gestational diabetes");
+  }
+
   // Demographic risk factors (Based on ADA guidelines)
   if (data.demographics.age > 45) {
     riskScore += 2;
@@ -191,11 +219,11 @@ function calculateDiabetesRisk(data: any) {
   // Ethnicity risk assessment (Based on CDC statistics)
   const highRiskEthnicities = ['asian', 'african', 'hispanic', 'pacific_islander', 'native_american'];
   if (highRiskEthnicities.includes(data.demographics.ethnicity.toLowerCase())) {
-    riskScore += 1;
+    riskScore += 2;
     riskFactors.push(`${data.demographics.ethnicity} ethnicity has higher diabetes risk`);
   }
 
-  // BMI calculation and assessment
+  // BMI and Waist Circumference Assessment
   const heightInMeters = data.physiological.height / 100;
   const bmi = data.physiological.weight / (heightInMeters * heightInMeters);
 
@@ -205,9 +233,13 @@ function calculateDiabetesRisk(data: any) {
   } else if (bmi > 25) {
     riskScore += 2;
     riskFactors.push("BMI indicates overweight");
-  } else if (bmi < 18.5) {
-    riskScore += 1;
-    riskFactors.push("BMI indicates underweight");
+  }
+
+  // Waist circumference risk (gender-specific thresholds)
+  const highRiskWaist = data.demographics.gender === 'male' ? 102 : 88; // cm
+  if (data.physiological.waistCircumference > highRiskWaist) {
+    riskScore += 2;
+    riskFactors.push("High-risk waist circumference");
   }
 
   // Blood sugar assessment (Based on ADA criteria)
@@ -232,28 +264,56 @@ function calculateDiabetesRisk(data: any) {
   } else if (systolic > 130 || diastolic > 80) {
     riskScore += 2;
     riskFactors.push("Stage 1 hypertension");
-  } else if (systolic > 120) {
-    riskScore += 1;
-    riskFactors.push("Elevated blood pressure");
   }
 
-  // Lifestyle factors assessment
-  // Exercise (Based on WHO guidelines)
-  if (data.lifestyle.exercise === "none") {
+  // Exercise assessment (Based on WHO guidelines)
+  const exercise = data.lifestyle.exercise;
+  if (exercise.frequency === "none") {
     riskScore += 3;
-    riskFactors.push("No regular physical activity");
-  } else if (data.lifestyle.exercise === "light") {
-    riskScore += 2;
-    riskFactors.push("Insufficient physical activity");
+    riskFactors.push("No physical activity");
+  } else {
+    if (exercise.minutesPerWeek < 150) {
+      riskScore += 2;
+      riskFactors.push("Insufficient physical activity (less than 150 minutes/week)");
+    }
+    if (exercise.intensity === "light") {
+      riskScore += 1;
+      riskFactors.push("Low intensity exercise only");
+    }
   }
 
-  // Diet quality
-  if (data.lifestyle.diet === "poor") {
+  // Diet quality assessment
+  const diet = data.lifestyle.diet;
+  if (diet.quality === "poor") {
     riskScore += 3;
-    riskFactors.push("Poor diet quality");
-  } else if (data.lifestyle.diet === "fair") {
+    riskFactors.push("Poor overall diet quality");
+  } else if (diet.quality === "fair") {
     riskScore += 2;
     riskFactors.push("Fair diet quality");
+  }
+
+  if (diet.fruitsVegetables < 5) {
+    riskScore += 1;
+    riskFactors.push("Low fruit and vegetable intake");
+  }
+  if (diet.processedFoods > 3) {
+    riskScore += 2;
+    riskFactors.push("High processed food intake");
+  }
+  if (diet.sugaryDrinks > 2) {
+    riskScore += 2;
+    riskFactors.push("High sugary drink consumption");
+  }
+
+  // Sleep assessment
+  const sleep = data.lifestyle.sleep;
+  if (sleep.hoursPerNight < 6 || sleep.hoursPerNight > 9) {
+    riskScore += 1;
+    riskFactors.push("Suboptimal sleep duration");
+  }
+  if (sleep.quality === "poor") {
+    riskScore += 1;
+    riskFactors.push("Poor sleep quality");
   }
 
   // Stress level impact
@@ -271,29 +331,34 @@ function calculateDiabetesRisk(data: any) {
     riskFactors.push("Sedentary work style");
   }
 
-  // Substance use
+  // Substance use assessment
   if (data.lifestyle.smoking) {
     riskScore += 3;
     riskFactors.push("Current smoker");
   }
-  if (data.lifestyle.alcohol) {
+
+  const alcohol = data.lifestyle.alcohol;
+  if (alcohol.frequency === "frequent" || alcohol.drinksPerWeek > 14) {
     riskScore += 2;
-    riskFactors.push("Regular alcohol consumption");
+    riskFactors.push("High alcohol consumption");
+  } else if (alcohol.frequency === "regular" || alcohol.drinksPerWeek > 7) {
+    riskScore += 1;
+    riskFactors.push("Moderate alcohol consumption");
   }
 
   // Calculate normalized risk score (scale of 0-5)
-  const maxPossibleScore = 35; // Maximum possible points from all factors
+  const maxPossibleScore = 50; // Updated max score based on all factors
   const normalizedScore = Math.min(5, (riskScore / maxPossibleScore) * 5);
 
   // Determine risk level based on normalized score
-  const level: "low" | "moderate" | "high" = 
+  const level: "low" | "moderate" | "high" =
     normalizedScore <= 2 ? "low" :
-    normalizedScore <= 3.5 ? "moderate" : "high";
+      normalizedScore <= 3.5 ? "moderate" : "high";
 
   return {
     score: normalizedScore,
     level,
-    riskFactors, // Include identified risk factors in the response
+    riskFactors,
     recommendations: generateRecommendations(normalizedScore, data, riskFactors)
   };
 }
@@ -314,7 +379,7 @@ function generateRecommendations(riskScore: number, data: any, riskFactors: stri
       case "BMI indicates obesity":
       case "BMI indicates overweight":
         recommendations.push(
-          `Your current BMI is ${(data.physiological.weight / Math.pow(data.physiological.height/100, 2)).toFixed(1)}`,
+          `Your current BMI is ${(data.physiological.weight / Math.pow(data.physiological.height / 100, 2)).toFixed(1)}`,
           "Consider consulting with a nutritionist for a personalized weight management plan",
           "Focus on portion control and balanced meals",
           "Aim for gradual, sustainable weight loss of 1-2 pounds per week"
@@ -343,8 +408,8 @@ function generateRecommendations(riskScore: number, data: any, riskFactors: stri
           "Reduce sodium intake to less than 2,300mg per day"
         );
         break;
-      case "No regular physical activity":
-      case "Insufficient physical activity":
+      case "No physical activity":
+      case "Insufficient physical activity (less than 150 minutes/week)":
         recommendations.push(
           "Start with 10-minute walks and gradually increase duration",
           "Aim for 150 minutes of moderate exercise per week",
@@ -352,13 +417,50 @@ function generateRecommendations(riskScore: number, data: any, riskFactors: stri
           "Join a fitness class or work with a personal trainer"
         );
         break;
-      case "Poor diet quality":
+      case "Low intensity exercise only":
+        recommendations.push(
+          "Increase the intensity of your workouts gradually",
+          "Consider high-intensity interval training (HIIT)"
+        );
+        break;
+      case "Poor overall diet quality":
       case "Fair diet quality":
         recommendations.push(
           "Increase intake of vegetables, fruits, and whole grains",
           "Limit processed foods and sugary beverages",
           "Consider consulting with a registered dietitian",
           "Keep a food diary to track eating habits"
+        );
+        break;
+      case "Low fruit and vegetable intake":
+        recommendations.push(
+          "Aim for at least 5 servings of fruits and vegetables per day",
+          "Include a variety of colorful fruits and vegetables in your diet"
+        );
+        break;
+      case "High processed food intake":
+        recommendations.push(
+          "Reduce your consumption of processed foods",
+          "Choose whole, unprocessed foods whenever possible"
+        );
+        break;
+      case "High sugary drink consumption":
+        recommendations.push(
+          "Reduce your consumption of sugary drinks",
+          "Opt for water, unsweetened tea, or other healthy beverages"
+        );
+        break;
+      case "Suboptimal sleep duration":
+        recommendations.push(
+          "Aim for 7-9 hours of sleep per night",
+          "Establish a regular sleep schedule",
+          "Create a relaxing bedtime routine"
+        );
+        break;
+      case "Poor sleep quality":
+        recommendations.push(
+          "Improve your sleep hygiene",
+          "Consider consulting with a sleep specialist"
         );
         break;
       case "Severe stress level":
@@ -385,13 +487,53 @@ function generateRecommendations(riskScore: number, data: any, riskFactors: stri
           "Join a support group for quitting smoking"
         );
         break;
-      case "Regular alcohol consumption":
+      case "High alcohol consumption":
         recommendations.push(
           "Limit alcohol intake",
           "Keep track of weekly alcohol consumption",
           "Consider alcohol-free alternatives"
         );
         break;
+      case "Moderate alcohol consumption":
+        recommendations.push(
+          "Reduce alcohol consumption",
+          "Be mindful of daily and weekly limits"
+        );
+        break;
+      case "Parent with diabetes":
+      case "Sibling with diabetes":
+      case "Child with diabetes":
+        recommendations.push(
+          "Discuss your family history with your healthcare provider",
+          "Schedule regular screenings to monitor your blood sugar and other health markers"
+        );
+        break;
+      case "History of prediabetes":
+        recommendations.push(
+          "Follow a healthy lifestyle to prevent diabetes",
+          "Monitor your blood sugar levels regularly",
+          "Work with a healthcare professional to manage your risk"
+        );
+        break;
+      case "History of heart disease":
+        recommendations.push(
+          "Work closely with your healthcare provider for cardiac care",
+          "Maintain a healthy lifestyle to reduce your risk of future heart issues"
+        );
+        break;
+      case "History of gestational diabetes":
+        recommendations.push(
+          "Monitor your blood sugar levels regularly",
+          "Maintain a healthy lifestyle to reduce your risk of type 2 diabetes"
+        );
+        break;
+      case "High-risk waist circumference":
+        recommendations.push(
+          "Consult with a healthcare provider or nutritionist to discuss strategies for reducing your waist circumference",
+          "Aim for regular exercise and a healthy diet to lose weight and improve your overall health"
+        );
+        break;
+
     }
   });
 
@@ -408,84 +550,6 @@ function generateRecommendations(riskScore: number, data: any, riskFactors: stri
   return [...new Set(recommendations)]; // Remove any duplicate recommendations
 }
 
-// Enhanced recommendations based on specific risk factors
-
-
-function checkAndAwardAchievements(data: any, existingAchievements: any[] = []): Achievement[] {
-  const achievements: Achievement[] = [...(existingAchievements || [])];
-  const now = new Date().toISOString();
-
-  // First Time Health Check Achievement
-  if (!existingAchievements?.length) {
-    achievements.push({
-      id: "first_check",
-      name: "Health Pioneer",
-      description: "Completed your first health assessment",
-      icon: "🎯",
-      unlockedAt: now
-    });
-  }
-
-  // Blood Sugar Control Achievement
-  if (data.physiological.bloodSugar >= 70 && data.physiological.bloodSugar <= 100) {
-    const hasAchievement = achievements.some(a => a.id === "blood_sugar_control");
-    if (!hasAchievement) {
-      achievements.push({
-        id: "blood_sugar_control",
-        name: "Blood Sugar Master",
-        description: "Maintained healthy blood sugar levels",
-        icon: "🎯",
-        unlockedAt: now
-      });
-    }
-  }
-
-  // Healthy BMI Achievement
-  const heightInMeters = data.physiological.height / 100;
-  const bmi = data.physiological.weight / (heightInMeters * heightInMeters);
-  if (bmi >= 18.5 && bmi <= 24.9) {
-    const hasAchievement = achievements.some(a => a.id === "healthy_bmi");
-    if (!hasAchievement) {
-      achievements.push({
-        id: "healthy_bmi",
-        name: "BMI Champion",
-        description: "Maintained a healthy BMI",
-        icon: "⭐",
-        unlockedAt: now
-      });
-    }
-  }
-
-  // Lifestyle Achievement
-  if (data.lifestyle.exercise !== "none" && data.lifestyle.diet === "good") {
-    const hasAchievement = achievements.some(a => a.id === "healthy_lifestyle");
-    if (!hasAchievement) {
-      achievements.push({
-        id: "healthy_lifestyle",
-        name: "Wellness Warrior",
-        description: "Maintained a healthy lifestyle with regular exercise and good diet",
-        icon: "🏃",
-        unlockedAt: now
-      });
-    }
-  }
-
-  // Symptom Tracking Achievement
-  if (data.symptoms) {
-    const hasAchievement = achievements.some(a => a.id === "symptom_tracker");
-    if (!hasAchievement) {
-      achievements.push({
-        id: "symptom_tracker",
-        name: "Health Monitor",
-        description: "Started tracking your symptoms",
-        icon: "📋",
-        unlockedAt: now
-      });
-    }
-  }
-
-  return achievements;
-}
 
 async function extractHealthData(text: string) {
   // Example patterns to extract health data
