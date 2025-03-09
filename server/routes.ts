@@ -176,109 +176,240 @@ export async function registerRoutes(router: Router): Promise<void> {
 
 function calculateDiabetesRisk(data: any) {
   let riskScore = 0;
+  const riskFactors = [];
 
-  // Age factor
-  if (data.demographics.age > 45) riskScore += 2;
-  if (data.demographics.age > 65) riskScore += 1;
-
-  // BMI calculation
-  const heightInMeters = data.physiological.height / 100;
-  const bmi = data.physiological.weight / (heightInMeters * heightInMeters);
-  if (bmi > 30) riskScore += 2;
-  else if (bmi > 25) riskScore += 1;
-
-  // Blood sugar
-  if (data.physiological.bloodSugar > 126) riskScore += 2;
-  else if (data.physiological.bloodSugar > 100) riskScore += 1;
-
-  // Blood pressure
-  if (data.physiological.bloodPressure.systolic > 140 ||
-    data.physiological.bloodPressure.diastolic > 90) {
+  // Demographic risk factors (Based on ADA guidelines)
+  if (data.demographics.age > 45) {
+    riskScore += 2;
+    riskFactors.push("Age above 45");
+  }
+  if (data.demographics.age > 65) {
     riskScore += 1;
+    riskFactors.push("Age above 65");
   }
 
-  // Lifestyle factors
-  if (data.lifestyle.smoking) riskScore += 1;
-  if (data.lifestyle.alcohol) riskScore += 1;
-  if (data.lifestyle.exercise === "none") riskScore += 1;
-  if (data.lifestyle.diet === "poor") riskScore += 1;
+  // Ethnicity risk assessment (Based on CDC statistics)
+  const highRiskEthnicities = ['asian', 'african', 'hispanic', 'pacific_islander', 'native_american'];
+  if (highRiskEthnicities.includes(data.demographics.ethnicity.toLowerCase())) {
+    riskScore += 1;
+    riskFactors.push(`${data.demographics.ethnicity} ethnicity has higher diabetes risk`);
+  }
 
-  // Ensure level is explicitly typed as one of the expected values
-  const level: "low" | "moderate" | "high" =
-    riskScore <= 2 ? "low" :
-      riskScore <= 5 ? "moderate" :
-        "high";
+  // BMI calculation and assessment
+  const heightInMeters = data.physiological.height / 100;
+  const bmi = data.physiological.weight / (heightInMeters * heightInMeters);
+
+  if (bmi > 30) {
+    riskScore += 3;
+    riskFactors.push("BMI indicates obesity");
+  } else if (bmi > 25) {
+    riskScore += 2;
+    riskFactors.push("BMI indicates overweight");
+  } else if (bmi < 18.5) {
+    riskScore += 1;
+    riskFactors.push("BMI indicates underweight");
+  }
+
+  // Blood sugar assessment (Based on ADA criteria)
+  if (data.physiological.bloodSugar > 126) {
+    riskScore += 4;
+    riskFactors.push("Fasting blood sugar above diabetic threshold (>126 mg/dL)");
+  } else if (data.physiological.bloodSugar > 100) {
+    riskScore += 3;
+    riskFactors.push("Fasting blood sugar indicates prediabetes (100-125 mg/dL)");
+  } else if (data.physiological.bloodSugar < 70) {
+    riskScore += 2;
+    riskFactors.push("Blood sugar below normal range (<70 mg/dL)");
+  }
+
+  // Blood pressure assessment (Based on AHA guidelines)
+  const systolic = data.physiological.bloodPressure.systolic;
+  const diastolic = data.physiological.bloodPressure.diastolic;
+
+  if (systolic > 140 || diastolic > 90) {
+    riskScore += 3;
+    riskFactors.push("Stage 2 hypertension");
+  } else if (systolic > 130 || diastolic > 80) {
+    riskScore += 2;
+    riskFactors.push("Stage 1 hypertension");
+  } else if (systolic > 120) {
+    riskScore += 1;
+    riskFactors.push("Elevated blood pressure");
+  }
+
+  // Lifestyle factors assessment
+  // Exercise (Based on WHO guidelines)
+  if (data.lifestyle.exercise === "none") {
+    riskScore += 3;
+    riskFactors.push("No regular physical activity");
+  } else if (data.lifestyle.exercise === "light") {
+    riskScore += 2;
+    riskFactors.push("Insufficient physical activity");
+  }
+
+  // Diet quality
+  if (data.lifestyle.diet === "poor") {
+    riskScore += 3;
+    riskFactors.push("Poor diet quality");
+  } else if (data.lifestyle.diet === "fair") {
+    riskScore += 2;
+    riskFactors.push("Fair diet quality");
+  }
+
+  // Stress level impact
+  if (data.lifestyle.stressLevel === "severe") {
+    riskScore += 2;
+    riskFactors.push("Severe stress level");
+  } else if (data.lifestyle.stressLevel === "high") {
+    riskScore += 1;
+    riskFactors.push("High stress level");
+  }
+
+  // Work style consideration
+  if (data.lifestyle.workStyle === "sedentary") {
+    riskScore += 2;
+    riskFactors.push("Sedentary work style");
+  }
+
+  // Substance use
+  if (data.lifestyle.smoking) {
+    riskScore += 3;
+    riskFactors.push("Current smoker");
+  }
+  if (data.lifestyle.alcohol) {
+    riskScore += 2;
+    riskFactors.push("Regular alcohol consumption");
+  }
+
+  // Calculate normalized risk score (scale of 0-5)
+  const maxPossibleScore = 35; // Maximum possible points from all factors
+  const normalizedScore = Math.min(5, (riskScore / maxPossibleScore) * 5);
+
+  // Determine risk level based on normalized score
+  const level: "low" | "moderate" | "high" = 
+    normalizedScore <= 2 ? "low" :
+    normalizedScore <= 3.5 ? "moderate" : "high";
 
   return {
-    score: riskScore,
+    score: normalizedScore,
     level,
-    recommendations: generateRecommendations(riskScore, data)
+    riskFactors, // Include identified risk factors in the response
+    recommendations: generateRecommendations(normalizedScore, data, riskFactors)
   };
 }
 
-function generateRecommendations(riskScore: number, data: any) {
+function generateRecommendations(riskScore: number, data: any, riskFactors: string[]) {
   const recommendations = [];
 
-  // Diet recommendations
-  if (data.lifestyle.diet === "poor" || data.lifestyle.diet === "fair") {
+  // Add specific recommendations based on identified risk factors
+  riskFactors.forEach(factor => {
+    switch (factor) {
+      case "Age above 45":
+      case "Age above 65":
+        recommendations.push(
+          "Schedule regular health screenings appropriate for your age",
+          "Work closely with your healthcare provider for preventive care"
+        );
+        break;
+      case "BMI indicates obesity":
+      case "BMI indicates overweight":
+        recommendations.push(
+          `Your current BMI is ${(data.physiological.weight / Math.pow(data.physiological.height/100, 2)).toFixed(1)}`,
+          "Consider consulting with a nutritionist for a personalized weight management plan",
+          "Focus on portion control and balanced meals",
+          "Aim for gradual, sustainable weight loss of 1-2 pounds per week"
+        );
+        break;
+      case "Fasting blood sugar above diabetic threshold (>126 mg/dL)":
+        recommendations.push(
+          "Immediate consultation with a healthcare provider is recommended",
+          "Begin monitoring blood sugar levels regularly",
+          "Consider keeping a food and blood sugar diary"
+        );
+        break;
+      case "Fasting blood sugar indicates prediabetes (100-125 mg/dL)":
+        recommendations.push(
+          "Schedule a follow-up test to confirm blood sugar levels",
+          "Consider joining a diabetes prevention program",
+          "Make dietary changes to control blood sugar"
+        );
+        break;
+      case "Stage 2 hypertension":
+      case "Stage 1 hypertension":
+        recommendations.push(
+          `Your blood pressure is ${data.physiological.bloodPressure.systolic}/${data.physiological.bloodPressure.diastolic} mmHg`,
+          "Consult with your healthcare provider about blood pressure management",
+          "Consider the DASH diet for blood pressure control",
+          "Reduce sodium intake to less than 2,300mg per day"
+        );
+        break;
+      case "No regular physical activity":
+      case "Insufficient physical activity":
+        recommendations.push(
+          "Start with 10-minute walks and gradually increase duration",
+          "Aim for 150 minutes of moderate exercise per week",
+          "Consider activities like swimming, cycling, or brisk walking",
+          "Join a fitness class or work with a personal trainer"
+        );
+        break;
+      case "Poor diet quality":
+      case "Fair diet quality":
+        recommendations.push(
+          "Increase intake of vegetables, fruits, and whole grains",
+          "Limit processed foods and sugary beverages",
+          "Consider consulting with a registered dietitian",
+          "Keep a food diary to track eating habits"
+        );
+        break;
+      case "Severe stress level":
+      case "High stress level":
+        recommendations.push(
+          "Practice stress-reduction techniques like meditation or deep breathing",
+          "Consider counseling or stress management programs",
+          "Ensure adequate sleep (7-9 hours per night)",
+          "Take regular breaks during work"
+        );
+        break;
+      case "Sedentary work style":
+        recommendations.push(
+          "Take standing or walking breaks every hour",
+          "Consider using a standing desk",
+          "Do simple exercises at your desk",
+          "Take walks during lunch breaks"
+        );
+        break;
+      case "Current smoker":
+        recommendations.push(
+          "Consider smoking cessation programs",
+          "Talk to your doctor about nicotine replacement therapy",
+          "Join a support group for quitting smoking"
+        );
+        break;
+      case "Regular alcohol consumption":
+        recommendations.push(
+          "Limit alcohol intake",
+          "Keep track of weekly alcohol consumption",
+          "Consider alcohol-free alternatives"
+        );
+        break;
+    }
+  });
+
+  // Add general recommendations based on overall risk score
+  if (riskScore > 3.5) {
     recommendations.push(
-      "Improve your diet by including more whole grains, lean proteins, and vegetables",
-      "Limit processed foods and sugary beverages"
+      "Schedule a comprehensive health assessment with your healthcare provider",
+      "Consider genetic testing for diabetes risk factors",
+      "Join a diabetes prevention program",
+      "Monitor your health metrics more frequently"
     );
   }
 
-  // Exercise recommendations
-  if (data.lifestyle.exercise === "none" || data.lifestyle.exercise === "light") {
-    recommendations.push(
-      "Increase physical activity - aim for at least 150 minutes of moderate exercise per week",
-      "Consider activities like brisk walking, swimming, or cycling"
-    );
-  }
-
-  // Blood sugar recommendations
-  if (data.physiological.bloodSugar > 100) {
-    recommendations.push(
-      "Monitor your blood sugar levels regularly",
-      "Consider consulting with a healthcare provider about glucose management"
-    );
-  }
-
-  // BMI-based recommendations
-  const heightInMeters = data.physiological.height / 100;
-  const bmi = data.physiological.weight / (heightInMeters * heightInMeters);
-  if (bmi > 25) {
-    recommendations.push(
-      "Work on achieving a healthy weight through diet and exercise",
-      "Consider consulting with a nutritionist for personalized meal planning"
-    );
-  }
-
-  // Lifestyle recommendations
-  if (data.lifestyle.smoking) {
-    recommendations.push(
-      "Consider smoking cessation programs or nicotine replacement therapy",
-      "Consult your healthcare provider about smoking cessation options"
-    );
-  }
-
-  if (data.lifestyle.alcohol) {
-    recommendations.push(
-      "Limit alcohol consumption",
-      "Consider tracking your drinks and setting weekly limits"
-    );
-  }
-
-  // Additional recommendations for high risk
-  if (riskScore > 5) {
-    recommendations.push(
-      "Schedule regular check-ups with your healthcare provider",
-      "Consider getting a comprehensive diabetes screening",
-      "Look into diabetes prevention programs in your area"
-    );
-  }
-
-  return recommendations;
+  return [...new Set(recommendations)]; // Remove any duplicate recommendations
 }
+
+// Enhanced recommendations based on specific risk factors
+
 
 function checkAndAwardAchievements(data: any, existingAchievements: any[] = []): Achievement[] {
   const achievements: Achievement[] = [...(existingAchievements || [])];

@@ -72,7 +72,7 @@ export const symptomSchema = z.object({
 export type Symptom = z.infer<typeof symptomSchema>;
 
 
-// Update HealthData schema to remove mood types
+// Update HealthData schema to include all required fields
 export const healthDataSchema = z.object({
   demographics: z.object({
     age: z.number().int().min(0).max(120),
