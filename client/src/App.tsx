@@ -16,9 +16,9 @@ function Router() {
   return (
     <Switch>
       <Route path="/auth" component={AuthPage} />
+      <Route path="/" component={HomePage} />
       <ProtectedRoute path="/dashboard" component={Dashboard} />
       <ProtectedRoute path="/profile" component={ProfilePage} />
-      <Route path="/" component={HomePage} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -28,10 +28,12 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <NavMenu />
-        <Router />
-        <ChatAssistant />
-        <Toaster />
+        <div className="min-h-screen">
+          <NavMenu />
+          <Router />
+          <ChatAssistant />
+          <Toaster />
+        </div>
       </AuthProvider>
     </QueryClientProvider>
   );
