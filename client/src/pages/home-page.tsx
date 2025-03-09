@@ -143,44 +143,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* User Testimonials */}
-        <div className="mb-20">
-          <h2 className="text-3xl font-semibold text-center text-gray-800 mb-10">What Our Users Say</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                name: "Sarah J.",
-                role: "Health Enthusiast",
-                quote: "GlucoSmart has completely changed how I monitor my health. The personalized insights have helped me make better lifestyle choices."
-              },
-              {
-                name: "Michael T.",
-                role: "Diabetes Patient",
-                quote: "As someone with a family history of diabetes, this app has been invaluable for keeping track of my risk factors and making preventive changes."
-              },
-              {
-                name: "Elena R.",
-                role: "Fitness Coach",
-                quote: "I recommend GlucoSmart to all my clients. The comprehensive health tracking and actionable recommendations are exactly what people need."
-              }
-            ].map((testimonial, index) => (
-              <Card key={index} className="bg-white border border-sky-100 shadow-lg">
-                <CardContent className="p-6">
-                  <div className="flex flex-col h-full">
-                    <div className="mb-4">
-                      <p className="text-gray-700 italic">"{testimonial.quote}"</p>
-                    </div>
-                    <div className="mt-auto pt-4 border-t border-gray-100">
-                      <p className="font-medium text-gray-900">{testimonial.name}</p>
-                      <p className="text-sm text-gray-500">{testimonial.role}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-
         <div className="text-center">
           <Link href={user ? "/dashboard" : "/auth"}>
             <Button className="relative overflow-hidden group bg-gradient-to-r from-sky-600/90 to-sky-700/90 hover:from-sky-700 hover:to-sky-800 text-gray-100 px-10 py-4 rounded-lg text-lg font-normal shadow-md hover:shadow-lg transition-all duration-500"> {/*Brighter button*/}
