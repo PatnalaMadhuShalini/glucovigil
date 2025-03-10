@@ -1,11 +1,15 @@
-import express from "express";
-import { type Request, Response, NextFunction } from "express";
-import { setupVite, serveStatic, log } from "./vite";
+import express, { type Request, Response, NextFunction } from "express";
+import fs from "fs";
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
 import { createServer } from "http";
+import viteConfig from "../vite.config";
+import { setupVite, log } from "./vite";
 import { setupAuth, setupAuthRoutes } from "./auth";
 import { registerRoutes } from "./routes";
-import path from "path";
-import fs from "fs";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Start with detailed logging for diagnostics
 console.log('Starting server process with PID:', process.pid);
@@ -62,11 +66,16 @@ apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     // Configure server based on environment
     if (process.env.NODE_ENV === 'production') {
       log('Running in production mode...');
-      const staticPath = path.resolve(__dirname, '../dist/public');
 
+      // In production, use the current working directory as base
+      const projectRoot = dirname(__dirname); // Go up one level from server/
+      const staticPath = path.join(projectRoot, 'dist', 'public');
+
+      log(`Production static path: ${staticPath}`);
+
+      // Verify build directory exists
       if (!fs.existsSync(staticPath)) {
-        log('Error: Production build not found. Building client...');
-        // In production, we expect the build to exist
+        log('Error: Production build directory not found at', staticPath);
         throw new Error('Production build not found');
       }
 
@@ -75,21 +84,18 @@ apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
 
       // Serve index.html for client-side routing
       app.get('*', (_req, res) => {
-        res.sendFile(path.join(staticPath, 'index.html'));
+        const indexPath = path.join(staticPath, 'index.html');
+        if (!fs.existsSync(indexPath)) {
+          log('Error: index.html not found at', indexPath);
+          throw new Error('index.html not found in build directory');
+        }
+        res.sendFile(indexPath);
       });
     } else {
       // Development mode - use Vite
       log('Setting up Vite development server...');
       await setupVite(app, server);
     }
-
-    // Generic error handler
-    app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-      const status = err.status || err.statusCode || 500;
-      const message = err.message || "Internal Server Error";
-      log('Error:', err.message);
-      res.status(status).json({ message });
-    });
 
     // Start server
     server.listen(port, '0.0.0.0', () => {
