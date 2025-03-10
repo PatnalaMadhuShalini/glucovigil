@@ -9,10 +9,7 @@ import type { HealthDataWithPrediction } from "@shared/schema";
 import HealthForm from "@/components/health-form";
 
 export default function ProfilePage() {
-  console.log('ProfilePage: Mounting component');
-  const { user } = useAuth();
-  console.log('ProfilePage: Auth state:', { user });
-
+  const { user, logoutMutation } = useAuth();
   const [showHealthForm, setShowHealthForm] = useState(false);
 
   const { data: healthData, isLoading } = useQuery<HealthDataWithPrediction[]>({
@@ -26,8 +23,6 @@ export default function ProfilePage() {
       </div>
     );
   }
-
-  console.log('ProfilePage: Rendering with data:', { healthData });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-100 via-white to-sky-200">
@@ -57,6 +52,10 @@ export default function ProfilePage() {
                 <div>
                   <label className="font-medium text-gray-700">Email</label>
                   <p className="mt-1">{user?.email}</p>
+                </div>
+                <div>
+                  <label className="font-medium text-gray-700">Phone</label>
+                  <p className="mt-1">{user?.phone}</p>
                 </div>
               </div>
             </CardContent>

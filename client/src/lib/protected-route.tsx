@@ -11,8 +11,6 @@ export function ProtectedRoute({
 }) {
   const { user, isLoading } = useAuth();
 
-  console.log(`ProtectedRoute [${path}]:`, { isAuthenticated: !!user, isLoading });
-
   return (
     <Route path={path}>
       {() => {
@@ -25,11 +23,9 @@ export function ProtectedRoute({
         }
 
         if (!user) {
-          console.log(`ProtectedRoute [${path}]: Redirecting to /auth due to no user`);
           return <Redirect to="/auth" />;
         }
 
-        console.log(`ProtectedRoute [${path}]: Rendering protected component`);
         return <Component />;
       }}
     </Route>
