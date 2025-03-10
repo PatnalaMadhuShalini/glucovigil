@@ -53,15 +53,35 @@ apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       next();
     });
 
-    const port = 5000;
-    log(`Using port ${port} to match deployment configuration`);
+    const port = process.env.PORT || 5000;
+    log(`Using port ${port}`);
 
     // Create HTTP server
     const server = createServer(app);
 
-    // Always use Vite in development mode for workflows
-    log('Setting up Vite development server...');
-    await setupVite(app, server);
+    // Configure server based on environment
+    if (process.env.NODE_ENV === 'production') {
+      log('Running in production mode...');
+      const staticPath = path.resolve(__dirname, '../dist/public');
+
+      if (!fs.existsSync(staticPath)) {
+        log('Error: Production build not found. Building client...');
+        // In production, we expect the build to exist
+        throw new Error('Production build not found');
+      }
+
+      // Serve static files
+      app.use(express.static(staticPath));
+
+      // Serve index.html for client-side routing
+      app.get('*', (_req, res) => {
+        res.sendFile(path.join(staticPath, 'index.html'));
+      });
+    } else {
+      // Development mode - use Vite
+      log('Setting up Vite development server...');
+      await setupVite(app, server);
+    }
 
     // Generic error handler
     app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -72,7 +92,6 @@ apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     });
 
     // Start server
-    log(`Starting server on port ${port}...`);
     server.listen(port, '0.0.0.0', () => {
       log(`Server running at http://0.0.0.0:${port}`);
     }).on('error', (err: Error & { code?: string }) => {
