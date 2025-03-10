@@ -93,8 +93,36 @@ export const healthDataSchema = z.object({
     diet: z.enum(["poor", "fair", "good", "excellent"]),
     stressLevel: z.enum(["low", "moderate", "high", "severe"]),
     workStyle: z.enum(["sedentary", "light", "moderate", "active"]),
-    alcohol: z.boolean(),
-    smoking: z.boolean()
+    alcohol: z.enum([
+      "never",              // Never drank throughout life
+      "occasional",         // Rare occasions only
+      "social",            // Social settings only
+      "moderate",          // Regular but limited
+      "heavy",             // Frequent heavy consumption
+      "binge",             // Excessive during short periods
+      "experimental",      // Tried once or twice
+      "former",            // Previously drank but quit
+      "relapsing",         // Occasional relapse
+      "situational",       // Specific circumstances only
+      "passive",           // Unintentional exposure
+      "dependent",         // Shows dependency
+      "recovering"         // In treatment/recovery
+    ]),
+    smoking: z.enum([
+      "never",              // Never smoked throughout life
+      "occasional",         // Rare occasions only
+      "social",            // Social settings only
+      "moderate",          // Regular but limited
+      "heavy",             // Frequent heavy smoking
+      "binge",             // Excessive during short periods
+      "experimental",      // Tried once or twice
+      "former",            // Previously smoked but quit
+      "relapsing",         // Occasional relapse
+      "situational",       // Specific circumstances only
+      "passive",           // Secondhand smoke exposure
+      "dependent",         // Shows dependency
+      "recovering"         // In treatment/recovery
+    ])
   }),
   symptoms: symptomSchema.optional(),
 });

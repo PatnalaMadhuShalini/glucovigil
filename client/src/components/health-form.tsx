@@ -70,8 +70,8 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
       diet: "fair",
       stressLevel: "moderate",
       workStyle: "sedentary",
-      alcohol: false,
-      smoking: false
+      alcohol: "never",
+      smoking: "never",
     },
   };
 
@@ -144,9 +144,9 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
           diet: formData.lifestyle.diet,
           stressLevel: formData.lifestyle.stressLevel,
           workStyle: formData.lifestyle.workStyle,
-          alcohol: formData.lifestyle.alcohol === true,
-          smoking: formData.lifestyle.smoking === true
-        }
+          alcohol: formData.lifestyle.alcohol,
+          smoking: formData.lifestyle.smoking,
+        },
       };
 
       // Log the data being submitted for debugging
@@ -488,18 +488,32 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
               name="lifestyle.alcohol"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Alcohol Consumption</FormLabel>
-                  <Select onValueChange={(value) => field.onChange(value === "true")} value={String(field.value)}>
+                  <FormLabel>Alcohol Consumption Pattern</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Do you consume alcohol?" />
+                        <SelectValue placeholder="Select alcohol consumption pattern" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="false">No</SelectItem>
-                      <SelectItem value="true">Yes</SelectItem>
+                      <SelectItem value="never">Never Consumed</SelectItem>
+                      <SelectItem value="occasional">Occasional (Rare Events)</SelectItem>
+                      <SelectItem value="social">Social Settings Only</SelectItem>
+                      <SelectItem value="moderate">Moderate Regular Use</SelectItem>
+                      <SelectItem value="heavy">Heavy Regular Use</SelectItem>
+                      <SelectItem value="binge">Binge Pattern</SelectItem>
+                      <SelectItem value="experimental">Experimental (Tried Once/Twice)</SelectItem>
+                      <SelectItem value="former">Former Consumer (Quit)</SelectItem>
+                      <SelectItem value="relapsing">Occasional Relapse</SelectItem>
+                      <SelectItem value="situational">Situational Use Only</SelectItem>
+                      <SelectItem value="passive">Passive Exposure Only</SelectItem>
+                      <SelectItem value="dependent">Showing Dependency</SelectItem>
+                      <SelectItem value="recovering">In Recovery/Treatment</SelectItem>
                     </SelectContent>
                   </Select>
+                  <FormDescription>
+                    Select the option that best describes your alcohol consumption pattern
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -510,18 +524,32 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
               name="lifestyle.smoking"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Smoking</FormLabel>
-                  <Select onValueChange={(value) => field.onChange(value === "true")} value={String(field.value)}>
+                  <FormLabel>Smoking Pattern</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Do you smoke?" />
+                        <SelectValue placeholder="Select smoking pattern" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="false">No</SelectItem>
-                      <SelectItem value="true">Yes</SelectItem>
+                      <SelectItem value="never">Never Smoked</SelectItem>
+                      <SelectItem value="occasional">Occasional (Rare Events)</SelectItem>
+                      <SelectItem value="social">Social Settings Only</SelectItem>
+                      <SelectItem value="moderate">Moderate Regular Use</SelectItem>
+                      <SelectItem value="heavy">Heavy Regular Use</SelectItem>
+                      <SelectItem value="binge">Binge Pattern</SelectItem>
+                      <SelectItem value="experimental">Experimental (Tried Once/Twice)</SelectItem>
+                      <SelectItem value="former">Former Smoker (Quit)</SelectItem>
+                      <SelectItem value="relapsing">Occasional Relapse</SelectItem>
+                      <SelectItem value="situational">Situational Use Only</SelectItem>
+                      <SelectItem value="passive">Passive Exposure Only</SelectItem>
+                      <SelectItem value="dependent">Showing Dependency</SelectItem>
+                      <SelectItem value="recovering">In Recovery/Treatment</SelectItem>
                     </SelectContent>
                   </Select>
+                  <FormDescription>
+                    Select the option that best describes your smoking pattern
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
