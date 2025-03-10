@@ -507,6 +507,15 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
             <InfoTooltip content="These medical test results help provide a more accurate assessment of your health status." />
           </div>
 
+          <div className="bg-blue-50 p-4 rounded-lg mb-4">
+            <h3 className="font-medium mb-2">Understanding Clinical Markers</h3>
+            <ul className="list-disc pl-4 space-y-2 text-sm">
+              <li><strong>A1C (HbA1c):</strong> This test shows your average blood sugar level over the past 2-3 months. Normal range is typically between 4% and 5.6%. Higher values may indicate diabetes risk.</li>
+              <li><strong>Hemoglobin:</strong> This measures oxygen-carrying protein in your blood. Normal range is typically 12-16 g/dL for women and 13-17 g/dL for men.</li>
+              <li><strong>Glucose Tolerance Test:</strong> This test measures how well your body processes sugar. Values are measured in mg/dL, and your doctor can help interpret the results.</li>
+            </ul>
+          </div>
+
           <div className="grid md:grid-cols-3 gap-6">
             <FormField
               control={form.control}
@@ -518,13 +527,14 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                     <Input
                       type="number"
                       step="0.1"
+                      placeholder="e.g., 5.7"
                       {...field}
                       value={field.value || ""}
                       onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
                     />
                   </FormControl>
                   <FormDescription>
-                    Your average blood sugar level over the past 2-3 months
+                    Found in your recent lab work or diabetes check-up results. Normal range: 4-5.6%
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -541,11 +551,15 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                     <Input
                       type="number"
                       step="0.1"
+                      placeholder="e.g., 14.0"
                       {...field}
                       value={field.value || ""}
                       onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
                     />
                   </FormControl>
+                  <FormDescription>
+                    Found in your complete blood count (CBC) test results. Normal range: 12-17 g/dL
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -556,15 +570,19 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
               name="physiological.gtt"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Glucose Tolerance Test</FormLabel>
+                  <FormLabel>Glucose Tolerance Test (mg/dL)</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
+                      placeholder="e.g., 140"
                       {...field}
                       value={field.value || ""}
                       onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
                     />
                   </FormControl>
+                  <FormDescription>
+                    A test that measures how your body processes sugar. Ask your healthcare provider for this value.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -756,19 +774,33 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
             <InfoTooltip content="Understanding your access to healthcare helps us provide more relevant recommendations." />
           </div>
 
+          <div className="bg-blue-50 p-4 rounded-lg mb-4">
+            <h3 className="font-medium mb-2">About Healthcare Access</h3>
+            <ul className="list-disc pl-4 space-y-2 text-sm">
+              <li><strong>Insurance Coverage:</strong> Having health insurance can significantly impact your ability to access regular healthcare and medications.</li>
+              <li><strong>Medication Access:</strong> This refers to how easily you can obtain and afford prescribed medications.</li>
+              <li><strong>Regular Check-ups:</strong> The ability to visit healthcare providers for routine check-ups and monitoring.</li>
+            </ul>
+          </div>
+
           <div className="grid md:grid-cols-2 gap-6">
             <FormField
               control={form.control}
               name="financialStatus.insuranceCoverage"
               render={({ field }) => (
-                <FormItem className="flex items-center space-x-2">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormLabel>Have health insurance coverage</FormLabel>
+                <FormItem className="flex flex-col">
+                  <div className="flex items-center space-x-2">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormLabel>Have health insurance coverage</FormLabel>
+                  </div>
+                  <FormDescription className="ml-6">
+                    Check this if you have any form of health insurance (private, employer-provided, or government)
+                  </FormDescription>
                 </FormItem>
               )}
             />
@@ -786,11 +818,14 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="easy">Easy</SelectItem>
-                      <SelectItem value="moderate">Moderate</SelectItem>
-                      <SelectItem value="difficult">Difficult</SelectItem>
+                      <SelectItem value="easy">Easy - No problems getting medications</SelectItem>
+                      <SelectItem value="moderate">Moderate - Some difficulties but manageable</SelectItem>
+                      <SelectItem value="difficult">Difficult - Significant barriers to getting medications</SelectItem>
                     </SelectContent>
                   </Select>
+                  <FormDescription>
+                    How easily can you obtain and afford your prescribed medications?
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

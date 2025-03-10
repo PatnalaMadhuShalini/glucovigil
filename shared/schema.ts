@@ -88,13 +88,37 @@ export const healthDataSchema = z.object({
     }),
     bloodSugar: z.number().min(50, "Blood sugar must be at least 50 mg/dL").max(300, "Blood sugar must be less than 300 mg/dL"),
     // New clinical markers
-    a1c: z.number().min(4, "A1C must be at least 4%").max(15, "A1C must be less than 15%").optional(),
-    gtt: z.number().min(0).max(500).optional(),
-    hemoglobin: z.number().min(7, "Hemoglobin must be at least 7 g/dL").max(20, "Hemoglobin must be less than 20 g/dL").optional(),
+    a1c: z.number()
+      .min(4, "A1C must be at least 4%")
+      .max(20, "A1C values above 20% are unlikely, please verify your result")
+      .optional()
+      .describe("Your average blood sugar level over 2-3 months. Normal range: 4-5.6%"),
+    gtt: z.number()
+      .min(0, "Glucose tolerance test value cannot be negative")
+      .max(500, "GTT values above 500 mg/dL are unlikely, please verify your result")
+      .optional()
+      .describe("Measures how your body processes sugar. Ask your healthcare provider for this value."),
+    hemoglobin: z.number()
+      .min(6, "Hemoglobin must be at least 6 g/dL")
+      .max(20, "Hemoglobin values above 20 g/dL are unlikely, please verify your result")
+      .optional()
+      .describe("Normal range: 12-16 g/dL for women, 13-17 g/dL for men"),
     immunityMarkers: z.object({
-      wbc: z.number().optional(),
-      lymphocytes: z.number().optional(),
-      neutrophils: z.number().optional(),
+      wbc: z.number()
+        .min(1000, "WBC count seems too low")
+        .max(50000, "WBC count seems too high")
+        .optional()
+        .describe("White blood cell count"),
+      lymphocytes: z.number()
+        .min(10, "Lymphocyte percentage seems too low")
+        .max(60, "Lymphocyte percentage seems too high")
+        .optional()
+        .describe("Percentage of lymphocytes in white blood cells"),
+      neutrophils: z.number()
+        .min(30, "Neutrophil percentage seems too low")
+        .max(80, "Neutrophil percentage seems too high")
+        .optional()
+        .describe("Percentage of neutrophils in white blood cells"),
     }).optional(),
   }),
   familyHistory: z.object({
@@ -118,13 +142,13 @@ export const healthDataSchema = z.object({
     diet: z.enum(["poor", "fair", "good", "excellent"]),
     workStyle: z.enum(["sedentary", "light", "moderate", "active"]),
     alcohol: z.enum([
-      "never", "occasional", "social", "moderate", "heavy", "binge", 
-      "experimental", "former", "relapsing", "situational", "passive", 
+      "never", "occasional", "social", "moderate", "heavy", "binge",
+      "experimental", "former", "relapsing", "situational", "passive",
       "dependent", "recovering"
     ]),
     smoking: z.enum([
-      "never", "occasional", "social", "moderate", "heavy", "binge", 
-      "experimental", "former", "relapsing", "situational", "passive", 
+      "never", "occasional", "social", "moderate", "heavy", "binge",
+      "experimental", "former", "relapsing", "situational", "passive",
       "dependent", "recovering"
     ])
   }),
