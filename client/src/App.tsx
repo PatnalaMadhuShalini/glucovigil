@@ -25,7 +25,7 @@ function Router() {
       <ProtectedRoute path="/analysis" component={Analysis} />
       <ProtectedRoute path="/progress" component={Progress} />
       <Route path="/" component={HomePage} />
-      <Route component={NotFound} />
+      <Route path="*" component={NotFound} />
     </Switch>
   );
 }

@@ -28,6 +28,18 @@ setupAuth(app);
 // Mount API router
 app.use('/api', apiRouter);
 
+// Test route to verify API and auth state
+apiRouter.get('/test', (req, res) => {
+  res.json({
+    status: 'ok',
+    authenticated: req.isAuthenticated(),
+    user: req.user ? {
+      id: req.user.id,
+      username: req.user.username
+    } : null
+  });
+});
+
 // API error handling middleware
 apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   const status = err.status || err.statusCode || 500;
