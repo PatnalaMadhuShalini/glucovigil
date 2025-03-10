@@ -32,6 +32,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import MedicalRecordsUpload from "./medical-records-upload";
+import {Checkbox} from "@/components/ui/checkbox";
 
 const InfoTooltip = ({ content }: { content: string }) => (
   <TooltipProvider>
@@ -64,14 +65,39 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
         diastolic: 0,
       },
       bloodSugar: 0,
+      a1c: undefined,
+      gtt: undefined,
+      hemoglobin: undefined,
+      immunityMarkers: {
+        wbc: undefined,
+        lymphocytes: undefined,
+        neutrophils: undefined,
+      },
+    },
+    familyHistory: {
+      diabetesInFamily: false,
+      diabeticRelatives: [],
+      otherConditions: [],
+    },
+    mentalHealth: {
+      stressLevel: "low",
+      moodPattern: "stable",
+      sleepQuality: "good",
+      anxietyLevel: "minimal",
+      copingMechanisms: [],
     },
     lifestyle: {
       exercise: "none",
       diet: "fair",
-      stressLevel: "moderate",
       workStyle: "sedentary",
       alcohol: "never",
       smoking: "never",
+    },
+    financialStatus: {
+      insuranceCoverage: false,
+      medicationAccessibility: "moderate",
+      regularCheckupAbility: false,
+      financialStress: "low",
     },
   };
 
@@ -138,18 +164,26 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
             diastolic: Number(formData.physiological.bloodPressure.diastolic),
           },
           bloodSugar: Number(formData.physiological.bloodSugar),
+          a1c: formData.physiological.a1c,
+          gtt: formData.physiological.gtt,
+          hemoglobin: formData.physiological.hemoglobin,
+          immunityMarkers: formData.physiological.immunityMarkers || {
+            wbc: undefined,
+            lymphocytes: undefined,
+            neutrophils: undefined,
+          },
         },
-        lifestyle: {
-          exercise: formData.lifestyle.exercise,
-          diet: formData.lifestyle.diet,
-          stressLevel: formData.lifestyle.stressLevel,
-          workStyle: formData.lifestyle.workStyle,
-          alcohol: formData.lifestyle.alcohol,
-          smoking: formData.lifestyle.smoking,
+        familyHistory: formData.familyHistory,
+        mentalHealth: formData.mentalHealth,
+        lifestyle: formData.lifestyle,
+        financialStatus: formData.financialStatus || {
+          insuranceCoverage: false,
+          medicationAccessibility: "moderate",
+          regularCheckupAbility: false,
+          financialStress: "low",
         },
       };
 
-      // Log the data being submitted for debugging
       console.log("Submitting health data:", transformedData);
       mutation.mutate(transformedData);
     } catch (error) {
@@ -380,6 +414,164 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
           </div>
         </div>
 
+
+        {/* Family History Section */}
+        <div className="space-y-6">
+          <div className="flex items-center">
+            <h2 className="text-xl font-semibold">Family History</h2>
+            <InfoTooltip content="Information about diabetes and other conditions in your family can help assess your risk factors." />
+          </div>
+
+          <FormField
+            control={form.control}
+            name="familyHistory.diabetesInFamily"
+            render={({ field }) => (
+              <FormItem className="flex items-center space-x-2">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormLabel>Family history of diabetes</FormLabel>
+              </FormItem>
+            )}
+          />
+
+          {/* Add fields for diabetic relatives and other conditions */}
+        </div>
+
+        {/* Mental Health Section */}
+        <div className="space-y-6">
+          <div className="flex items-center">
+            <h2 className="text-xl font-semibold">Mental Health & Stress</h2>
+            <InfoTooltip content="Your mental well-being plays a crucial role in managing diabetes risk and overall health." />
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <FormField
+              control={form.control}
+              name="mentalHealth.stressLevel"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Stress Level</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select stress level" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="low">Low (Rarely feel stressed)</SelectItem>
+                      <SelectItem value="moderate">Moderate (Sometimes stressed)</SelectItem>
+                      <SelectItem value="high">High (Often stressed)</SelectItem>
+                      <SelectItem value="severe">Severe (Constantly stressed)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="mentalHealth.moodPattern"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Mood Pattern</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select mood pattern" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="stable">Stable</SelectItem>
+                      <SelectItem value="variable">Variable</SelectItem>
+                      <SelectItem value="depressed">Depressed</SelectItem>
+                      <SelectItem value="anxious">Anxious</SelectItem>
+                      <SelectItem value="mixed">Mixed</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        {/* Clinical Markers Section */}
+        <div className="space-y-6">
+          <div className="flex items-center">
+            <h2 className="text-xl font-semibold">Clinical Markers</h2>
+            <InfoTooltip content="These medical test results help provide a more accurate assessment of your health status." />
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <FormField
+              control={form.control}
+              name="physiological.a1c"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>A1C (%)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step="0.1"
+                      {...field}
+                      value={field.value || ""}
+                      onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Your average blood sugar level over the past 2-3 months
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="physiological.hemoglobin"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Hemoglobin (g/dL)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step="0.1"
+                      {...field}
+                      value={field.value || ""}
+                      onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="physiological.gtt"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Glucose Tolerance Test</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      {...field}
+                      value={field.value || ""}
+                      onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
         {/* Lifestyle Section */}
         <div className="space-y-6">
           <div className="flex items-center">
@@ -550,6 +742,55 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
                   <FormDescription>
                     Select the option that best describes your smoking pattern
                   </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        {/* Financial Status Section */}
+        <div className="space-y-6">
+          <div className="flex items-center">
+            <h2 className="text-xl font-semibold">Healthcare Access</h2>
+            <InfoTooltip content="Understanding your access to healthcare helps us provide more relevant recommendations." />
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <FormField
+              control={form.control}
+              name="financialStatus.insuranceCoverage"
+              render={({ field }) => (
+                <FormItem className="flex items-center space-x-2">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormLabel>Have health insurance coverage</FormLabel>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="financialStatus.medicationAccessibility"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Access to Medications</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select accessibility level" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="easy">Easy</SelectItem>
+                      <SelectItem value="moderate">Moderate</SelectItem>
+                      <SelectItem value="difficult">Difficult</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

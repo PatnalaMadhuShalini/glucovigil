@@ -72,7 +72,7 @@ export const symptomSchema = z.object({
 export type Symptom = z.infer<typeof symptomSchema>;
 
 
-// Update HealthData schema to include all required fields
+// First, let's update the HealthData schema to include new fields
 export const healthDataSchema = z.object({
   demographics: z.object({
     age: z.number().int().min(0).max(120),
@@ -87,45 +87,58 @@ export const healthDataSchema = z.object({
       diastolic: z.number().min(40, "Diastolic must be at least 40").max(130, "Diastolic must be less than 130")
     }),
     bloodSugar: z.number().min(50, "Blood sugar must be at least 50 mg/dL").max(300, "Blood sugar must be less than 300 mg/dL"),
+    // New clinical markers
+    a1c: z.number().min(4, "A1C must be at least 4%").max(15, "A1C must be less than 15%").optional(),
+    gtt: z.number().min(0).max(500).optional(),
+    hemoglobin: z.number().min(7, "Hemoglobin must be at least 7 g/dL").max(20, "Hemoglobin must be less than 20 g/dL").optional(),
+    immunityMarkers: z.object({
+      wbc: z.number().optional(),
+      lymphocytes: z.number().optional(),
+      neutrophils: z.number().optional(),
+    }).optional(),
+  }),
+  familyHistory: z.object({
+    diabetesInFamily: z.boolean(),
+    diabeticRelatives: z.array(z.object({
+      relation: z.string(),
+      diabetesType: z.enum(["type1", "type2", "gestational"]),
+      ageAtDiagnosis: z.number().optional(),
+    })).optional(),
+    otherConditions: z.array(z.string()).optional(),
+  }),
+  mentalHealth: z.object({
+    stressLevel: z.enum(["low", "moderate", "high", "severe"]),
+    moodPattern: z.enum(["stable", "variable", "depressed", "anxious", "mixed"]),
+    sleepQuality: z.enum(["good", "fair", "poor"]),
+    anxietyLevel: z.enum(["minimal", "mild", "moderate", "severe"]),
+    copingMechanisms: z.array(z.string()).optional(),
   }),
   lifestyle: z.object({
     exercise: z.enum(["none", "light", "moderate", "heavy"]),
     diet: z.enum(["poor", "fair", "good", "excellent"]),
-    stressLevel: z.enum(["low", "moderate", "high", "severe"]),
     workStyle: z.enum(["sedentary", "light", "moderate", "active"]),
     alcohol: z.enum([
-      "never",              // Never drank throughout life
-      "occasional",         // Rare occasions only
-      "social",            // Social settings only
-      "moderate",          // Regular but limited
-      "heavy",             // Frequent heavy consumption
-      "binge",             // Excessive during short periods
-      "experimental",      // Tried once or twice
-      "former",            // Previously drank but quit
-      "relapsing",         // Occasional relapse
-      "situational",       // Specific circumstances only
-      "passive",           // Unintentional exposure
-      "dependent",         // Shows dependency
-      "recovering"         // In treatment/recovery
+      "never", "occasional", "social", "moderate", "heavy", "binge", 
+      "experimental", "former", "relapsing", "situational", "passive", 
+      "dependent", "recovering"
     ]),
     smoking: z.enum([
-      "never",              // Never smoked throughout life
-      "occasional",         // Rare occasions only
-      "social",            // Social settings only
-      "moderate",          // Regular but limited
-      "heavy",             // Frequent heavy smoking
-      "binge",             // Excessive during short periods
-      "experimental",      // Tried once or twice
-      "former",            // Previously smoked but quit
-      "relapsing",         // Occasional relapse
-      "situational",       // Specific circumstances only
-      "passive",           // Secondhand smoke exposure
-      "dependent",         // Shows dependency
-      "recovering"         // In treatment/recovery
+      "never", "occasional", "social", "moderate", "heavy", "binge", 
+      "experimental", "former", "relapsing", "situational", "passive", 
+      "dependent", "recovering"
     ])
   }),
+  financialStatus: z.object({
+    insuranceCoverage: z.boolean(),
+    medicationAccessibility: z.enum(["easy", "moderate", "difficult"]),
+    regularCheckupAbility: z.boolean(),
+    financialStress: z.enum(["none", "low", "moderate", "high"]),
+  }).optional(),
   symptoms: symptomSchema.optional(),
 });
+
+// Update the type definition
+export type HealthData = z.infer<typeof healthDataSchema>;
 
 export const feedbackSchema = z.object({
   rating: z.number().min(1).max(5),
@@ -135,7 +148,6 @@ export const feedbackSchema = z.object({
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
-export type HealthData = z.infer<typeof healthDataSchema>;
 export type Feedback = z.infer<typeof feedbackSchema>;
 
 // Achievement types
