@@ -247,7 +247,6 @@ function calculateDiabetesRisk(data: any) {
   }
 
   // Lifestyle factors assessment
-  // Exercise (Based on WHO guidelines)
   if (data.lifestyle.exercise === "none") {
     riskScore += 3;
     riskFactors.push("No regular physical activity");
@@ -256,7 +255,6 @@ function calculateDiabetesRisk(data: any) {
     riskFactors.push("Insufficient physical activity");
   }
 
-  // Diet quality
   if (data.lifestyle.diet === "poor") {
     riskScore += 3;
     riskFactors.push("Poor diet quality");
@@ -265,13 +263,16 @@ function calculateDiabetesRisk(data: any) {
     riskFactors.push("Fair diet quality");
   }
 
-  // Stress level impact
-  if (data.lifestyle.stressLevel === "severe") {
+  // Mental health and stress assessment
+  if (data.mentalHealth?.stressLevel === "severe") {
+    riskScore += 3;
+    riskFactors.push("Severe stress level - can impact blood sugar control");
+  } else if (data.mentalHealth?.stressLevel === "high") {
     riskScore += 2;
-    riskFactors.push("Severe stress level");
-  } else if (data.lifestyle.stressLevel === "high") {
+    riskFactors.push("High stress level - may affect diabetes management");
+  } else if (data.mentalHealth?.stressLevel === "moderate") {
     riskScore += 1;
-    riskFactors.push("High stress level");
+    riskFactors.push("Moderate stress level");
   }
 
   // Work style consideration
@@ -280,29 +281,35 @@ function calculateDiabetesRisk(data: any) {
     riskFactors.push("Sedentary work style");
   }
 
-  // Substance use
-  if (data.lifestyle.smoking) {
+  // Family history impact
+  if (data.familyHistory?.diabetesInFamily) {
     riskScore += 3;
-    riskFactors.push("Current smoker");
+    riskFactors.push("Family history of diabetes");
   }
-  if (data.lifestyle.alcohol) {
+
+  // Substance use assessment
+  if (data.lifestyle.smoking !== "never") {
+    riskScore += 2;
+    riskFactors.push("Current or past smoking history");
+  }
+  if (data.lifestyle.alcohol !== "never" && data.lifestyle.alcohol !== "occasional") {
     riskScore += 2;
     riskFactors.push("Regular alcohol consumption");
   }
 
   // Calculate normalized risk score (scale of 0-5)
-  const maxPossibleScore = 35; // Maximum possible points from all factors
+  const maxPossibleScore = 40; // Updated maximum possible points including stress
   const normalizedScore = Math.min(5, (riskScore / maxPossibleScore) * 5);
 
   // Determine risk level based on normalized score
   const level: "low" | "moderate" | "high" =
     normalizedScore <= 2 ? "low" :
-      normalizedScore <= 3.5 ? "moderate" : "high";
+    normalizedScore <= 3.5 ? "moderate" : "high";
 
   return {
     score: normalizedScore,
     level,
-    riskFactors, // Include identified risk factors in the response
+    riskFactors,
     recommendations: generateRecommendations(normalizedScore, data, riskFactors)
   };
 }
@@ -313,6 +320,16 @@ function generateRecommendations(riskScore: number, data: any, riskFactors: stri
   // Add specific recommendations based on identified risk factors
   riskFactors.forEach(factor => {
     switch (factor) {
+      case "Severe stress level - can impact blood sugar control":
+      case "High stress level - may affect diabetes management":
+      case "Moderate stress level":
+        recommendations.push(
+          "Consider stress management techniques like meditation or deep breathing",
+          "Regular exercise can help reduce stress levels",
+          "Consider consulting with a mental health professional",
+          "Maintain a regular sleep schedule to help manage stress"
+        );
+        break;
       case "Age above 45":
       case "Age above 65":
         recommendations.push(
@@ -343,15 +360,6 @@ function generateRecommendations(riskScore: number, data: any, riskFactors: stri
           "Make dietary changes to control blood sugar"
         );
         break;
-      case "Stage 2 hypertension":
-      case "Stage 1 hypertension":
-        recommendations.push(
-          `Your blood pressure is ${data.physiological.bloodPressure.systolic}/${data.physiological.bloodPressure.diastolic} mmHg`,
-          "Consult with your healthcare provider about blood pressure management",
-          "Consider the DASH diet for blood pressure control",
-          "Reduce sodium intake to less than 2,300mg per day"
-        );
-        break;
       case "No regular physical activity":
       case "Insufficient physical activity":
         recommendations.push(
@@ -370,13 +378,13 @@ function generateRecommendations(riskScore: number, data: any, riskFactors: stri
           "Keep a food diary to track eating habits"
         );
         break;
-      case "Severe stress level":
-      case "High stress level":
+      case "Stage 2 hypertension":
+      case "Stage 1 hypertension":
         recommendations.push(
-          "Practice stress-reduction techniques like meditation or deep breathing",
-          "Consider counseling or stress management programs",
-          "Ensure adequate sleep (7-9 hours per night)",
-          "Take regular breaks during work"
+          `Your blood pressure is ${data.physiological.bloodPressure.systolic}/${data.physiological.bloodPressure.diastolic} mmHg`,
+          "Consult with your healthcare provider about blood pressure management",
+          "Consider the DASH diet for blood pressure control",
+          "Reduce sodium intake to less than 2,300mg per day"
         );
         break;
       case "Sedentary work style":
@@ -387,7 +395,7 @@ function generateRecommendations(riskScore: number, data: any, riskFactors: stri
           "Take walks during lunch breaks"
         );
         break;
-      case "Current smoker":
+      case "Current or past smoking history":
         recommendations.push(
           "Consider smoking cessation programs",
           "Talk to your doctor about nicotine replacement therapy",
@@ -401,6 +409,14 @@ function generateRecommendations(riskScore: number, data: any, riskFactors: stri
           "Consider alcohol-free alternatives"
         );
         break;
+      case "Family history of diabetes":
+        recommendations.push(
+          "Discuss your family history with your doctor",
+          "Undergo regular health screenings",
+          "Adopt a healthy lifestyle to minimize risk"
+        );
+        break;
+
     }
   });
 
