@@ -32,6 +32,9 @@ async function isPortInUse(port: number): Promise<boolean> {
 const app = express();
 const apiRouter = express.Router();
 
+// Log the port configuration
+log(`Deployment expects traffic on port 5000 forwarded to external port 80`);
+
 // Basic middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -125,9 +128,9 @@ apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       });
     });
 
-    // Use a fixed port for improved startup reliability
-    const port = 5001; // Fixed port to reduce selection complexity
-    log(`Using fixed port ${port} for improved startup reliability`);
+    // Use port 5000 to match the .replit configuration
+    const port = 5000; // Match port forwarded to external port 80 for deployments
+    log(`Using port ${port} to match deployment configuration`);
 
     // Create HTTP server only when ready to start
     const server = createServer(app);
