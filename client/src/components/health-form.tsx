@@ -144,31 +144,55 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
 
   const onSubmit = (formData: HealthData) => {
     try {
-      // Convert string numbers to actual numbers
+      // Convert string numbers to actual numbers and ensure all required fields are present
       const processedData: HealthData = {
-        ...formData,
         demographics: {
-          ...formData.demographics,
-          age: Number(formData.demographics.age),
+          age: Number(formData.demographics.age) || 0,
+          gender: formData.demographics.gender || "male",
+          ethnicity: formData.demographics.ethnicity || "",
         },
         physiological: {
-          ...formData.physiological,
-          height: Number(formData.physiological.height),
-          weight: Number(formData.physiological.weight),
+          height: Number(formData.physiological.height) || 0,
+          weight: Number(formData.physiological.weight) || 0,
           bloodPressure: {
-            systolic: Number(formData.physiological.bloodPressure.systolic),
-            diastolic: Number(formData.physiological.bloodPressure.diastolic),
+            systolic: Number(formData.physiological.bloodPressure.systolic) || 0,
+            diastolic: Number(formData.physiological.bloodPressure.diastolic) || 0,
           },
-          bloodSugar: Number(formData.physiological.bloodSugar),
-          // Only include optional fields if they have values
-          ...(formData.physiological.a1c !== undefined && { a1c: Number(formData.physiological.a1c) }),
-          ...(formData.physiological.gtt !== undefined && { gtt: Number(formData.physiological.gtt) }),
-          ...(formData.physiological.hemoglobin !== undefined && { hemoglobin: Number(formData.physiological.hemoglobin) }),
+          bloodSugar: Number(formData.physiological.bloodSugar) || 0,
+          // Only include optional fields if they have actual values
+          ...(formData.physiological.a1c && { a1c: Number(formData.physiological.a1c) }),
+          ...(formData.physiological.gtt && { gtt: Number(formData.physiological.gtt) }),
+          ...(formData.physiological.hemoglobin && { hemoglobin: Number(formData.physiological.hemoglobin) }),
+        },
+        familyHistory: {
+          diabetesInFamily: formData.familyHistory?.diabetesInFamily || false,
+          diabeticRelatives: formData.familyHistory?.diabeticRelatives || [],
+          otherConditions: formData.familyHistory?.otherConditions || [],
+        },
+        mentalHealth: {
+          stressLevel: formData.mentalHealth?.stressLevel || "low",
+          moodPattern: formData.mentalHealth?.moodPattern || "stable",
+          sleepQuality: formData.mentalHealth?.sleepQuality || "good",
+          anxietyLevel: formData.mentalHealth?.anxietyLevel || "minimal",
+          copingMechanisms: formData.mentalHealth?.copingMechanisms || [],
+        },
+        lifestyle: {
+          exercise: formData.lifestyle.exercise,
+          diet: formData.lifestyle.diet,
+          workStyle: formData.lifestyle.workStyle,
+          alcohol: formData.lifestyle.alcohol,
+          smoking: formData.lifestyle.smoking,
+        },
+        financialStatus: {
+          insuranceCoverage: formData.financialStatus?.insuranceCoverage || false,
+          medicationAccessibility: formData.financialStatus?.medicationAccessibility || "moderate",
+          regularCheckupAbility: formData.financialStatus?.regularCheckupAbility || false,
+          financialStress: formData.financialStatus?.financialStress || "low",
         },
         createdAt: new Date().toISOString(),
       };
 
-      // Log the processed data for debugging
+      // Log the form state and processed data for debugging
       console.log("Form state:", {
         isDirty: form.formState.isDirty,
         isValid: form.formState.isValid,
@@ -642,29 +666,6 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="lifestyle.stressLevel"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Stress Level</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select stress level" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="low">Low (Rarely feel stressed)</SelectItem>
-                      <SelectItem value="moderate">Moderate (Sometimes stressed)</SelectItem>
-                      <SelectItem value="high">High (Often stressed)</SelectItem>
-                      <SelectItem value="severe">Severe (Constantly stressed)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             <FormField
               control={form.control}
