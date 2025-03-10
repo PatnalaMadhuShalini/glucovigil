@@ -29,22 +29,33 @@ export async function registerRoutes(router: Router): Promise<void> {
     if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
 
     try {
-      console.log("Received health data:", req.body);
-      // Log specific fields that might cause validation issues
-      console.log("Clinical markers received:", {
-        a1c: req.body.physiological?.a1c,
-        hemoglobin: req.body.physiological?.hemoglobin,
-        gtt: req.body.physiological?.gtt
+      console.log("Received health data:", {
+        body: JSON.stringify(req.body, null, 2)
       });
 
-      const data = healthDataSchema.parse(req.body);
-      const prediction = calculateDiabetesRisk(data);
+      let validatedData;
+      try {
+        validatedData = healthDataSchema.parse(req.body);
+        console.log("Data validation successful");
+      } catch (validationError) {
+        if (validationError instanceof ZodError) {
+          const errors = validationError.errors.map(e => ({
+            path: e.path.join('.'),
+            message: e.message,
+            code: e.code
+          }));
+          console.error("Validation failed:", errors);
+          return res.status(400).json({
+            message: "Invalid data format",
+            errors: errors.map(e => `${e.path}: ${e.message}`).join(', ')
+          });
+        }
+        throw validationError;
+      }
 
-      // Get existing health data to check for existing achievements
-      const existingData = await storage.getHealthDataByUserId(req.user!.id);
-
+      const prediction = calculateDiabetesRisk(validatedData);
       const healthData = await storage.createHealthData(req.user!.id, {
-        ...data,
+        ...validatedData,
         prediction,
         createdAt: new Date().toISOString()
       });
@@ -52,21 +63,7 @@ export async function registerRoutes(router: Router): Promise<void> {
       res.status(201).json(healthData);
     } catch (err) {
       console.error("Error processing health data:", err);
-      if (err instanceof ZodError) {
-        const validationErrors = err.errors.map(e => ({
-          path: e.path.join('.'),
-          message: e.message,
-          received: e.received // Add the received value to help debug
-        }));
-        console.error("Validation errors details:", validationErrors);
-        res.status(400).json({ 
-          message: "Invalid data format", 
-          errors: validationErrors 
-        });
-      } else {
-        console.error("Unexpected error:", err);
-        res.status(500).json({ message: "Internal server error" });
-      }
+      res.status(500).json({ message: "Internal server error" });
     }
   });
 
@@ -298,9 +295,9 @@ function calculateDiabetesRisk(data: any) {
   const normalizedScore = Math.min(5, (riskScore / maxPossibleScore) * 5);
 
   // Determine risk level based on normalized score
-  const level: "low" | "moderate" | "high" = 
+  const level: "low" | "moderate" | "high" =
     normalizedScore <= 2 ? "low" :
-    normalizedScore <= 3.5 ? "moderate" : "high";
+      normalizedScore <= 3.5 ? "moderate" : "high";
 
   return {
     score: normalizedScore,
@@ -326,7 +323,7 @@ function generateRecommendations(riskScore: number, data: any, riskFactors: stri
       case "BMI indicates obesity":
       case "BMI indicates overweight":
         recommendations.push(
-          `Your current BMI is ${(data.physiological.weight / Math.pow(data.physiological.height/100, 2)).toFixed(1)}`,
+          `Your current BMI is ${(data.physiological.weight / Math.pow(data.physiological.height / 100, 2)).toFixed(1)}`,
           "Consider consulting with a nutritionist for a personalized weight management plan",
           "Focus on portion control and balanced meals",
           "Aim for gradual, sustainable weight loss of 1-2 pounds per week"

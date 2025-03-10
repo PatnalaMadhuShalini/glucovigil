@@ -144,37 +144,31 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
 
   const onSubmit = (formData: HealthData) => {
     try {
-      // Convert string numbers to actual numbers and ensure all required fields are present
+      // Process the data, ensuring proper type conversion for all numeric fields
       const processedData: HealthData = {
         demographics: {
-          age: Number(formData.demographics.age) || 0,
-          gender: formData.demographics.gender || "male",
-          ethnicity: formData.demographics.ethnicity || "",
+          age: Number(formData.demographics.age),
+          gender: formData.demographics.gender,
+          ethnicity: formData.demographics.ethnicity,
         },
         physiological: {
-          height: Number(formData.physiological.height) || 0,
-          weight: Number(formData.physiological.weight) || 0,
+          height: Number(formData.physiological.height),
+          weight: Number(formData.physiological.weight),
           bloodPressure: {
-            systolic: Number(formData.physiological.bloodPressure.systolic) || 0,
-            diastolic: Number(formData.physiological.bloodPressure.diastolic) || 0,
+            systolic: Number(formData.physiological.bloodPressure.systolic),
+            diastolic: Number(formData.physiological.bloodPressure.diastolic),
           },
-          bloodSugar: Number(formData.physiological.bloodSugar) || 0,
-          // Only include optional fields if they have actual values
-          ...(formData.physiological.a1c && { a1c: Number(formData.physiological.a1c) }),
-          ...(formData.physiological.gtt && { gtt: Number(formData.physiological.gtt) }),
-          ...(formData.physiological.hemoglobin && { hemoglobin: Number(formData.physiological.hemoglobin) }),
-        },
-        familyHistory: {
-          diabetesInFamily: formData.familyHistory?.diabetesInFamily || false,
-          diabeticRelatives: formData.familyHistory?.diabeticRelatives || [],
-          otherConditions: formData.familyHistory?.otherConditions || [],
-        },
-        mentalHealth: {
-          stressLevel: formData.mentalHealth?.stressLevel || "low",
-          moodPattern: formData.mentalHealth?.moodPattern || "stable",
-          sleepQuality: formData.mentalHealth?.sleepQuality || "good",
-          anxietyLevel: formData.mentalHealth?.anxietyLevel || "minimal",
-          copingMechanisms: formData.mentalHealth?.copingMechanisms || [],
+          bloodSugar: Number(formData.physiological.bloodSugar),
+          // Handle optional clinical markers
+          ...(formData.physiological.a1c !== undefined && formData.physiological.a1c !== "" 
+            ? { a1c: Number(formData.physiological.a1c) } 
+            : {}),
+          ...(formData.physiological.hemoglobin !== undefined && formData.physiological.hemoglobin !== "" 
+            ? { hemoglobin: Number(formData.physiological.hemoglobin) } 
+            : {}),
+          ...(formData.physiological.gtt !== undefined && formData.physiological.gtt !== "" 
+            ? { gtt: Number(formData.physiological.gtt) } 
+            : {}),
         },
         lifestyle: {
           exercise: formData.lifestyle.exercise,
@@ -183,23 +177,35 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
           alcohol: formData.lifestyle.alcohol,
           smoking: formData.lifestyle.smoking,
         },
-        financialStatus: {
-          insuranceCoverage: formData.financialStatus?.insuranceCoverage || false,
-          medicationAccessibility: formData.financialStatus?.medicationAccessibility || "moderate",
-          regularCheckupAbility: formData.financialStatus?.regularCheckupAbility || false,
-          financialStress: formData.financialStatus?.financialStress || "low",
-        },
+        // Only include optional sections if they exist
+        ...(formData.familyHistory && {
+          familyHistory: {
+            diabetesInFamily: Boolean(formData.familyHistory.diabetesInFamily),
+            diabeticRelatives: formData.familyHistory.diabeticRelatives || [],
+            otherConditions: formData.familyHistory.otherConditions || [],
+          }
+        }),
+        ...(formData.mentalHealth && {
+          mentalHealth: {
+            stressLevel: formData.mentalHealth.stressLevel,
+            moodPattern: formData.mentalHealth.moodPattern,
+            sleepQuality: formData.mentalHealth.sleepQuality,
+            anxietyLevel: formData.mentalHealth.anxietyLevel,
+            copingMechanisms: formData.mentalHealth.copingMechanisms || [],
+          }
+        }),
+        ...(formData.financialStatus && {
+          financialStatus: {
+            insuranceCoverage: Boolean(formData.financialStatus.insuranceCoverage),
+            medicationAccessibility: formData.financialStatus.medicationAccessibility,
+            regularCheckupAbility: Boolean(formData.financialStatus.regularCheckupAbility),
+            financialStress: formData.financialStatus.financialStress,
+          }
+        }),
         createdAt: new Date().toISOString(),
       };
 
-      // Log the form state and processed data for debugging
-      console.log("Form state:", {
-        isDirty: form.formState.isDirty,
-        isValid: form.formState.isValid,
-        errors: form.formState.errors,
-      });
-      console.log("Submitting processed health data:", processedData);
-
+      console.log("Form data before submission:", processedData);
       mutation.mutate(processedData);
     } catch (error) {
       console.error("Form submission error:", error);

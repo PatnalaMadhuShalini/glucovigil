@@ -75,58 +75,34 @@ export type Symptom = z.infer<typeof symptomSchema>;
 // First, let's update the HealthData schema to include new fields
 export const healthDataSchema = z.object({
   demographics: z.object({
-    age: z.number().int().min(0).max(120),
+    age: z.coerce.number().min(0).max(120),
     gender: z.enum(["male", "female", "other"]),
     ethnicity: z.string().min(1, "Ethnicity is required"),
   }),
   physiological: z.object({
-    height: z.number().min(100, "Height must be at least 100 cm").max(250, "Height must be less than 250 cm"),
-    weight: z.number().min(30, "Weight must be at least 30 kg").max(300, "Weight must be less than 300 kg"),
+    height: z.coerce.number().min(100, "Height must be at least 100 cm").max(250, "Height must be less than 250 cm"),
+    weight: z.coerce.number().min(30, "Weight must be at least 30 kg").max(300, "Weight must be less than 300 kg"),
     bloodPressure: z.object({
-      systolic: z.number().min(70, "Systolic must be at least 70").max(200, "Systolic must be less than 200"),
-      diastolic: z.number().min(40, "Diastolic must be at least 40").max(130, "Diastolic must be less than 130")
+      systolic: z.coerce.number().min(70, "Systolic must be at least 70").max(200, "Systolic must be less than 200"),
+      diastolic: z.coerce.number().min(40, "Diastolic must be at least 40").max(130, "Diastolic must be less than 130")
     }),
-    bloodSugar: z.number().min(50, "Blood sugar must be at least 50 mg/dL").max(300, "Blood sugar must be less than 300 mg/dL"),
-    a1c: z.number()
+    bloodSugar: z.coerce.number().min(50, "Blood sugar must be at least 50 mg/dL").max(300, "Blood sugar must be less than 300 mg/dL"),
+    a1c: z.coerce.number()
       .min(4, "A1C must be at least 4%")
-      .max(20, "A1C values above 20% are unlikely, please verify your result")
-      .optional()
-      .describe("Your average blood sugar level over 2-3 months. Normal range: 4-5.6%"),
-    gtt: z.number()
-      .min(0, "Glucose tolerance test value cannot be negative")
-      .max(500, "GTT values above 500 mg/dL are unlikely, please verify your result")
-      .optional()
-      .describe("Measures how your body processes sugar. Ask your healthcare provider for this value."),
-    hemoglobin: z.number()
+      .max(20, "A1C values above 20% are unlikely")
+      .optional(),
+    gtt: z.coerce.number()
+      .min(0, "GTT cannot be negative")
+      .max(500, "GTT seems too high")
+      .optional(),
+    hemoglobin: z.coerce.number()
       .min(6, "Hemoglobin must be at least 6 g/dL")
-      .max(20, "Hemoglobin values above 20 g/dL are unlikely, please verify your result")
-      .optional()
-      .describe("Normal range: 12-16 g/dL for women, 13-17 g/dL for men"),
-    immunityMarkers: z.object({
-      wbc: z.number()
-        .min(1000, "WBC count seems too low")
-        .max(50000, "WBC count seems too high")
-        .optional()
-        .describe("White blood cell count"),
-      lymphocytes: z.number()
-        .min(10, "Lymphocyte percentage seems too low")
-        .max(60, "Lymphocyte percentage seems too high")
-        .optional()
-        .describe("Percentage of lymphocytes in white blood cells"),
-      neutrophils: z.number()
-        .min(30, "Neutrophil percentage seems too low")
-        .max(80, "Neutrophil percentage seems too high")
-        .optional()
-        .describe("Percentage of neutrophils in white blood cells"),
-    }).optional(),
+      .max(20, "Hemoglobin seems too high")
+      .optional(),
   }),
   familyHistory: z.object({
     diabetesInFamily: z.boolean(),
-    diabeticRelatives: z.array(z.object({
-      relation: z.string(),
-      diabetesType: z.enum(["type1", "type2", "gestational"]),
-      ageAtDiagnosis: z.number().optional(),
-    })).optional(),
+    diabeticRelatives: z.array(z.string()).optional(),
     otherConditions: z.array(z.string()).optional(),
   }).optional(),
   mentalHealth: z.object({
@@ -157,9 +133,8 @@ export const healthDataSchema = z.object({
     regularCheckupAbility: z.boolean(),
     financialStress: z.enum(["none", "low", "moderate", "high"]),
   }).optional(),
-  symptoms: symptomSchema.optional(),
   createdAt: z.string().optional(),
-});
+}).strict();
 
 // Update the type definition
 export type HealthData = z.infer<typeof healthDataSchema>;
