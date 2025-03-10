@@ -102,8 +102,8 @@ apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       res.status(status).json({ message });
     });
 
-    // Start server immediately on port 5000
-    log(`Starting server on port ${port}...`);
+    // Explicitly bind to 0.0.0.0 for external connections
+    log(`Starting server on port ${port} bound to 0.0.0.0 for external access...`);
     server.listen(port, '0.0.0.0', () => {
       log(`Server running at http://0.0.0.0:${port}`);
     }).on('error', (err: Error & { code?: string }) => {
