@@ -104,26 +104,19 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
   const form = useForm<HealthData>({
     resolver: zodResolver(healthDataSchema),
     defaultValues,
+    mode: "onBlur" // Enable validation on blur
   });
 
   const mutation = useMutation({
     mutationFn: async (data: HealthData) => {
       setError(null);
       try {
-        const res = await fetch("/api/health-data", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify(data),
-        });
-
+        console.log("Submitting data:", data); // Debug log
+        const res = await apiRequest("POST", "/api/health-data", data);
         if (!res.ok) {
           const errorData = await res.json();
           throw new Error(errorData.message || "Failed to submit health data");
         }
-
         return res.json();
       } catch (err) {
         console.error("Mutation error:", err);
@@ -139,6 +132,7 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
       onComplete();
     },
     onError: (error: Error) => {
+      console.error("Form validation errors:", form.formState.errors); // Debug log
       setError(error.message);
       toast({
         title: "Error",
@@ -150,13 +144,15 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
 
   const onSubmit = (formData: HealthData) => {
     try {
-      const transformedData: HealthData = {
+      // Convert string numbers to actual numbers
+      const processedData: HealthData = {
+        ...formData,
         demographics: {
+          ...formData.demographics,
           age: Number(formData.demographics.age),
-          gender: formData.demographics.gender,
-          ethnicity: formData.demographics.ethnicity,
         },
         physiological: {
+          ...formData.physiological,
           height: Number(formData.physiological.height),
           weight: Number(formData.physiological.weight),
           bloodPressure: {
@@ -164,31 +160,32 @@ export default function HealthForm({ onComplete }: { onComplete: () => void }) {
             diastolic: Number(formData.physiological.bloodPressure.diastolic),
           },
           bloodSugar: Number(formData.physiological.bloodSugar),
-          a1c: formData.physiological.a1c,
-          gtt: formData.physiological.gtt,
-          hemoglobin: formData.physiological.hemoglobin,
-          immunityMarkers: formData.physiological.immunityMarkers || {
-            wbc: undefined,
-            lymphocytes: undefined,
-            neutrophils: undefined,
-          },
+          // Only include optional fields if they have values
+          ...(formData.physiological.a1c !== undefined && { a1c: Number(formData.physiological.a1c) }),
+          ...(formData.physiological.gtt !== undefined && { gtt: Number(formData.physiological.gtt) }),
+          ...(formData.physiological.hemoglobin !== undefined && { hemoglobin: Number(formData.physiological.hemoglobin) }),
         },
-        familyHistory: formData.familyHistory,
-        mentalHealth: formData.mentalHealth,
-        lifestyle: formData.lifestyle,
-        financialStatus: formData.financialStatus || {
-          insuranceCoverage: false,
-          medicationAccessibility: "moderate",
-          regularCheckupAbility: false,
-          financialStress: "low",
-        },
+        createdAt: new Date().toISOString(),
       };
 
-      console.log("Submitting health data:", transformedData);
-      mutation.mutate(transformedData);
+      // Log the processed data for debugging
+      console.log("Form state:", {
+        isDirty: form.formState.isDirty,
+        isValid: form.formState.isValid,
+        errors: form.formState.errors,
+      });
+      console.log("Submitting processed health data:", processedData);
+
+      mutation.mutate(processedData);
     } catch (error) {
       console.error("Form submission error:", error);
-      setError("Failed to process form data");
+      const errorMessage = error instanceof Error ? error.message : "Failed to process form data";
+      setError(errorMessage);
+      toast({
+        title: "Form Submission Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
     }
   };
 

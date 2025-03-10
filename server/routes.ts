@@ -30,20 +30,22 @@ export async function registerRoutes(router: Router): Promise<void> {
 
     try {
       console.log("Received health data:", req.body);
+      // Log specific fields that might cause validation issues
+      console.log("Clinical markers received:", {
+        a1c: req.body.physiological?.a1c,
+        hemoglobin: req.body.physiological?.hemoglobin,
+        gtt: req.body.physiological?.gtt
+      });
+
       const data = healthDataSchema.parse(req.body);
       const prediction = calculateDiabetesRisk(data);
 
       // Get existing health data to check for existing achievements
       const existingData = await storage.getHealthDataByUserId(req.user!.id);
-      const existingAchievements = existingData.length > 0 ? existingData[0].achievements : [];
-
-      // Check and award new achievements
-      const achievements = checkAndAwardAchievements(data, existingAchievements);
 
       const healthData = await storage.createHealthData(req.user!.id, {
         ...data,
         prediction,
-        achievements,
         createdAt: new Date().toISOString()
       });
 
@@ -51,8 +53,18 @@ export async function registerRoutes(router: Router): Promise<void> {
     } catch (err) {
       console.error("Error processing health data:", err);
       if (err instanceof ZodError) {
-        res.status(400).json({ message: "Invalid data format", errors: err.errors });
+        const validationErrors = err.errors.map(e => ({
+          path: e.path.join('.'),
+          message: e.message,
+          received: e.received // Add the received value to help debug
+        }));
+        console.error("Validation errors details:", validationErrors);
+        res.status(400).json({ 
+          message: "Invalid data format", 
+          errors: validationErrors 
+        });
       } else {
+        console.error("Unexpected error:", err);
         res.status(500).json({ message: "Internal server error" });
       }
     }
@@ -406,85 +418,6 @@ function generateRecommendations(riskScore: number, data: any, riskFactors: stri
   }
 
   return [...new Set(recommendations)]; // Remove any duplicate recommendations
-}
-
-// Enhanced recommendations based on specific risk factors
-
-
-function checkAndAwardAchievements(data: any, existingAchievements: any[] = []): Achievement[] {
-  const achievements: Achievement[] = [...(existingAchievements || [])];
-  const now = new Date().toISOString();
-
-  // First Time Health Check Achievement
-  if (!existingAchievements?.length) {
-    achievements.push({
-      id: "first_check",
-      name: "Health Pioneer",
-      description: "Completed your first health assessment",
-      icon: "🎯",
-      unlockedAt: now
-    });
-  }
-
-  // Blood Sugar Control Achievement
-  if (data.physiological.bloodSugar >= 70 && data.physiological.bloodSugar <= 100) {
-    const hasAchievement = achievements.some(a => a.id === "blood_sugar_control");
-    if (!hasAchievement) {
-      achievements.push({
-        id: "blood_sugar_control",
-        name: "Blood Sugar Master",
-        description: "Maintained healthy blood sugar levels",
-        icon: "🎯",
-        unlockedAt: now
-      });
-    }
-  }
-
-  // Healthy BMI Achievement
-  const heightInMeters = data.physiological.height / 100;
-  const bmi = data.physiological.weight / (heightInMeters * heightInMeters);
-  if (bmi >= 18.5 && bmi <= 24.9) {
-    const hasAchievement = achievements.some(a => a.id === "healthy_bmi");
-    if (!hasAchievement) {
-      achievements.push({
-        id: "healthy_bmi",
-        name: "BMI Champion",
-        description: "Maintained a healthy BMI",
-        icon: "⭐",
-        unlockedAt: now
-      });
-    }
-  }
-
-  // Lifestyle Achievement
-  if (data.lifestyle.exercise !== "none" && data.lifestyle.diet === "good") {
-    const hasAchievement = achievements.some(a => a.id === "healthy_lifestyle");
-    if (!hasAchievement) {
-      achievements.push({
-        id: "healthy_lifestyle",
-        name: "Wellness Warrior",
-        description: "Maintained a healthy lifestyle with regular exercise and good diet",
-        icon: "🏃",
-        unlockedAt: now
-      });
-    }
-  }
-
-  // Symptom Tracking Achievement
-  if (data.symptoms) {
-    const hasAchievement = achievements.some(a => a.id === "symptom_tracker");
-    if (!hasAchievement) {
-      achievements.push({
-        id: "symptom_tracker",
-        name: "Health Monitor",
-        description: "Started tracking your symptoms",
-        icon: "📋",
-        unlockedAt: now
-      });
-    }
-  }
-
-  return achievements;
 }
 
 async function extractHealthData(text: string) {

@@ -87,7 +87,6 @@ export const healthDataSchema = z.object({
       diastolic: z.number().min(40, "Diastolic must be at least 40").max(130, "Diastolic must be less than 130")
     }),
     bloodSugar: z.number().min(50, "Blood sugar must be at least 50 mg/dL").max(300, "Blood sugar must be less than 300 mg/dL"),
-    // New clinical markers
     a1c: z.number()
       .min(4, "A1C must be at least 4%")
       .max(20, "A1C values above 20% are unlikely, please verify your result")
@@ -129,14 +128,14 @@ export const healthDataSchema = z.object({
       ageAtDiagnosis: z.number().optional(),
     })).optional(),
     otherConditions: z.array(z.string()).optional(),
-  }),
+  }).optional(),
   mentalHealth: z.object({
     stressLevel: z.enum(["low", "moderate", "high", "severe"]),
     moodPattern: z.enum(["stable", "variable", "depressed", "anxious", "mixed"]),
     sleepQuality: z.enum(["good", "fair", "poor"]),
     anxietyLevel: z.enum(["minimal", "mild", "moderate", "severe"]),
     copingMechanisms: z.array(z.string()).optional(),
-  }),
+  }).optional(),
   lifestyle: z.object({
     exercise: z.enum(["none", "light", "moderate", "heavy"]),
     diet: z.enum(["poor", "fair", "good", "excellent"]),
@@ -159,6 +158,7 @@ export const healthDataSchema = z.object({
     financialStress: z.enum(["none", "low", "moderate", "high"]),
   }).optional(),
   symptoms: symptomSchema.optional(),
+  createdAt: z.string().optional(),
 });
 
 // Update the type definition
