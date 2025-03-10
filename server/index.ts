@@ -42,9 +42,13 @@ setupAuth(app);
 // Mount API router
 app.use('/api', apiRouter);
 
-// Test route to verify Express is working
+// Test routes to verify Express is working
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', message: 'Server is running' });
+});
+
 app.get('/test', (req, res) => {
-  res.json({ status: 'ok', message: 'Express server is running' });
+  res.json({ status: 'ok', message: 'Express server is running', port: port });
 });
 
 // Ensure JSON content-type for API routes
@@ -126,7 +130,7 @@ apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     });
 
     // Use a fixed port for improved startup reliability
-    const port = 5001; // Fixed port to reduce selection complexity
+    const port = 5000; // Fixed port to match deployment configuration
     log(`Using fixed port ${port} for improved startup reliability`);
 
     // Create HTTP server only when ready to start
@@ -158,14 +162,8 @@ apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       log(`Server running at http://0.0.0.0:${port}`);
     }).on('error', (err: Error & { code?: string }) => {
       if (err.code === 'EADDRINUSE') {
-        log(`Port ${port} is in use, trying alternative port`);
-        // If port is in use, try an alternative
-        server.listen(5002, '0.0.0.0', () => {
-          log(`Server running at http://0.0.0.0:5002 (alternative port)`);
-        }).on('error', (err2) => {
-          log(`Failed to start server on alternative port: ${err2.message}`);
-          process.exit(1);
-        });
+        log(`Port ${port} is in use. In deployment, this port must be available.`);
+        process.exit(1);
       } else {
         log(`Failed to start server: ${err.message}`);
         process.exit(1);
