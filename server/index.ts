@@ -15,9 +15,6 @@ console.log('Node environment:', process.env.NODE_ENV || 'development');
 const app = express();
 const apiRouter = express.Router();
 
-// Log the port configuration
-log(`Deployment expects traffic on port 5000 forwarded to external port 80`);
-
 // Basic middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -40,7 +37,7 @@ apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   try {
     log('Starting server initialization...');
 
-    // Setup auth routes and register API routes on the router
+    // Setup auth routes and register API routes
     log('Setting up auth routes...');
     setupAuthRoutes(apiRouter);
     log('Registering API routes...');
@@ -62,37 +59,9 @@ apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     // Create HTTP server
     const server = createServer(app);
 
-    // Handle static file serving and Vite setup based on environment
-    if (process.env.WORKFLOW_NAME) {
-      log('Running in workflow mode, checking build directory...');
-      const staticPath = path.resolve(__dirname, '../dist/public');
-
-      // Verify build directory exists
-      if (!fs.existsSync(staticPath)) {
-        log(`Error: Build directory not found at ${staticPath}`);
-        log('Please ensure "npm run build" has been executed');
-        process.exit(1);
-      }
-
-      log(`Serving static files from ${staticPath}`);
-      app.use(express.static(staticPath));
-
-      // Serve index.html for client-side routing
-      app.get('*', (_req, res) => {
-        const indexPath = path.join(staticPath, 'index.html');
-        if (!fs.existsSync(indexPath)) {
-          log(`Error: index.html not found at ${indexPath}`);
-          return res.status(500).send('Server configuration error: index.html not found');
-        }
-        res.sendFile(indexPath);
-      });
-    } else if (process.env.NODE_ENV === "development") {
-      log('Setting up Vite development server...');
-      await setupVite(app, server);
-    } else {
-      log('Setting up static file serving for production...');
-      serveStatic(app);
-    }
+    // Always use Vite in development mode for workflows
+    log('Setting up Vite development server...');
+    await setupVite(app, server);
 
     // Generic error handler
     app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -102,7 +71,7 @@ apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       res.status(status).json({ message });
     });
 
-    // Start server immediately on port 5000
+    // Start server
     log(`Starting server on port ${port}...`);
     server.listen(port, '0.0.0.0', () => {
       log(`Server running at http://0.0.0.0:${port}`);
