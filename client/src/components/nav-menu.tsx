@@ -31,7 +31,7 @@ export default function NavMenu() {
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <Link href="/">
-              <a className="flex items-center group">
+              <div className="flex items-center group cursor-pointer">
                 <img 
                   src="/logo.svg"
                   alt="GlucoSmart Logo" 
@@ -40,36 +40,36 @@ export default function NavMenu() {
                 <span className="ml-2 text-lg font-medium text-white/90">
                   GlucoSmart
                 </span>
-              </a>
+              </div>
             </Link>
 
             <div className="ml-8 flex items-center space-x-2">
               <Link href="/">
-                <a className={linkClass('/')} title="Home">
+                <div className={linkClass('/')} title="Home">
                   <span className="flex items-center gap-2">
                     <Home className="h-4 w-4" />
                     Home
                   </span>
-                </a>
+                </div>
               </Link>
 
               {user && (
                 <>
                   <Link href="/dashboard">
-                    <a className={linkClass('/dashboard')} title="Dashboard">
+                    <div className={linkClass('/dashboard')} title="Dashboard">
                       <span className="flex items-center gap-2">
                         <LayoutDashboard className="h-4 w-4" />
                         Dashboard
                       </span>
-                    </a>
+                    </div>
                   </Link>
-                  <Link href="/profile">
-                    <a className={linkClass('/profile')} title="Profile">
+                  <Link href="/profile-page">
+                    <div className={linkClass('/profile-page')} title="Profile">
                       <span className="flex items-center gap-2">
                         <User className="h-4 w-4" />
                         Profile
                       </span>
-                    </a>
+                    </div>
                   </Link>
                 </>
               )}

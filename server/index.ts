@@ -4,31 +4,14 @@ import { setupVite, serveStatic, log } from "./vite";
 import { createServer } from "http";
 import { setupAuth, setupAuthRoutes } from "./auth";
 import { registerRoutes } from "./routes";
-import net from "net"; // Import net module using ESM syntax
+import path from "path";
+import fs from "fs";
 
 // Start with detailed logging for diagnostics
 console.log('Starting server process with PID:', process.pid);
 console.log('Current working directory:', process.cwd());
 console.log('Node environment:', process.env.NODE_ENV || 'development');
 
-// Check for active ports to detect port conflicts early
-async function isPortInUse(port: number): Promise<boolean> {
-  log(`Checking availability of port ${port}...`);
-  return new Promise((resolve) => {
-    const tester = net.createServer() // Use imported net module
-      .once('error', () => {
-        log(`Port ${port} is in use`);
-        resolve(true);
-      })
-      .once('listening', () => {
-        log(`Port ${port} is available`);
-        tester.once('close', () => resolve(false)).close();
-      })
-      .listen(port, '0.0.0.0');
-  });
-}
-
-// Create Express app
 const app = express();
 const apiRouter = express.Router();
 
@@ -44,51 +27,6 @@ setupAuth(app);
 
 // Mount API router
 app.use('/api', apiRouter);
-
-// Test route to verify Express is working
-app.get('/test', (req, res) => {
-  res.json({ status: 'ok', message: 'Express server is running' });
-});
-
-// Ensure JSON content-type for API routes
-apiRouter.use((req, res, next) => {
-  res.setHeader('Content-Type', 'application/json');
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  next();
-});
-
-// Enhanced logging middleware for API routes
-apiRouter.use((req, res, next) => {
-  const start = Date.now();
-  const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
-
-  const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
-  };
-
-  res.on("finish", () => {
-    const duration = Date.now() - start;
-    let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-    if (capturedJsonResponse) {
-      logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-    }
-    if (logLine.length > 80) {
-      logLine = logLine.slice(0, 79) + "…";
-    }
-    log(logLine);
-  });
-  next();
-});
 
 // API error handling middleware
 apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -118,36 +56,45 @@ apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       next();
     });
 
-    // Catch-all handler for unmatched API routes
-    app.all("/api/*", (req, res) => {
-      log(`Unmatched API route: ${req.method} ${req.path}`);
-      return res.status(404).json({
-        message: "API endpoint not found",
-        path: req.path,
-        method: req.method
-      });
-    });
-
-    // Use port 5000 to match the .replit configuration
-    const port = 5000; // Match port forwarded to external port 80 for deployments
+    const port = 5000;
     log(`Using port ${port} to match deployment configuration`);
 
-    // Create HTTP server only when ready to start
+    // Create HTTP server
     const server = createServer(app);
 
-    // Skip Vite in workflow to improve startup time
-    if (process.env.WORKFLOW_NAME && process.env.NODE_ENV !== 'production') {
-      log('Running in workflow mode, using static file serving for faster startup');
-      serveStatic(app);
-    } else if (app.get("env") === "development") {
+    // Handle static file serving and Vite setup based on environment
+    if (process.env.WORKFLOW_NAME) {
+      log('Running in workflow mode, checking build directory...');
+      const staticPath = path.resolve(__dirname, '../dist/public');
+
+      // Verify build directory exists
+      if (!fs.existsSync(staticPath)) {
+        log(`Error: Build directory not found at ${staticPath}`);
+        log('Please ensure "npm run build" has been executed');
+        process.exit(1);
+      }
+
+      log(`Serving static files from ${staticPath}`);
+      app.use(express.static(staticPath));
+
+      // Serve index.html for client-side routing
+      app.get('*', (_req, res) => {
+        const indexPath = path.join(staticPath, 'index.html');
+        if (!fs.existsSync(indexPath)) {
+          log(`Error: index.html not found at ${indexPath}`);
+          return res.status(500).send('Server configuration error: index.html not found');
+        }
+        res.sendFile(indexPath);
+      });
+    } else if (process.env.NODE_ENV === "development") {
       log('Setting up Vite development server...');
       await setupVite(app, server);
     } else {
-      log('Setting up static file serving...');
+      log('Setting up static file serving for production...');
       serveStatic(app);
     }
 
-    // Generic error handler comes last
+    // Generic error handler
     app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       const status = err.status || err.statusCode || 500;
       const message = err.message || "Internal Server Error";
@@ -155,32 +102,17 @@ apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       res.status(status).json({ message });
     });
 
-    // Start server on the fixed port with proper error handling
-    log(`Attempting to start server on port ${port}...`);
+    // Start server immediately on port 5000
+    log(`Starting server on port ${port}...`);
     server.listen(port, '0.0.0.0', () => {
       log(`Server running at http://0.0.0.0:${port}`);
     }).on('error', (err: Error & { code?: string }) => {
-      if (err.code === 'EADDRINUSE') {
-        log(`Port ${port} is in use, trying alternative port`);
-        // If port is in use, try an alternative
-        server.listen(5002, '0.0.0.0', () => {
-          log(`Server running at http://0.0.0.0:5002 (alternative port)`);
-        }).on('error', (err2) => {
-          log(`Failed to start server on alternative port: ${err2.message}`);
-          process.exit(1);
-        });
-      } else {
-        log(`Failed to start server: ${err.message}`);
-        process.exit(1);
-      }
+      log(`Failed to start server: ${err.message}`);
+      process.exit(1);
     });
 
   } catch (error) {
-    if (error instanceof Error) {
-      log('Failed to start server:', error.message);
-    } else {
-      log('Failed to start server:', String(error));
-    }
+    log('Failed to start server:', error instanceof Error ? error.message : String(error));
     process.exit(1);
   }
 })();
