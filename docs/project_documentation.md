@@ -907,3 +907,89 @@ Future enhancements could include:
 5. **Expanded Language Support**: Multilingual capabilities for broader accessibility.
 
 The GlucoSmart platform demonstrates the potential of digital health technologies to democratize access to sophisticated health risk assessment tools, potentially improving early intervention and diabetes prevention outcomes on a population scale.
+## 3. SYSTEM DESIGN AND IMPLEMENTATION
+
+### 3.1 OBJECT ORIENTED ANALYSIS AND DESIGN
+
+Object-Oriented Analysis and Design (OOAD) provides the foundation for GlucoSmart's architecture, ensuring a modular, maintainable, and scalable system.
+
+#### 3.1.1 Core Domain Model
+
+The GlucoSmart system is built around a comprehensive domain model that represents the key entities and relationships:
+
+**User Domain:**
+- The `User` class represents registered system users with attributes including username, password (hashed), fullName, email, phone, gender, place, and verification status.
+- User entities maintain relationships with health data, feedback, and achievements.
+
+**Health Data Domain:**
+- The `HealthData` class serves as the central entity for storing user health information.
+- It contains nested object structures for different aspects of health:
+  - `Demographics`: Age, gender, and ethnicity information
+  - `Physiological`: Physical measurements including height, weight, blood pressure, blood sugar, A1C, GTT, and hemoglobin
+  - `Lifestyle`: Exercise habits, diet quality, work style, alcohol and smoking behaviors
+  - `MentalHealth`: Stress levels, mood patterns, sleep quality, and anxiety levels
+  - `FamilyHistory`: Diabetes prevalence in family and other hereditary conditions
+  - `FinancialStatus`: Insurance coverage and healthcare accessibility factors
+
+**Assessment Domain:**
+- The `Prediction` component encapsulates risk assessment results, including numerical score, risk level categorization, and generated recommendations.
+- `NutritionPlan` and `ExercisePlan` classes provide structured intervention strategies based on user health data.
+- The `Achievement` system gamifies health improvement through recognizing user progress.
+
+#### 3.1.2 Service Layer Design
+
+GlucoSmart implements a service-oriented architecture with specialized services handling distinct responsibilities:
+
+**Authentication Services:**
+- Manage user registration, verification, and secure authentication
+- Handle session management and authorization controls
+
+**Health Data Services:**
+- Process and validate health information input
+- Store and retrieve health records
+- Track changes in health metrics over time
+
+**Risk Assessment Services:**
+- Apply predictive algorithms to user health data
+- Generate risk scores and categorizations
+- Identify specific risk factors and their contributions
+
+**Recommendation Services:**
+- Generate personalized health guidance based on risk factors
+- Prioritize interventions by potential impact
+- Adapt recommendations based on user progress
+
+**Feedback and Reporting Services:**
+- Collect and process user feedback
+- Generate downloadable health reports for users and healthcare providers
+
+#### 3.1.3 Design Patterns Implemented
+
+GlucoSmart leverages several design patterns to ensure maintainable, extensible code:
+
+- **Repository Pattern**: Abstracts data access through the `IStorage` interface, allowing for different storage implementations without affecting business logic
+- **Service Layer Pattern**: Encapsulates business logic in dedicated service classes that operate on domain entities
+- **Factory Pattern**: Creates complex objects like health assessment reports and recommendation plans
+- **Strategy Pattern**: Allows for interchangeable risk assessment algorithms depending on available data
+- **Observer Pattern**: Enables notification of health status changes to interested components
+- **Decorator Pattern**: Enhances base functionality with additional features like data validation and transformation
+
+#### 3.1.4 Object-Oriented Principles Application
+
+The GlucoSmart system embodies core OO principles:
+
+- **Encapsulation**: Each class encapsulates its data and behavior, exposing only necessary interfaces
+- **Inheritance**: Specialized classes extend base functionality (e.g., different types of health recommendations)
+- **Polymorphism**: Common interfaces allow for substitutable components, particularly in the risk assessment engine
+- **Abstraction**: Complex operations are abstracted behind simple interfaces, hiding implementation details
+
+#### 3.1.5 Type System and Schema Validation
+
+GlucoSmart leverages TypeScript's strong typing system and Zod schema validation to ensure:
+
+- Compile-time type checking
+- Runtime data validation 
+- Self-documenting code through explicit type definitions
+- Consistent data structures throughout the application
+
+This comprehensive OO approach results in a robust, maintainable system architecture that can evolve to accommodate new features and changing requirements while maintaining code quality and system integrity.
