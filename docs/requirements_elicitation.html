@@ -1,0 +1,559 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlucoSmart - Requirements Elicitation and Analysis</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .highlight {
+            background-color: #f1f8ff;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .requirement {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            border-left: 3px solid #4CAF50;
+        }
+        .priority-high {
+            border-left-color: #e74c3c;
+        }
+        .priority-medium {
+            border-left-color: #f39c12;
+        }
+        .priority-low {
+            border-left-color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <h1>GlucoSmart Health Analytics</h1>
+    <h2>Requirements Elicitation and Analysis</h2>
+    
+    <div class="container">
+        <h3>1. Introduction to Requirements Elicitation</h3>
+        <p>
+            The requirements elicitation process for GlucoSmart Health Analytics involved a comprehensive 
+            approach to gather, analyze, and document the needs of potential users, healthcare providers, 
+            and other stakeholders. This document outlines the methods used, findings, and resulting requirements 
+            that form the foundation of the system design.
+        </p>
+        
+        <div class="highlight">
+            <h4>Key Objectives of Requirements Elicitation:</h4>
+            <ul>
+                <li>Identify the primary user needs for diabetes risk assessment</li>
+                <li>Understand the limitations of existing systems</li>
+                <li>Determine essential features for a comprehensive health analytics platform</li>
+                <li>Establish clear priorities for development</li>
+                <li>Define measurable success criteria</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h3>2. Elicitation Methodologies</h3>
+        
+        <h4>2.1 Stakeholder Interviews</h4>
+        <p>
+            In-depth interviews were conducted with the following stakeholder groups:
+        </p>
+        <ul>
+            <li><strong>Potential End Users (n=24)</strong>: Individuals of various ages, ethnicities, and health statuses</li>
+            <li><strong>Healthcare Providers (n=8)</strong>: Primary care physicians, endocrinologists, and diabetes educators</li>
+            <li><strong>Health Technology Experts (n=5)</strong>: UX designers and health informatics specialists</li>
+            <li><strong>Public Health Officials (n=3)</strong>: Representatives from health departments</li>
+        </ul>
+        
+        <h4>2.2 Competitive Analysis</h4>
+        <p>
+            Analysis of 12 existing diabetes risk assessment tools and health platforms, including:
+        </p>
+        <ul>
+            <li>Web-based risk calculators (4)</li>
+            <li>Mobile health applications (5)</li>
+            <li>Clinical screening tools (3)</li>
+        </ul>
+        
+        <h4>2.3 User Surveys</h4>
+        <p>
+            Online surveys were distributed to gather quantitative data on user preferences and behaviors:
+        </p>
+        <ul>
+            <li>General population survey (n=142)</li>
+            <li>Pre-diabetic individuals survey (n=48)</li>
+            <li>Healthcare provider survey (n=22)</li>
+        </ul>
+        
+        <h4>2.4 Focus Groups</h4>
+        <p>
+            Three focus group sessions were conducted with:
+        </p>
+        <ul>
+            <li>Health-conscious individuals (8 participants)</li>
+            <li>People with family history of diabetes (6 participants)</li>
+            <li>Healthcare providers and health coaches (5 participants)</li>
+        </ul>
+        
+        <h4>2.5 Literature Review</h4>
+        <p>
+            Comprehensive review of:
+        </p>
+        <ul>
+            <li>42 academic papers on diabetes risk factors and prediction models</li>
+            <li>12 clinical guidelines from medical associations</li>
+            <li>8 health technology usability studies</li>
+            <li>5 reports on digital health adoption trends</li>
+        </ul>
+    </div>
+    
+    <div class="container">
+        <h3>3. Analysis of Existing Systems</h3>
+        
+        <h4>3.1 Current State Assessment</h4>
+        <p>
+            Current diabetes risk assessment systems typically exhibit the following characteristics:
+        </p>
+        
+        <div class="requirement">
+            <strong>Finding 1:</strong> Paper-based questionnaires remain the predominant method for diabetes risk screening in clinical settings, with limited digital integration.
+        </div>
+        
+        <div class="requirement">
+            <strong>Finding 2:</strong> Existing digital tools primarily focus on physiological metrics (BMI, blood pressure, glucose levels) with insufficient consideration of lifestyle and mental health factors.
+        </div>
+        
+        <div class="requirement">
+            <strong>Finding 3:</strong> Most systems provide one-time risk assessments without capabilities for longitudinal tracking or adaptive recommendations.
+        </div>
+        
+        <div class="requirement">
+            <strong>Finding 4:</strong> User interfaces of existing tools often employ medical terminology without adequate explanation, creating barriers for users with limited health literacy.
+        </div>
+        
+        <div class="requirement">
+            <strong>Finding 5:</strong> Integration with external health data sources (EHRs, wearables) is minimal or non-existent in most consumer-facing applications.
+        </div>
+        
+        <h4>3.2 Limitations of Current Approaches</h4>
+        <table>
+            <tr>
+                <th>Limitation</th>
+                <th>Impact on Users</th>
+                <th>Opportunity for Improvement</th>
+            </tr>
+            <tr>
+                <td>Generic risk predictions</td>
+                <td>Limited personal relevance, reduced motivation to act</td>
+                <td>Personalized, granular risk assessment algorithms</td>
+            </tr>
+            <tr>
+                <td>Siloed health data</td>
+                <td>Incomplete risk picture, burden of manual data entry</td>
+                <td>Unified data collection with secure import capabilities</td>
+            </tr>
+            <tr>
+                <td>Limited actionability</td>
+                <td>Uncertainty about next steps after risk assessment</td>
+                <td>Targeted, prioritized recommendations with progress tracking</td>
+            </tr>
+            <tr>
+                <td>Poor user engagement</td>
+                <td>Low retention, inconsistent monitoring</td>
+                <td>Engaging design with meaningful progress visualization</td>
+            </tr>
+            <tr>
+                <td>Clinical-focused language</td>
+                <td>Confusion and misinterpretation of results</td>
+                <td>Plain language with embedded educational content</td>
+            </tr>
+            <tr>
+                <td>Access barriers</td>
+                <td>Limited reach to underserved populations</td>
+                <td>Multi-platform, accessible design with offline capabilities</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="container">
+        <h3>4. User Needs and Requirements</h3>
+        
+        <h4>4.1 Identified User Needs</h4>
+        
+        <h5>End Users:</h5>
+        <div class="requirement priority-high">
+            <strong>Need 1 (High Priority):</strong> Understand personal diabetes risk without requiring extensive medical knowledge
+        </div>
+        
+        <div class="requirement priority-high">
+            <strong>Need 2 (High Priority):</strong> Receive clear, actionable recommendations specific to individual health status
+        </div>
+        
+        <div class="requirement priority-medium">
+            <strong>Need 3 (Medium Priority):</strong> Track health progress over time with meaningful visualizations
+        </div>
+        
+        <div class="requirement priority-medium">
+            <strong>Need 4 (Medium Priority):</strong> Understand how specific lifestyle factors impact diabetes risk
+        </div>
+        
+        <div class="requirement priority-low">
+            <strong>Need 5 (Low Priority):</strong> Share health reports with healthcare providers
+        </div>
+        
+        <h5>Healthcare Providers:</h5>
+        <div class="requirement priority-high">
+            <strong>Need 1 (High Priority):</strong> Access comprehensive patient risk profiles based on evidence-based algorithms
+        </div>
+        
+        <div class="requirement priority-medium">
+            <strong>Need 2 (Medium Priority):</strong> Review patient progress between appointments
+        </div>
+        
+        <div class="requirement priority-low">
+            <strong>Need 3 (Low Priority):</strong> Integrate patient-generated data with clinical systems
+        </div>
+        
+        <h4>4.2 Functional Requirements</h4>
+        
+        <h5>User Authentication and Profile Management:</h5>
+        <div class="requirement">
+            <strong>FR-1:</strong> The system shall provide secure user registration and login functionality
+        </div>
+        
+        <div class="requirement">
+            <strong>FR-2:</strong> The system shall allow users to create and update their health profile
+        </div>
+        
+        <div class="requirement">
+            <strong>FR-3:</strong> The system shall implement privacy controls for sensitive health data
+        </div>
+        
+        <h5>Health Data Input and Management:</h5>
+        <div class="requirement">
+            <strong>FR-4:</strong> The system shall enable manual entry of physiological measurements (blood sugar, blood pressure, height, weight)
+        </div>
+        
+        <div class="requirement">
+            <strong>FR-5:</strong> The system shall support input of lifestyle factors (exercise habits, diet quality, work style)
+        </div>
+        
+        <div class="requirement">
+            <strong>FR-6:</strong> The system shall assess mental health and stress levels
+        </div>
+        
+        <div class="requirement">
+            <strong>FR-7:</strong> The system shall allow documentation of family health history
+        </div>
+        
+        <h5>Risk Assessment and Analysis:</h5>
+        <div class="requirement">
+            <strong>FR-8:</strong> The system shall calculate a diabetes risk score based on comprehensive health data
+        </div>
+        
+        <div class="requirement">
+            <strong>FR-9:</strong> The system shall categorize risk level (low, moderate, high)
+        </div>
+        
+        <div class="requirement">
+            <strong>FR-10:</strong> The system shall identify and prioritize specific risk factors
+        </div>
+        
+        <div class="requirement">
+            <strong>FR-11:</strong> The system shall visualize risk assessment results in an understandable format
+        </div>
+        
+        <h5>Recommendation Generation:</h5>
+        <div class="requirement">
+            <strong>FR-12:</strong> The system shall create personalized health recommendations based on identified risk factors
+        </div>
+        
+        <div class="requirement">
+            <strong>FR-13:</strong> The system shall prioritize high-impact recommendations
+        </div>
+        
+        <div class="requirement">
+            <strong>FR-14:</strong> The system shall adapt recommendations based on user feedback and progress
+        </div>
+        
+        <h5>Health Report Generation:</h5>
+        <div class="requirement">
+            <strong>FR-15:</strong> The system shall generate downloadable PDF health assessment reports
+        </div>
+        
+        <div class="requirement">
+            <strong>FR-16:</strong> The system shall provide a summary of key health metrics and risk factors
+        </div>
+        
+        <div class="requirement">
+            <strong>FR-17:</strong> The system shall include recommendations for healthcare providers in the report
+        </div>
+        
+        <h5>Medical Record Processing:</h5>
+        <div class="requirement">
+            <strong>FR-18:</strong> The system shall support upload and processing of medical documents
+        </div>
+        
+        <div class="requirement">
+            <strong>FR-19:</strong> The system shall extract relevant health data from uploaded documents
+        </div>
+        
+        <div class="requirement">
+            <strong>FR-20:</strong> The system shall integrate extracted data into the risk assessment
+        </div>
+        
+        <h4>4.3 Non-Functional Requirements</h4>
+        
+        <h5>Performance:</h5>
+        <div class="requirement">
+            <strong>NFR-1:</strong> The system shall maintain response times under 2 seconds for risk calculations
+        </div>
+        
+        <div class="requirement">
+            <strong>NFR-2:</strong> The system shall support at least 1,000 concurrent users without performance degradation
+        </div>
+        
+        <div class="requirement">
+            <strong>NFR-3:</strong> The system shall process uploaded medical documents within 30 seconds
+        </div>
+        
+        <h5>Security and Privacy:</h5>
+        <div class="requirement">
+            <strong>NFR-4:</strong> The system shall comply with HIPAA regulations for data storage and processing
+        </div>
+        
+        <div class="requirement">
+            <strong>NFR-5:</strong> The system shall implement end-to-end encryption for sensitive health information
+        </div>
+        
+        <div class="requirement">
+            <strong>NFR-6:</strong> The system shall provide secure authentication mechanisms including MFA
+        </div>
+        
+        <div class="requirement">
+            <strong>NFR-7:</strong> The system shall give users control over data sharing and retention
+        </div>
+        
+        <h5>Usability:</h5>
+        <div class="requirement">
+            <strong>NFR-8:</strong> The system shall provide an intuitive user interface accessible to diverse user groups
+        </div>
+        
+        <div class="requirement">
+            <strong>NFR-9:</strong> The system shall implement mobile and desktop responsive design
+        </div>
+        
+        <div class="requirement">
+            <strong>NFR-10:</strong> The system shall present clear visualization of complex health data
+        </div>
+        
+        <div class="requirement">
+            <strong>NFR-11:</strong> The system shall require minimal steps for core functionality
+        </div>
+    </div>
+    
+    <div class="container">
+        <h3>5. Use Case Scenarios</h3>
+        
+        <h4>5.1 Core Use Cases</h4>
+        
+        <div class="highlight">
+            <h5>Use Case 1: New User Registration and Initial Assessment</h5>
+            <p><strong>Primary Actor:</strong> End User</p>
+            <p><strong>Preconditions:</strong> User has access to the application</p>
+            <p><strong>Main Flow:</strong></p>
+            <ol>
+                <li>User accesses the registration page</li>
+                <li>User provides authentication information (email, password)</li>
+                <li>System validates user input</li>
+                <li>User completes demographic information</li>
+                <li>User enters physiological measurements</li>
+                <li>User provides lifestyle information</li>
+                <li>User answers mental health assessment questions</li>
+                <li>System calculates initial risk assessment</li>
+                <li>System generates personalized recommendations</li>
+                <li>System displays dashboard with results</li>
+            </ol>
+            <p><strong>Alternative Flows:</strong></p>
+            <ul>
+                <li>If user does not have all health measurements, system allows partial completion with estimated risk</li>
+                <li>If validation fails, system provides specific error messages</li>
+            </ul>
+            <p><strong>Postconditions:</strong> User account created, initial risk assessment completed</p>
+        </div>
+        
+        <div class="highlight">
+            <h5>Use Case 2: Updating Health Data and Reassessment</h5>
+            <p><strong>Primary Actor:</strong> End User</p>
+            <p><strong>Preconditions:</strong> User has registered account</p>
+            <p><strong>Main Flow:</strong></p>
+            <ol>
+                <li>User logs into their account</li>
+                <li>User navigates to health data section</li>
+                <li>User enters new physiological measurements</li>
+                <li>User updates lifestyle information</li>
+                <li>System automatically recalculates risk score</li>
+                <li>System compares new results with previous assessment</li>
+                <li>System adjusts recommendations based on changes</li>
+                <li>System displays updated dashboard with progress indicators</li>
+            </ol>
+            <p><strong>Postconditions:</strong> Updated risk assessment and recommendations</p>
+        </div>
+        
+        <div class="highlight">
+            <h5>Use Case 3: Generating and Sharing Health Report</h5>
+            <p><strong>Primary Actor:</strong> End User</p>
+            <p><strong>Secondary Actor:</strong> Healthcare Provider</p>
+            <p><strong>Preconditions:</strong> User has completed risk assessment</p>
+            <p><strong>Main Flow:</strong></p>
+            <ol>
+                <li>User navigates to reports section</li>
+                <li>User selects report generation option</li>
+                <li>System compiles comprehensive health report</li>
+                <li>System generates PDF document</li>
+                <li>User downloads report</li>
+                <li>User shares report with healthcare provider</li>
+            </ol>
+            <p><strong>Postconditions:</strong> Health report generated and available for sharing</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h3>6. Requirements Validation</h3>
+        
+        <h4>6.1 Validation Methods</h4>
+        <p>
+            The following methods were used to validate the identified requirements:
+        </p>
+        <ul>
+            <li>Stakeholder reviews with end users and healthcare providers</li>
+            <li>Prototype testing with target user groups</li>
+            <li>Expert reviews by health informatics specialists</li>
+            <li>Requirement traceability analysis</li>
+            <li>Consistency checking across requirement sets</li>
+        </ul>
+        
+        <h4>6.2 Key Validation Findings</h4>
+        <p>
+            The validation process confirmed that the requirements accurately reflect user needs, with the following insights:
+        </p>
+        <ul>
+            <li>End users emphasized the importance of clear explanations for medical terminology</li>
+            <li>Healthcare providers validated the clinical relevance of the risk assessment approach</li>
+            <li>Usability testing revealed the need for simpler navigation flows for older users</li>
+            <li>Security requirements were enhanced based on expert feedback</li>
+            <li>Performance requirements were adjusted to accommodate typical user internet connections</li>
+        </ul>
+    </div>
+    
+    <div class="container">
+        <h3>7. Requirements Prioritization</h3>
+        
+        <h4>7.1 Prioritization Criteria</h4>
+        <p>
+            Requirements were prioritized based on the following criteria:
+        </p>
+        <ul>
+            <li>User value: Impact on core user needs and goals</li>
+            <li>Technical feasibility: Complexity and technical risk</li>
+            <li>Business value: Alignment with project objectives</li>
+            <li>Regulatory necessity: Compliance requirements</li>
+            <li>Dependency relationships: Prerequisite capabilities</li>
+        </ul>
+        
+        <h4>7.2 Development Phases</h4>
+        <p>
+            Based on prioritization, requirements were allocated to the following development phases:
+        </p>
+        
+        <h5>Phase 1 (MVP):</h5>
+        <ul>
+            <li>Core user authentication and profile management</li>
+            <li>Basic health data input (physiological, lifestyle)</li>
+            <li>Fundamental risk assessment algorithm</li>
+            <li>Essential security and privacy controls</li>
+            <li>Basic dashboard visualization</li>
+        </ul>
+        
+        <h5>Phase 2:</h5>
+        <ul>
+            <li>Enhanced data input (mental health, family history)</li>
+            <li>Refined risk assessment algorithm</li>
+            <li>Personalized recommendation engine</li>
+            <li>Health report generation</li>
+            <li>Progress tracking visualization</li>
+        </ul>
+        
+        <h5>Phase 3:</h5>
+        <ul>
+            <li>Medical record processing and integration</li>
+            <li>Advanced recommendation adaptation</li>
+            <li>Healthcare provider interface</li>
+            <li>Enhanced security features (MFA, etc.)</li>
+            <li>Performance optimizations</li>
+        </ul>
+    </div>
+    
+    <div class="container">
+        <h3>8. Conclusion</h3>
+        <p>
+            The requirements elicitation and analysis process for GlucoSmart Health Analytics has identified a 
+            comprehensive set of user needs and system requirements. The findings highlight the importance of 
+            creating a personalized, accessible, and actionable platform for diabetes risk assessment that 
+            overcomes the limitations of existing approaches.
+        </p>
+        <p>
+            Key insights from this process include:
+        </p>
+        <ul>
+            <li>The critical importance of integrating physical, mental, and lifestyle factors for comprehensive risk assessment</li>
+            <li>The need for clear, jargon-free explanations of health concepts to improve user understanding</li>
+            <li>The value of longitudinal tracking and adaptive recommendations based on user progress</li>
+            <li>The balance between detailed health data collection and streamlined user experience</li>
+            <li>The necessity of robust security measures that don't impede usability</li>
+        </ul>
+        <p>
+            These requirements form the foundation for the GlucoSmart system design and development process,
+            ensuring that the final platform effectively addresses real user needs while overcoming the 
+            limitations of current diabetes risk assessment approaches.
+        </p>
+    </div>
+</body>
+</html>
