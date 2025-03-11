@@ -32,7 +32,7 @@ export default function RiskDisplay({ data }: RiskDisplayProps) {
   const riskPercent = (riskScore / 5) * 100;
 
   const getStressColor = (level?: string) => {
-    switch(level) {
+    switch(level?.toLowerCase()) {
       case 'severe': return 'text-red-500';
       case 'high': return 'text-orange-500';
       case 'moderate': return 'text-yellow-500';
@@ -73,7 +73,7 @@ export default function RiskDisplay({ data }: RiskDisplayProps) {
                   {data.mentalHealth?.stressLevel ? (
                     data.mentalHealth.stressLevel.charAt(0).toUpperCase() + 
                     data.mentalHealth.stressLevel.slice(1)
-                  ) : 'Not specified'}
+                  ) : 'Low'}
                 </span>
               </div>
             </div>
