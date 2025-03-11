@@ -53,19 +53,7 @@ GlucoSmart Health Analytics addresses this gap by combining web technologies wit
 
 ### 1.2 Problem Statement
 
-Current diabetes risk assessment methods face several critical limitations:
-
-1. **Lack of Personalization**: Existing diabetes screening tools often rely on generic risk factors without considering the unique combination of an individual's physiological, lifestyle, and mental health characteristics.
-
-2. **Inaccessibility**: Traditional risk assessments typically require in-person clinical visits, creating barriers for individuals with limited healthcare access, particularly in underserved communities.
-
-3. **Data Fragmentation**: Health data is often scattered across multiple providers and systems, making it difficult for individuals to have a comprehensive view of their diabetes risk factors.
-
-4. **Limited Actionability**: Most risk assessment tools provide risk scores without actionable, personalized recommendations for risk reduction strategies.
-
-5. **Insufficient Mental Health Integration**: Despite the established link between stress, mental health, and diabetes, many assessment tools fail to incorporate these critical factors.
-
-6. **Inadequate User Engagement**: Traditional methods often lack user-friendly interfaces and interactive elements that encourage consistent health monitoring and lifestyle modifications.
+Current diabetes risk assessment approaches suffer from significant shortcomings that limit their effectiveness in preventing this growing global health crisis. Existing screening tools rely on generic risk factors without considering each individual's unique combination of physiological, lifestyle, and mental health characteristics, resulting in one-size-fits-all assessments that lack personalization. Traditional methods typically require in-person clinical visits, creating accessibility barriers particularly for underserved communities with limited healthcare access. The fragmentation of health data across multiple providers and systems prevents individuals from gaining a comprehensive view of their diabetes risk profile. Additionally, most assessment tools provide only risk scores without actionable, personalized recommendations for risk reduction, leaving users uncertain about practical next steps. Despite established links between stress, mental health, and diabetes, many existing tools fail to incorporate these critical psychological factors. Finally, traditional methods typically lack user-friendly interfaces and interactive elements that could encourage consistent health monitoring and lifestyle modifications, reducing potential engagement and impact. GlucoSmart Health Analytics aims to address these limitations through an integrated digital platform that democratizes access to comprehensive, personalized diabetes risk assessment and management.
 
 ## 2. Requirements Elicitation and Analysis
 
