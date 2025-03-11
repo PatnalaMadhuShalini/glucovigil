@@ -1,0 +1,112 @@
+4.2.2 Use Case Diagrams
+The primary actors in the GlucoSmart system include:
+
+End User: The primary user of the application who is concerned about their diabetes risk
+Healthcare Provider: A medical professional who may review a user's health report
+System Administrator: Technical personnel who manage the platform
+Unsupported image
+
+Key Use Cases:
+
+User Management
+
+Register new account
+Authenticate user
+Update profile information
+Manage privacy settings
+Health Data Management
+
+Input health metrics
+Upload medical records
+View historical health data
+Track health trends
+Risk Assessment and Recommendations
+
+Calculate diabetes risk score
+Generate personalized recommendations
+Create health reports
+Provide educational content
+4.2.3 Activity Diagrams
+User Registration and Onboarding Process:
+
+User accesses the registration page
+User provides authentication information
+System validates user input
+User completes health profile
+System calculates initial risk assessment
+System generates personalized recommendations
+User is directed to their dashboard
+Risk Assessment Process:
+
+System receives health data input
+System validates data completeness
+Risk calculation algorithm processes input data
+Risk factors are identified and weighted
+Cumulative risk score is calculated
+Risk level is determined
+Personalized recommendations are generated
+Results are presented to the user
+Unsupported image
+
+4.2.4 Class Diagrams
+The GlucoSmart system is organized into the following primary classes:
+
+Core Domain Classes:
+
+User: Represents a registered user of the system
+HealthData: Encapsulates all health-related information for a user
+Demographics: Contains age, gender, ethnicity information
+Physiological: Stores physical health measurements
+Lifestyle: Captures exercise, diet, and other behavioral factors
+MentalHealth: Represents stress, mood, and sleep information
+Prediction: Contains risk assessment results and recommendations
+Service Classes:
+
+AuthenticationService: Handles user authentication and authorization
+HealthDataService: Manages health data operations
+RiskAssessmentService: Calculates diabetes risk scores
+RecommendationService: Generates personalized health recommendations
+DocumentProcessingService: Extracts data from medical records
+ReportGenerationService: Creates downloadable health reports
+Unsupported image
+
+4.2.5 Object Diagrams
+Object diagrams illustrate concrete instances of the class structure in action:
+
+Sample User Health Assessment:
+
+User: JohnDoe (id: 1, email: john@example.com)
+Demographics: (age: 45, gender: male, ethnicity: Caucasian)
+Physiological: (height: 175cm, weight: 82kg, bloodSugar: 110mg/dL)
+Lifestyle: (exercise: moderate, diet: fair, smoking: former)
+MentalHealth: (stressLevel: high, sleepQuality: poor)
+Prediction: (score: 3.7, level: high, recommendations: ["Increase physical activity", "Reduce carbohydrate intake"])
+Unsupported image
+
+4.2.6 Other Diagrams
+Sequence Diagram - Risk Assessment Flow:
+
+The sequence diagram illustrates the interaction between system components during the risk assessment process:
+
+User submits health data via the UI
+Client forwards data to the Server API
+HealthDataService validates and stores the information
+RiskAssessmentService calculates the risk score
+RecommendationService generates personalized recommendations
+Results are returned to the Client
+UI displays the assessment results to the User
+Unsupported image
+
+Component Diagram:
+
+The component diagram shows the major architectural components and their dependencies:
+
+Client Application: React frontend with state management
+API Gateway: Entry point for client requests
+Authentication Component: User management and security
+Health Data Management: Data storage and retrieval
+Analytics Engine: Risk assessment and recommendation generation
+Document Processor: Medical record parsing and extraction
+Reporting Service: Health report creation and formatting
+Database: Persistent data storage
+Unsupported image
