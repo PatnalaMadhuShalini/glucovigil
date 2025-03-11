@@ -1,0 +1,583 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlucoSmart Diagrams Viewer</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .diagram-container {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .mermaid {
+            background-color: white;
+            padding: 20px;
+            border-radius: 4px;
+        }
+        select {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .download-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .download-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>GlucoSmart Health Analytics - System Diagrams</h1>
+    
+    <label for="diagram-selector">Select a diagram:</label>
+    <select id="diagram-selector">
+        <option value="use-case">Use Case Diagram</option>
+        <option value="activity">Activity Diagram</option>
+        <option value="class">Class Diagram</option>
+        <option value="object">Object Diagram</option>
+        <option value="sequence">Sequence Diagram</option>
+        <option value="component">Component Diagram</option>
+        <option value="er">ER Diagram</option>
+        <option value="state">State Diagram</option>
+        <option value="deployment">Deployment Diagram</option>
+    </select>
+    
+    <div class="diagram-container">
+        <h2 id="diagram-title">Use Case Diagram</h2>
+        
+        <!-- Use Case Diagram -->
+        <div id="use-case" class="mermaid">
+graph TB
+    User((End User))
+    HCP((Healthcare Provider))
+    Admin((System Administrator))
+    
+    subgraph User Management
+        UM1[Register new account]
+        UM2[Authenticate user]
+        UM3[Update profile]
+        UM4[Manage privacy settings]
+    end
+    
+    subgraph Health Data Management
+        HDM1[Input health metrics]
+        HDM2[Upload medical records]
+        HDM3[View historical data]
+        HDM4[Track health trends]
+    end
+    
+    subgraph Risk Assessment
+        RA1[Calculate risk score]
+        RA2[Generate recommendations]
+        RA3[Create health reports]
+        RA4[Provide educational content]
+    end
+    
+    User --> UM1
+    User --> UM2
+    User --> UM3
+    User --> UM4
+    
+    User --> HDM1
+    User --> HDM2
+    User --> HDM3
+    User --> HDM4
+    
+    User --> RA1
+    User --> RA2
+    User --> RA3
+    User --> RA4
+    
+    HCP --> RA3
+    HCP --> HDM3
+    
+    Admin --> UM2
+    Admin --> UM4
+        </div>
+        
+        <!-- Activity Diagram -->
+        <div id="activity" class="mermaid" style="display: none;">
+flowchart TD
+    A[Start] --> B[Receive Health Data Input]
+    B --> C[Validate Data Completeness]
+    C --> D{Data Complete?}
+    D -- No --> E[Request Missing Data]
+    E --> B
+    D -- Yes --> F[Process Data with Risk Algorithm]
+    F --> G[Identify and Weight Risk Factors]
+    G --> H[Calculate Cumulative Risk Score]
+    H --> I[Determine Risk Level]
+    I --> J[Generate Personalized Recommendations]
+    J --> K[Present Results to User]
+    K --> L[End]
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style L fill:#f9f,stroke:#333,stroke-width:2px
+    style D fill:#bbf,stroke:#333,stroke-width:2px
+        </div>
+        
+        <!-- Class Diagram -->
+        <div id="class" class="mermaid" style="display: none;">
+classDiagram
+    class User {
+        +id: number
+        +username: string
+        +password: string
+        +fullName: string
+        +email: string
+        +phone: string
+        +gender: string
+        +place: string
+        +preferredLanguage: string
+        +verified: boolean
+        +register()
+        +login()
+        +updateProfile()
+        +resetPassword()
+    }
+    
+    class HealthData {
+        +id: number
+        +userId: number
+        +demographics: Demographics
+        +physiological: Physiological
+        +lifestyle: Lifestyle
+        +mentalHealth: MentalHealth
+        +prediction: Prediction
+        +createdAt: Date
+        +addEntry()
+        +getHistory()
+        +compareWithPrevious()
+    }
+    
+    class Demographics {
+        +age: number
+        +gender: string
+        +ethnicity: string
+    }
+    
+    class Physiological {
+        +height: number
+        +weight: number
+        +bloodSugar: number
+        +bloodPressure: BloodPressure
+        +calculateBMI()
+    }
+    
+    class Lifestyle {
+        +exercise: string
+        +diet: string
+        +smoking: string
+        +alcohol: string
+    }
+    
+    class MentalHealth {
+        +stressLevel: string
+        +sleepQuality: string
+        +moodState: string
+    }
+    
+    class Prediction {
+        +score: number
+        +level: string
+        +recommendations: string[]
+        +riskFactors: string[]
+    }
+    
+    class RiskAssessmentService {
+        +calculateRisk(healthData: HealthData): Prediction
+        +identifyRiskFactors(healthData: HealthData): string[]
+        +normalizeScore(rawScore: number): number
+    }
+    
+    class RecommendationService {
+        +generateRecommendations(riskScore: number, healthData: HealthData, riskFactors: string[]): string[]
+        +prioritizeRecommendations(recommendations: string[]): string[]
+    }
+    
+    User "1" --> "*" HealthData: has
+    HealthData --> "1" Demographics: contains
+    HealthData --> "1" Physiological: contains
+    HealthData --> "1" Lifestyle: contains
+    HealthData --> "1" MentalHealth: contains
+    HealthData --> "1" Prediction: contains
+    RiskAssessmentService --> Prediction: creates
+    RecommendationService --> Prediction: updates
+        </div>
+        
+        <!-- Object Diagram -->
+        <div id="object" class="mermaid" style="display: none;">
+classDiagram
+    class JohnDoe {
+        id: 1
+        username: "johndoe"
+        email: "john@example.com"
+        gender: "male"
+        verified: true
+    }
+    
+    class JohnHealthData {
+        id: 1
+        userId: 1
+        createdAt: "2023-07-15T14:30:00Z"
+    }
+    
+    class JohnDemographics {
+        age: 45
+        gender: "male" 
+        ethnicity: "Caucasian"
+    }
+    
+    class JohnPhysiological {
+        height: 175 cm
+        weight: 82 kg
+        bloodSugar: 110 mg/dL
+        bloodPressure: {systolic: 130, diastolic: 85}
+        BMI: 26.8
+    }
+    
+    class JohnLifestyle {
+        exercise: "moderate"
+        diet: "fair"
+        smoking: "former"
+        alcohol: "occasional"
+    }
+    
+    class JohnMentalHealth {
+        stressLevel: "high"
+        sleepQuality: "poor"
+        moodState: "anxious"
+    }
+    
+    class JohnPrediction {
+        score: 3.7
+        level: "high"
+        recommendations: ["Increase physical activity", "Reduce carbohydrate intake", "Improve sleep hygiene"]
+        riskFactors: ["BMI over 25", "Elevated blood sugar", "Poor sleep quality", "High stress level"]
+    }
+    
+    JohnDoe "1" --> "1" JohnHealthData: has
+    JohnHealthData --> "1" JohnDemographics: contains
+    JohnHealthData --> "1" JohnPhysiological: contains
+    JohnHealthData --> "1" JohnLifestyle: contains
+    JohnHealthData --> "1" JohnMentalHealth: contains
+    JohnHealthData --> "1" JohnPrediction: contains
+        </div>
+        
+        <!-- Sequence Diagram -->
+        <div id="sequence" class="mermaid" style="display: none;">
+sequenceDiagram
+    actor User
+    participant UI as Client UI
+    participant API as Server API
+    participant HDS as HealthDataService
+    participant RAS as RiskAssessmentService
+    participant RS as RecommendationService
+    participant DB as Database
+    
+    User->>UI: Submit health data
+    UI->>API: POST /api/health-data
+    API->>HDS: validateAndStore(healthData)
+    HDS->>DB: save(healthData)
+    DB-->>HDS: data saved (id)
+    HDS->>RAS: calculateRisk(healthData)
+    RAS->>RAS: process data through algorithm
+    RAS->>RAS: identify risk factors
+    RAS->>RAS: calculate risk score
+    RAS->>RS: generateRecommendations(score, healthData, riskFactors)
+    RS->>RS: create personalized recommendations
+    RS-->>RAS: recommendations
+    RAS-->>HDS: prediction with recommendations
+    HDS->>DB: update(healthDataId, prediction)
+    DB-->>HDS: update confirmed
+    HDS-->>API: completed health assessment
+    API-->>UI: risk assessment results
+    UI-->>User: display risk score and recommendations
+        </div>
+        
+        <!-- Component Diagram -->
+        <div id="component" class="mermaid" style="display: none;">
+flowchart TB
+    subgraph Client Application
+        UI[React UI Components]
+        StateManagement[State Management]
+        Forms[Form Validation]
+        Charts[Data Visualization]
+    end
+    
+    subgraph API Gateway
+        Router[API Router]
+        Auth[Authentication Middleware]
+        Validation[Request Validation]
+    end
+    
+    subgraph Core Services
+        HealthDataSvc[Health Data Service]
+        RiskAssessmentSvc[Risk Assessment Service]
+        RecommendationSvc[Recommendation Service]
+        DocumentSvc[Document Processing Service]
+    end
+    
+    subgraph Data Layer
+        Database[(PostgreSQL)]
+        ORM[Drizzle ORM]
+    end
+    
+    UI --> StateManagement
+    UI --> Forms
+    UI --> Charts
+    
+    StateManagement <--> Router
+    
+    Router --> Auth
+    Router --> Validation
+    
+    Auth --> HealthDataSvc
+    Validation --> HealthDataSvc
+    
+    HealthDataSvc --> RiskAssessmentSvc
+    RiskAssessmentSvc --> RecommendationSvc
+    HealthDataSvc --> DocumentSvc
+    
+    HealthDataSvc --> ORM
+    DocumentSvc --> ORM
+    
+    ORM --> Database
+    
+    style Client Application fill:#f9f,stroke:#333,stroke-width:1px
+    style API Gateway fill:#bbf,stroke:#333,stroke-width:1px
+    style Core Services fill:#bfb,stroke:#333,stroke-width:1px
+    style Data Layer fill:#fbb,stroke:#333,stroke-width:1px
+        </div>
+        
+        <!-- ER Diagram -->
+        <div id="er" class="mermaid" style="display: none;">
+erDiagram
+    USERS {
+        int id PK
+        string username UK
+        string password
+        string full_name
+        string email UK
+        string phone
+        string gender
+        string place
+        json achievements
+        string preferred_language
+        json health_goals
+        string verification_token
+        boolean verified
+    }
+    
+    HEALTH_DATA {
+        int id PK
+        int user_id FK
+        json demographics
+        json physiological
+        json lifestyle
+        json prediction
+        timestamp created_at
+        json nutrition_plan
+        json exercise_plan
+        json achievements
+        json medical_records
+    }
+    
+    FEEDBACK {
+        int id PK
+        int user_id FK
+        int rating
+        string category
+        text comment
+        timestamp created_at
+    }
+    
+    USERS ||--o{ HEALTH_DATA : has
+    USERS ||--o{ FEEDBACK : provides
+        </div>
+        
+        <!-- State Diagram -->
+        <div id="state" class="mermaid" style="display: none;">
+stateDiagram-v2
+    [*] --> LowRisk
+    
+    LowRisk --> ModerateRisk : Increased BMI/Blood Sugar
+    LowRisk --> LowRisk : Maintain Healthy Habits
+    
+    ModerateRisk --> HighRisk : Worsening Health Metrics
+    ModerateRisk --> LowRisk : Improve Lifestyle/Diet
+    ModerateRisk --> ModerateRisk : No Significant Change
+    
+    HighRisk --> ModerateRisk : Implement Recommendations
+    HighRisk --> HighRisk : No Intervention
+    HighRisk --> ClinicalIntervention : Severe Metrics
+    
+    ClinicalIntervention --> HighRisk : Initial Treatment
+    ClinicalIntervention --> ModerateRisk : Effective Treatment
+    ClinicalIntervention --> ClinicalIntervention : Ongoing Treatment
+    
+    state LowRisk {
+        [*] --> Monitoring
+        Monitoring --> HealthyHabits
+        HealthyHabits --> Monitoring
+    }
+    
+    state ModerateRisk {
+        [*] --> LifestyleChanges
+        LifestyleChanges --> DietaryAdjustments
+        DietaryAdjustments --> ExerciseProgram
+        ExerciseProgram --> LifestyleChanges
+    }
+    
+    state HighRisk {
+        [*] --> IntensiveMonitoring
+        IntensiveMonitoring --> MedicalConsultation
+        MedicalConsultation --> StructuredIntervention
+        StructuredIntervention --> IntensiveMonitoring
+    }
+        </div>
+        
+        <!-- Deployment Diagram -->
+        <div id="deployment" class="mermaid" style="display: none;">
+flowchart TB
+    subgraph UserDevice[User Device]
+        Browser[Web Browser]
+    end
+    
+    subgraph CloudPlatform[Cloud Platform]
+        subgraph WebServer[Web Server]
+            StaticAssets[Static Assets]
+            ReactApp[React Application]
+        end
+        
+        subgraph APIServer[API Server]
+            NodeJS[Node.js Runtime]
+            ExpressFramework[Express.js Framework]
+            AuthService[Authentication Service]
+            HealthService[Health Data Service]
+            RiskService[Risk Assessment Service]
+        end
+        
+        subgraph Database[Database Cluster]
+            PostgreSQL[(PostgreSQL)]
+            DBReplica[(Database Replica)]
+        end
+        
+        subgraph FileStorage[File Storage]
+            S3[(Document Storage)]
+        end
+    end
+    
+    Browser <--> StaticAssets
+    Browser <--> ReactApp
+    ReactApp <--> ExpressFramework
+    ExpressFramework --> AuthService
+    ExpressFramework --> HealthService
+    ExpressFramework --> RiskService
+    AuthService --> PostgreSQL
+    HealthService --> PostgreSQL
+    RiskService --> PostgreSQL
+    PostgreSQL <--> DBReplica
+    HealthService <--> S3
+    
+    style UserDevice fill:#bbf,stroke:#333,stroke-width:2px
+    style CloudPlatform fill:#fbb,stroke:#333,stroke-width:2px
+    style WebServer fill:#bfb,stroke:#333,stroke-width:1px
+    style APIServer fill:#fbf,stroke:#333,stroke-width:1px
+    style Database fill:#ffb,stroke:#333,stroke-width:1px
+    style FileStorage fill:#bff,stroke:#333,stroke-width:1px
+        </div>
+    </div>
+    
+    <button id="download-btn" class="download-btn">Save Diagram as PNG</button>
+    
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+        
+        document.getElementById('diagram-selector').addEventListener('change', function() {
+            // Hide all diagrams
+            document.querySelectorAll('.mermaid').forEach(function(el) {
+                el.style.display = 'none';
+            });
+            
+            // Show selected diagram
+            const diagramId = this.value;
+            document.getElementById(diagramId).style.display = 'block';
+            
+            // Update title
+            const titles = {
+                'use-case': 'Use Case Diagram',
+                'activity': 'Activity Diagram - Risk Assessment Process',
+                'class': 'Class Diagram',
+                'object': 'Object Diagram',
+                'sequence': 'Sequence Diagram - Risk Assessment Flow',
+                'component': 'Component Diagram',
+                'er': 'Entity-Relationship Diagram',
+                'state': 'State Diagram - User Risk Level Transitions',
+                'deployment': 'Deployment Diagram'
+            };
+            
+            document.getElementById('diagram-title').textContent = titles[diagramId];
+        });
+        
+        document.getElementById('download-btn').addEventListener('click', function() {
+            const diagramId = document.getElementById('diagram-selector').value;
+            const svgEl = document.getElementById(diagramId).querySelector('svg');
+            
+            if (!svgEl) {
+                alert('Please wait for the diagram to render before downloading');
+                return;
+            }
+            
+            // Create a canvas
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set dimensions
+            const svgRect = svgEl.getBoundingClientRect();
+            canvas.width = svgRect.width;
+            canvas.height = svgRect.height;
+            
+            // Create image from SVG
+            const svgData = new XMLSerializer().serializeToString(svgEl);
+            const img = new Image();
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0);
+                
+                // Download image
+                const a = document.createElement('a');
+                a.href = canvas.toDataURL('image/png');
+                a.download = diagramId + '-diagram.png';
+                a.click();
+            };
+            img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+        });
+    </script>
+</body>
+</html>
