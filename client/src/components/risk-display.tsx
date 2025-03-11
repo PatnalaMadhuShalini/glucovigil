@@ -31,6 +31,16 @@ export default function RiskDisplay({ data }: RiskDisplayProps) {
 
   const riskPercent = (riskScore / 5) * 100;
 
+  const getStressColor = (level?: string) => {
+    switch(level) {
+      case 'severe': return 'text-red-500';
+      case 'high': return 'text-orange-500';
+      case 'moderate': return 'text-yellow-500';
+      case 'low': return 'text-green-500';
+      default: return 'text-gray-500';
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -53,13 +63,41 @@ export default function RiskDisplay({ data }: RiskDisplayProps) {
         </div>
 
         <div className="mt-4 pt-4 border-t">
-          <h3 className="font-medium mb-2">Key Factors:</h3>
-          <ul className="text-sm space-y-2">
-            <li>Blood Sugar: {data.physiological.bloodSugar} mg/dL</li>
-            <li>BMI: {(data.physiological.weight / Math.pow(data.physiological.height/100, 2)).toFixed(1)}</li>
-            <li>Exercise Level: {data.lifestyle.exercise}</li>
-            <li>Diet Quality: {data.lifestyle.diet}</li>
-          </ul>
+          <h3 className="font-medium mb-3">Key Risk Factors:</h3>
+          <div className="space-y-2 text-sm">
+            {/* Stress Level - Now prominently displayed at the top */}
+            <div className="p-2 bg-gray-50 rounded-lg">
+              <div className="flex justify-between items-center">
+                <span>Stress Level:</span>
+                <span className={`font-medium ${getStressColor(data.mentalHealth?.stressLevel)}`}>
+                  {data.mentalHealth?.stressLevel ? (
+                    data.mentalHealth.stressLevel.charAt(0).toUpperCase() + 
+                    data.mentalHealth.stressLevel.slice(1)
+                  ) : 'Not specified'}
+                </span>
+              </div>
+            </div>
+
+            {/* Other key factors */}
+            <div className="grid gap-2">
+              <div className="flex justify-between">
+                <span>Blood Sugar:</span>
+                <span>{data.physiological.bloodSugar} mg/dL</span>
+              </div>
+              <div className="flex justify-between">
+                <span>BMI:</span>
+                <span>{(data.physiological.weight / Math.pow(data.physiological.height/100, 2)).toFixed(1)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Exercise Level:</span>
+                <span className="capitalize">{data.lifestyle.exercise}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Diet Quality:</span>
+                <span className="capitalize">{data.lifestyle.diet}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>
