@@ -1,0 +1,61 @@
+
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#f8f9fa" />
+  
+  <!-- Title -->
+  <text x="400" y="40" font-family="Arial" font-size="24" text-anchor="middle" font-weight="bold" fill="#333">GlucoSmart Health Analytics - System Architecture</text>
+  
+  <!-- Three-tier architecture boxes -->
+  <rect x="50" y="80" width="700" height="120" rx="10" fill="#e3f2fd" stroke="#2196f3" stroke-width="2" />
+  <text x="400" y="110" font-family="Arial" font-size="20" text-anchor="middle" font-weight="bold" fill="#0d47a1">Presentation Layer (Client)</text>
+  <text x="400" y="140" font-family="Arial" font-size="16" text-anchor="middle" fill="#333">React.js | TypeScript | Tailwind CSS | React Router</text>
+  <text x="400" y="170" font-family="Arial" font-size="16" text-anchor="middle" fill="#333">UI Components | State Management | Form Validation</text>
+  
+  <rect x="50" y="220" width="700" height="120" rx="10" fill="#e8f5e9" stroke="#4caf50" stroke-width="2" />
+  <text x="400" y="250" font-family="Arial" font-size="20" text-anchor="middle" font-weight="bold" fill="#1b5e20">Application Layer (Server)</text>
+  <text x="400" y="280" font-family="Arial" font-size="16" text-anchor="middle" fill="#333">Node.js | Express.js | TypeScript | WebSockets</text>
+  <text x="400" y="310" font-family="Arial" font-size="16" text-anchor="middle" fill="#333">RESTful API | Business Logic | Authentication | Error Handling</text>
+  
+  <rect x="50" y="360" width="700" height="120" rx="10" fill="#fff3e0" stroke="#ff9800" stroke-width="2" />
+  <text x="400" y="390" font-family="Arial" font-size="20" text-anchor="middle" font-weight="bold" fill="#e65100">Data Layer</text>
+  <text x="400" y="420" font-family="Arial" font-size="16" text-anchor="middle" fill="#333">PostgreSQL | Drizzle ORM | Data Validation</text>
+  <text x="400" y="450" font-family="Arial" font-size="16" text-anchor="middle" fill="#333">Database Schema | Query Optimization | Data Security</text>
+  
+  <!-- Key components -->
+  <rect x="50" y="500" width="700" height="80" rx="10" fill="#f3e5f5" stroke="#9c27b0" stroke-width="2" />
+  <text x="400" y="525" font-family="Arial" font-size="18" text-anchor="middle" font-weight="bold" fill="#4a148c">Key Components</text>
+  
+  <!-- Component boxes -->
+  <rect x="60" y="540" width="130" height="30" rx="5" fill="#e1bee7" stroke="#8e24aa" stroke-width="1" />
+  <text x="125" y="560" font-family="Arial" font-size="12" text-anchor="middle" fill="#333">Authentication Service</text>
+  
+  <rect x="200" y="540" width="130" height="30" rx="5" fill="#e1bee7" stroke="#8e24aa" stroke-width="1" />
+  <text x="265" y="560" font-family="Arial" font-size="12" text-anchor="middle" fill="#333">Health Data Service</text>
+  
+  <rect x="340" y="540" width="130" height="30" rx="5" fill="#e1bee7" stroke="#8e24aa" stroke-width="1" />
+  <text x="405" y="560" font-family="Arial" font-size="12" text-anchor="middle" fill="#333">Risk Assessment Engine</text>
+  
+  <rect x="480" y="540" width="130" height="30" rx="5" fill="#e1bee7" stroke="#8e24aa" stroke-width="1" />
+  <text x="545" y="560" font-family="Arial" font-size="12" text-anchor="middle" fill="#333">Recommendation Generator</text>
+  
+  <rect x="620" y="540" width="120" height="30" rx="5" fill="#e1bee7" stroke="#8e24aa" stroke-width="1" />
+  <text x="680" y="560" font-family="Arial" font-size="12" text-anchor="middle" fill="#333">Analytics Service</text>
+  
+  <!-- Connection lines between layers -->
+  <line x1="400" y1="200" x2="400" y2="220" stroke="#666" stroke-width="2" stroke-dasharray="5,5" />
+  <text x="410" y="210" font-family="Arial" font-size="12" fill="#666">REST API</text>
+  
+  <line x1="400" y1="340" x2="400" y2="360" stroke="#666" stroke-width="2" stroke-dasharray="5,5" />
+  <text x="410" y="350" font-family="Arial" font-size="12" fill="#666">Drizzle ORM</text>
+  
+  <!-- Additional decorative elements -->
+  <circle cx="100" y="130" r="15" fill="#bbdefb" stroke="#2196f3" stroke-width="1" />
+  <text x="100" y="135" font-family="Arial" font-size="16" text-anchor="middle" fill="#0d47a1">R</text>
+  
+  <circle cx="100" y="270" r="15" fill="#c8e6c9" stroke="#4caf50" stroke-width="1" />
+  <text x="100" y="275" font-family="Arial" font-size="16" text-anchor="middle" fill="#1b5e20">N</text>
+  
+  <circle cx="100" y="410" r="15" fill="#ffe0b2" stroke="#ff9800" stroke-width="1" />
+  <text x="100" y="415" font-family="Arial" font-size="16" text-anchor="middle" fill="#e65100">P</text>
+</svg>

@@ -167,7 +167,7 @@ The system employs a RESTful API architecture for communication between the clie
 - **Document Processing Service**: Extracts health metrics from uploaded medical records
 - **Analytics Service**: Tracks user progress and generates insights
 
-![System Architecture Diagram](https://via.placeholder.com/800x400?text=GlucoSmart+System+Architecture)
+![System Architecture Diagram](./images/system_architecture.svg)
 
 ### 4.2 Object-Oriented Analysis and Design
 
