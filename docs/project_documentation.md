@@ -913,7 +913,35 @@ The GlucoSmart platform demonstrates the potential of digital health technologie
 
 Object-Oriented Analysis and Design (OOAD) provides the foundation for GlucoSmart's architecture, ensuring a modular, maintainable, and scalable system.
 
-#### 3.1.1 Core Domain Model
+#### 3.1.1 Scenarios
+
+The GlucoSmart Health Analytics platform addresses the following key user scenarios:
+
+**Scenario 1: Initial User Registration and Risk Assessment**
+A 45-year-old individual with a family history of diabetes discovers the GlucoSmart platform while researching diabetes prevention. They register an account, providing basic demographic information (age, gender, ethnicity) and preliminary health data (height, weight, recent blood glucose reading). The system creates a user profile, securely stores the health data, and runs an initial risk assessment algorithm. Based on the limited information, GlucoSmart calculates a preliminary risk score and categorizes the user as "moderate risk," highlighting age and family history as key risk factors. The system generates initial recommendations for further health data collection to refine the assessment.
+
+**Scenario 2: Comprehensive Health Profile Completion**
+Following the initial assessment, the user returns to complete a comprehensive health profile. They input detailed physiological measurements (blood pressure, hemoglobin A1C, additional glucose readings), lifestyle information (exercise frequency, diet quality, smoking status, alcohol consumption), and mental health data (stress levels, sleep patterns). The HealthDataService validates the new information, stores it securely in the user's profile, and the RiskAssessmentService recalculates a more precise risk score based on the complete dataset. The system identifies additional risk factors, including elevated BMI and high stress levels, and adjusts the risk category.
+
+**Scenario 3: Personalized Recommendation Generation**
+After the comprehensive assessment, the RecommendationService analyzes the specific risk factors identified and generates a prioritized list of personalized health interventions. For this user, recommendations focus on gradual weight reduction through specific dietary changes (reducing processed carbohydrates), a beginning walking regimen, and stress management techniques suited to their work schedule. Each recommendation includes rationale linking it to the specific risk factors identified and practical implementation steps. The user reviews each recommendation and selects several to implement.
+
+**Scenario 4: Medical Document Integration**
+The user has recently received laboratory results from their annual physical examination. They upload the PDF document to GlucoSmart using the document upload feature. The DocumentProcessingService extracts relevant health metrics from the report, including fasting glucose levels, cholesterol readings, and blood pressure measurements. The system presents the extracted data for the user's verification, and upon confirmation, integrates it into their health profile. The risk assessment is automatically updated with the clinical measurements, providing a more accurate evaluation.
+
+**Scenario 5: Progress Tracking and Longitudinal Analysis**
+Three months after implementing selected recommendations, the user returns to input updated health metrics, including weight, blood pressure, and a new glucose reading. The system compares the new values against baseline measurements, calculating the percentage improvements and visualizing trends. The RiskAssessmentService recalculates the diabetes risk score, which has decreased from 3.8 to 3.3, moving from "high" toward "moderate" risk. The system generates positive reinforcement messages highlighting the improvements and adapts recommendations based on the progress made and changing risk profile.
+
+**Scenario 6: Health Report Generation**
+Prior to a scheduled doctor's appointment, the user generates a comprehensive health report from GlucoSmart. The ReportGenerationService compiles a professional document that includes risk assessment results, identified risk factors, key health metrics with trend analysis, and a summary of implemented lifestyle changes. The PDF report uses clear visualizations and plain language explanations suitable for sharing with healthcare providers. This facilitates a more informed discussion about diabetes prevention strategies during the medical appointment.
+
+**Scenario 7: Educational Content Interaction**
+While reviewing their mental health risk factors, the user notices that stress is significantly contributing to their diabetes risk. They navigate to the related educational content, where the system presents evidence-based information about the stress-diabetes connection, explaining how stress hormones affect insulin sensitivity and blood glucose regulation. The content includes practical stress management techniques specifically beneficial for diabetes prevention. The user completes a brief knowledge assessment to reinforce their understanding and bookmarks relevant content for future reference.
+
+**Scenario 8: Mobile Health Tracking Integration**
+The user connects their fitness wearable device to GlucoSmart using the integration feature. The system begins receiving regular data feeds of step counts, heart rate, sleep duration, and exercise sessions. This automated data collection enriches the user's health profile with objective measurements without requiring manual entry. The RiskAssessmentService incorporates this continuous data stream into a more dynamic risk model, providing more frequent updates and correlational analyses between activity patterns and glucose regulation.
+
+Each scenario represents a distinct user journey within the GlucoSmart platform, highlighting how the object-oriented architecture responds appropriately to different user needs and contexts, providing a personalized, comprehensive approach to diabetes risk management.
 
 The GlucoSmart system is built around a comprehensive domain model that represents the key entities and relationships:
 
