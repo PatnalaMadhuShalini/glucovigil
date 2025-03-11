@@ -246,6 +246,18 @@ function calculateDiabetesRisk(data: any) {
     riskFactors.push("Elevated blood pressure");
   }
 
+  // Mental health and stress assessment - Moved to top-level risk factors
+  if (data.mentalHealth?.stressLevel === "severe") {
+    riskScore += 3;
+    riskFactors.unshift("Severe stress level - high impact on blood sugar control"); // Add to start of array
+  } else if (data.mentalHealth?.stressLevel === "high") {
+    riskScore += 2;
+    riskFactors.unshift("High stress level - moderate impact on blood sugar"); // Add to start of array
+  } else if (data.mentalHealth?.stressLevel === "moderate") {
+    riskScore += 1;
+    riskFactors.unshift("Moderate stress level - potential impact on blood sugar"); // Add to start of array
+  }
+
   // Lifestyle factors assessment
   if (data.lifestyle.exercise === "none") {
     riskScore += 3;
@@ -261,18 +273,6 @@ function calculateDiabetesRisk(data: any) {
   } else if (data.lifestyle.diet === "fair") {
     riskScore += 2;
     riskFactors.push("Fair diet quality");
-  }
-
-  // Mental health and stress assessment
-  if (data.mentalHealth?.stressLevel === "severe") {
-    riskScore += 3;
-    riskFactors.push("Severe stress level - can impact blood sugar control");
-  } else if (data.mentalHealth?.stressLevel === "high") {
-    riskScore += 2;
-    riskFactors.push("High stress level - may affect diabetes management");
-  } else if (data.mentalHealth?.stressLevel === "moderate") {
-    riskScore += 1;
-    riskFactors.push("Moderate stress level");
   }
 
   // Work style consideration
@@ -320,9 +320,9 @@ function generateRecommendations(riskScore: number, data: any, riskFactors: stri
   // Add specific recommendations based on identified risk factors
   riskFactors.forEach(factor => {
     switch (factor) {
-      case "Severe stress level - can impact blood sugar control":
-      case "High stress level - may affect diabetes management":
-      case "Moderate stress level":
+      case "Severe stress level - high impact on blood sugar control":
+      case "High stress level - moderate impact on blood sugar":
+      case "Moderate stress level - potential impact on blood sugar":
         recommendations.push(
           "Consider stress management techniques like meditation or deep breathing",
           "Regular exercise can help reduce stress levels",
