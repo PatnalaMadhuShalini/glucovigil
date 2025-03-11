@@ -247,26 +247,100 @@ GlucoSmart Health Analytics addresses the limitations of existing systems throug
 
 ### 4.1 System Architecture
 
-GlucoSmart Health Analytics follows a modern three-tier architecture:
+GlucoSmart Health Analytics employs a modern, scalable three-tier architecture designed to provide a seamless user experience while ensuring security, performance, and maintainability:
 
-1. **Presentation Layer (Client)**: React-based frontend with Tailwind CSS for styling
-2. **Application Layer (Server)**: Node.js with Express.js backend
-3. **Data Layer**: PostgreSQL database with Drizzle ORM for data access
+1. **Presentation Layer (Client)**
+   - **Technology Stack**: React.js with TypeScript for type safety
+   - **UI Framework**: Tailwind CSS for responsive design and consistent styling
+   - **State Management**: React Context API and custom hooks
+   - **Client-Side Validation**: Zod schema validation library
+   - **Responsive Design**: Mobile-first approach with adaptive layouts
+   - **Accessibility**: WCAG 2.1 AA compliance with semantic HTML
 
-The system employs a RESTful API architecture for communication between the client and server, with the following key components:
+2. **Application Layer (Server)**
+   - **Runtime Environment**: Node.js with Express.js framework
+   - **API Architecture**: RESTful endpoints with versioning
+   - **Authentication**: JWT-based authentication with secure session management
+   - **Input Validation**: Request validation using Zod schemas
+   - **Error Handling**: Centralized error handling with detailed logging
+   - **Security**: CORS protection, helmet middleware, rate limiting
 
-- **Authentication Service**: Handles user registration, login, and session management
-- **Health Data Service**: Manages the storage and retrieval of user health information
-- **Risk Assessment Engine**: Processes health data to generate diabetes risk scores
-- **Recommendation Generator**: Creates personalized health recommendations
-- **Document Processing Service**: Extracts health metrics from uploaded medical records
-- **Analytics Service**: Tracks user progress and generates insights
+3. **Data Layer**
+   - **Database**: PostgreSQL with Drizzle ORM for type-safe data access
+   - **Data Models**: Structured schema with JSON columns for flexibility
+   - **Data Validation**: Schema-level constraints and application-level validation
+   - **Query Optimization**: Prepared statements and optimized indexes
+   - **Data Security**: Row-level security policies and encrypted sensitive fields
+
+The architecture implements the following key components:
+
+- **Authentication Service**: Manages user identity with secure registration, login, session handling, and multi-factor authentication support.
+
+- **Health Data Service**: Provides CRUD operations for health metrics with versioning support and data validation, ensuring data integrity and privacy.
+
+- **Risk Assessment Engine**: Implements evidence-based algorithms to calculate diabetes risk scores, identified risk factors, and confidence levels.
+
+- **Recommendation Generator**: Creates personalized, prioritized health recommendations based on identified risk factors and user characteristics.
+
+- **Document Processing Service**: Uses text extraction and NLP techniques to extract health metrics from uploaded medical documents.
+
+- **Analytics Service**: Analyzes health data trends and user engagement patterns to provide insights and track progress over time.
+
+- **Notification Service**: Manages timely alerts, reminders, and progress updates through in-app messages and email notifications.
+
+The system employs a microservices-inspired architecture where each component has a well-defined responsibility and communicates through standardized interfaces. This modular approach enables independent scaling, testing, and deployment of individual services.
+
+**System Interaction Flow:**
+
+1. Client initiates requests to the server via RESTful API endpoints
+2. API Gateway routes requests to appropriate service components
+3. Service components process requests and interact with the database
+4. Results are formatted and returned to the client with appropriate status codes
+5. Client renders information and handles user interactions
+
+**Deployment Architecture:**
+
+- Frontend assets are optimized and served via CDN
+- Backend services are deployed with autoscaling capabilities
+- Database uses connection pooling for efficient resource utilization
+- Background jobs handle resource-intensive operations asynchronously
 
 ![System Architecture Diagram](./images/system_architecture.svg)
 
 ### 4.2 Object-Oriented Analysis and Design
 
 #### 4.2.1 Scenarios
+
+The GlucoSmart Health Analytics platform addresses the following key user scenarios:
+
+**Scenario 1: User Registration and Profile Setup**
+A new user discovers GlucoSmart while researching diabetes prevention options. They register for an account and complete their profile by providing demographic information, basic health metrics, and family history. The system creates a user account, initializes their health profile, and presents an initial diabetes risk assessment based on the limited information provided, prompting the user to complete additional health data inputs for a more comprehensive analysis.
+
+**Scenario 2: Comprehensive Health Data Input**
+A registered user completes a detailed health profile by entering physiological measurements (height, weight, blood pressure, blood glucose), lifestyle information (exercise frequency, diet quality, smoking status), and mental health indicators (stress level, sleep quality). The system validates the data for completeness and plausibility, persists the information securely, and updates the user's diabetes risk assessment based on the comprehensive dataset.
+
+**Scenario 3: Medical Record Integration**
+A user who recently had a medical check-up uploads their lab results PDF document. The system extracts relevant health metrics using NLP techniques, presents the extracted information for user verification, and integrates the confirmed data into the user's health profile. The risk assessment is automatically updated with the clinical measurements, providing a more accurate evaluation.
+
+**Scenario 4: Risk Assessment and Recommendation Review**
+After completing their health profile, a user views their personalized diabetes risk assessment results. The system presents their normalized risk score (3.8 out of 5), categorizes them as "high risk," identifies contributing risk factors (elevated BMI, family history, sedentary lifestyle), and generates tailored recommendations prioritized by potential impact. The user reviews each recommendation with accompanying explanations and selects specific items to implement.
+
+**Scenario 5: Progress Tracking and Longitudinal Analysis**
+A user who has been using GlucoSmart for three months logs in to record updated health metrics following lifestyle changes. The system compares the new measurements with historical data, calculates an improved risk score (reduced from 3.8 to 3.2), visually represents the progress through trend charts, and adjusts recommendations based on the user's progress and changing health status.
+
+**Scenario 6: Health Report Generation and Provider Sharing**
+A user with an upcoming doctor's appointment generates a comprehensive health report summarizing their diabetes risk assessment, key health metrics, and progress over time. The system creates a professionally formatted PDF document with graphs and explanatory text, which the user downloads and shares with their healthcare provider to facilitate a more informed discussion about diabetes prevention strategies.
+
+**Scenario 7: Educational Content Engagement**
+A user interested in learning more about how stress affects diabetes risk navigates to the educational section of the platform. The system presents evidence-based information about the stress-diabetes connection tailored to the user's knowledge level, provides practical stress management techniques relevant to their specific situation, and allows the user to save techniques they want to implement to their personalized recommendation list.
+
+**Scenario 8: Goal Setting and Achievement Tracking**
+A user sets specific health goals based on their personalized recommendations (e.g., "Walk 30 minutes daily," "Reduce processed food intake"). The system helps define measurable targets, tracks progress through self-reported data and connected devices, provides encouragement and reminders, and celebrates achievements when milestones are reached, reinforcing positive behavior changes.
+
+**Scenario 9: System Administration and Analytics**
+A system administrator reviews platform usage analytics to identify opportunities for improvement. The system provides anonymized data on user engagement patterns, frequently viewed educational content, common risk factors, and recommendation adherence rates. This information guides refinements to the user interface, content strategy, and recommendation algorithms to enhance overall platform effectiveness.
+
+Each scenario represents a distinct user journey within the GlucoSmart platform, with the system responding appropriately based on user inputs, stored data, and programmed logic to provide a personalized, supportive experience for diabetes risk management.
 
 The GlucoSmart Health Analytics platform addresses several key user scenarios:
 
