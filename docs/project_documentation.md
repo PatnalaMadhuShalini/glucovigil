@@ -59,39 +59,81 @@ Current diabetes risk assessment approaches suffer from significant shortcomings
 
 ### 2.1 Existing System
 
-Current diabetes risk assessment systems typically exhibit the following characteristics:
+Current diabetes risk assessment systems present several limitations that reduce their effectiveness and accessibility:
 
-1. **Paper-based Questionnaires**: Traditional diabetes risk assessment often relies on paper-based tools like the American Diabetes Association Risk Test or the Finnish Diabetes Risk Score (FINDRISC).
+1. **Paper-based Questionnaires**: Traditional diabetes risk assessment primarily relies on paper-based tools like the American Diabetes Association Risk Test or the Finnish Diabetes Risk Score (FINDRISC). These methods are difficult to update with new clinical findings and offer limited interactivity and personalization.
 
-2. **Clinic-dependent Evaluations**: Comprehensive risk assessments generally require in-person clinical visits for blood tests and physical measurements.
+2. **Clinic-dependent Evaluations**: Comprehensive risk assessments typically require in-person clinical visits for blood tests and physical measurements, creating access barriers for individuals in remote locations or those with limited healthcare resources.
 
-3. **Fragmented Approach**: Existing systems separate physical health metrics from mental health and lifestyle factors rather than providing an integrated assessment.
+3. **Fragmented Approach**: Existing systems evaluate physical health metrics separately from mental health and lifestyle factors, failing to provide an integrated assessment that considers the complex interplay between various determinants of diabetes risk.
 
-4. **Static Risk Calculation**: Traditional tools provide one-time risk assessments without the capability to track changes over time or adjust recommendations based on progress.
+4. **Static Risk Calculation**: Traditional tools provide one-time risk assessments without the capability to track changes over time or adjust recommendations based on progress, limiting their usefulness for ongoing health management.
 
-5. **Limited Data Integration**: Most systems cannot easily incorporate data from electronic health records, wearable devices, or other digital health platforms.
+5. **Limited Data Integration**: Most systems lack the ability to incorporate data from electronic health records, wearable devices, or other digital health platforms, resulting in incomplete risk assessments that may miss critical health indicators.
 
-6. **Generic Recommendations**: Existing systems typically provide standardized advice rather than personalized recommendations based on specific risk factors.
+6. **Generic Recommendations**: Existing systems typically provide standardized advice rather than personalized recommendations based on specific risk factors, reducing their relevance and impact for individual users.
+
+7. **Medical Terminology Barriers**: As noted in our requirements analysis (Finding 4), many existing tools employ complex medical terminology without adequate explanation, creating barriers for users with limited health literacy.
+
+8. **Minimal Mental Health Consideration**: Despite strong evidence linking stress and mental health to diabetes risk, current assessment tools rarely incorporate these factors comprehensively.
+
+9. **Limited Education Component**: Most existing tools focus solely on risk assessment without providing educational content to improve users' understanding of diabetes risk factors and preventive measures.
+
+10. **Accessibility Issues**: Many current solutions lack responsive design for mobile devices and fail to accommodate users with disabilities, limiting their reach and usability.
 
 ### 2.2 Proposed System
 
-GlucoSmart Health Analytics aims to address these limitations through a comprehensive web-based platform with the following key features:
+GlucoSmart Health Analytics addresses the limitations of existing systems through a comprehensive web-based platform that offers an integrated approach to diabetes risk assessment and management:
 
-1. **Holistic Risk Assessment**: Integration of physiological metrics, lifestyle factors, mental health indicators, family history, and demographic information for a comprehensive risk evaluation.
+1. **Holistic Risk Assessment**: Our platform integrates physiological metrics (BMI, blood pressure, glucose levels), lifestyle factors (diet, exercise, sleep patterns), mental health indicators (stress, anxiety), family history, and demographic information to provide a truly comprehensive risk evaluation that acknowledges the multifactorial nature of diabetes.
 
-2. **Personalized Dashboard**: A user-friendly interface that visualizes risk factors, provides a clear risk score, and tracks progress over time.
+2. **Personalized Dashboard**: GlucoSmart features a user-friendly interface that visualizes risk factors using intuitive graphics, provides a clear risk score with contextual explanation, and tracks progress over time through interactive charts. The dashboard adapts to show the most relevant information based on the user's specific risk profile.
 
-3. **Evidence-based Algorithm**: A sophisticated risk calculation algorithm based on established clinical guidelines from the American Diabetes Association (ADA) and other authoritative sources.
+3. **Evidence-based Algorithm**: Our solution employs a sophisticated risk calculation algorithm based on established clinical guidelines from the American Diabetes Association (ADA), World Health Organization (WHO), and peer-reviewed research. As demonstrated in our backend code, the algorithm weights different risk factors according to their clinical significance:
 
-4. **Actionable Recommendations**: Personalized, prioritized health recommendations based on identified risk factors and user-specific characteristics.
+   ```typescript
+   // Example from our implementation
+   if (data.demographics.age > 45) {
+     riskScore += 2;
+     riskFactors.push("Age above 45");
+   }
+   
+   if (bmi > 30) {
+     riskScore += 3;
+     riskFactors.push("BMI indicates obesity");
+   }
+   ```
 
-5. **Medical Record Integration**: Capability to extract and incorporate health data from uploaded medical documents to enhance risk assessment accuracy.
+4. **Actionable Recommendations**: The platform generates personalized, prioritized health recommendations based on identified risk factors and user-specific characteristics. These recommendations are practical, achievable, and ranked by potential impact, providing clear steps for risk reduction.
 
-6. **Mental Health Focus**: Explicit incorporation of stress levels and other mental health factors as significant contributors to diabetes risk.
+5. **Medical Record Integration**: GlucoSmart includes the capability to extract and incorporate health data from uploaded medical documents using natural language processing techniques, enhancing risk assessment accuracy without requiring manual data entry for all metrics.
 
-7. **Health Report Generation**: Ability to generate downloadable health assessment reports for sharing with healthcare providers.
+6. **Mental Health Focus**: Our platform explicitly incorporates stress levels and other mental health factors as significant contributors to diabetes risk. The user interface visually represents mental health status through intuitive color coding:
 
-8. **Educational Components**: Integrated information about clinical markers and health metrics to improve health literacy.
+   ```typescript
+   // Implementation in our frontend component
+   const getStressColor = (level?: string) => {
+     switch(level?.toLowerCase()) {
+       case 'severe': return 'text-red-500';
+       case 'high': return 'text-orange-500';
+       case 'moderate': return 'text-yellow-500';
+       case 'low': return 'text-green-500';
+       default: return 'text-gray-500';
+     }
+   };
+   ```
+
+7. **Longitudinal Tracking**: Unlike static assessment tools, GlucoSmart enables users to track changes in their risk profile over time, with visual representations of progress and adaptive recommendations that evolve based on changing health metrics.
+
+8. **Health Report Generation**: The platform includes functionality to generate downloadable, professionally formatted health assessment reports for sharing with healthcare providers, facilitating better communication between users and medical professionals.
+
+9. **Educational Components**: GlucoSmart integrates contextual information about clinical markers and health metrics throughout the interface, improving health literacy while users engage with the platform. Medical terminology is explained in plain language with hover tooltips and expandable information panels.
+
+10. **Accessibility and Inclusivity**: Our solution is designed with responsive interfaces for all device types and follows WCAG 2.1 accessibility guidelines to ensure usability for people with disabilities. The platform also considers cultural competence in health communication and offers multilingual support.
+
+11. **Privacy-Focused Design**: GlucoSmart implements privacy by design principles, giving users control over their data sharing preferences while ensuring HIPAA compliance and employing advanced encryption for sensitive health information.
+
+12. **Integration Capabilities**: The platform features APIs for connecting with wearable devices, electronic health records, and third-party health applications, creating a more comprehensive health ecosystem.
 
 ## 3. System Requirements
 
