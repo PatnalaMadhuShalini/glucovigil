@@ -1,0 +1,115 @@
+
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#f8fafc" />
+  
+  <!-- System Boundary -->
+  <rect x="150" y="50" width="500" height="500" rx="10" ry="10" fill="white" stroke="#64748b" stroke-width="2" stroke-dasharray="5,5" />
+  <text x="400" y="80" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold" fill="#1e293b">GlucoSmart Health Analytics System</text>
+  
+  <!-- Actors -->
+  <!-- End User -->
+  <circle cx="70" cy="200" r="20" fill="#3b82f6" />
+  <line x1="70" y1="220" x2="70" y2="270" stroke="#3b82f6" stroke-width="3" />
+  <line x1="70" y1="230" x2="40" y2="260" stroke="#3b82f6" stroke-width="3" />
+  <line x1="70" y1="230" x2="100" y2="260" stroke="#3b82f6" stroke-width="3" />
+  <text x="70" y="300" text-anchor="middle" font-family="Arial" font-size="14" fill="#1e293b">End User</text>
+  
+  <!-- Healthcare Provider -->
+  <circle cx="70" cy="400" r="20" fill="#10b981" />
+  <line x1="70" y1="420" x2="70" y2="470" stroke="#10b981" stroke-width="3" />
+  <line x1="70" y1="430" x2="40" y2="460" stroke="#10b981" stroke-width="3" />
+  <line x1="70" y1="430" x2="100" y2="460" stroke="#10b981" stroke-width="3" />
+  <text x="70" y="500" text-anchor="middle" font-family="Arial" font-size="14" fill="#1e293b">Healthcare Provider</text>
+  
+  <!-- System Administrator -->
+  <circle cx="730" cy="300" r="20" fill="#f59e0b" />
+  <line x1="730" y1="320" x2="730" y2="370" stroke="#f59e0b" stroke-width="3" />
+  <line x1="730" y1="330" x2="700" y2="360" stroke="#f59e0b" stroke-width="3" />
+  <line x1="730" y1="330" x2="760" y2="360" stroke="#f59e0b" stroke-width="3" />
+  <text x="730" y="400" text-anchor="middle" font-family="Arial" font-size="14" fill="#1e293b">System Administrator</text>
+  
+  <!-- Use Cases -->
+  <!-- Registration -->
+  <ellipse cx="250" cy="120" rx="80" ry="30" fill="white" stroke="#3b82f6" stroke-width="2" />
+  <text x="250" y="125" text-anchor="middle" font-family="Arial" font-size="14" fill="#1e293b">Register Account</text>
+  
+  <!-- Manage Profile -->
+  <ellipse cx="250" cy="190" rx="80" ry="30" fill="white" stroke="#3b82f6" stroke-width="2" />
+  <text x="250" y="195" text-anchor="middle" font-family="Arial" font-size="14" fill="#1e293b">Manage Profile</text>
+  
+  <!-- Input Health Data -->
+  <ellipse cx="250" cy="260" rx="80" ry="30" fill="white" stroke="#3b82f6" stroke-width="2" />
+  <text x="250" y="265" text-anchor="middle" font-family="Arial" font-size="14" fill="#1e293b">Input Health Data</text>
+  
+  <!-- Risk Assessment -->
+  <ellipse cx="400" cy="210" rx="80" ry="30" fill="white" stroke="#3b82f6" stroke-width="2" />
+  <text x="400" y="215" text-anchor="middle" font-family="Arial" font-size="14" fill="#1e293b">Calculate Risk Score</text>
+  
+  <!-- Generate Recommendations -->
+  <ellipse cx="400" cy="280" rx="80" ry="30" fill="white" stroke="#3b82f6" stroke-width="2" />
+  <text x="400" y="285" text-anchor="middle" font-family="Arial" font-size="14" fill="#1e293b">Generate Recommendations</text>
+  
+  <!-- Generate Health Report -->
+  <ellipse cx="400" cy="350" rx="80" ry="30" fill="white" stroke="#3b82f6" stroke-width="2" />
+  <text x="400" y="355" text-anchor="middle" font-family="Arial" font-size="14" fill="#1e293b">Generate Health Report</text>
+  
+  <!-- Upload Medical Records -->
+  <ellipse cx="250" cy="330" rx="80" ry="30" fill="white" stroke="#3b82f6" stroke-width="2" />
+  <text x="250" y="335" text-anchor="middle" font-family="Arial" font-size="14" fill="#1e293b">Upload Medical Records</text>
+  
+  <!-- Track Progress -->
+  <ellipse cx="250" cy="400" rx="80" ry="30" fill="white" stroke="#3b82f6" stroke-width="2" />
+  <text x="250" y="405" text-anchor="middle" font-family="Arial" font-size="14" fill="#1e293b">Track Progress</text>
+  
+  <!-- View Educational Content -->
+  <ellipse cx="250" cy="470" rx="80" ry="30" fill="white" stroke="#3b82f6" stroke-width="2" />
+  <text x="250" y="475" text-anchor="middle" font-family="Arial" font-size="14" fill="#1e293b">Access Education</text>
+  
+  <!-- System Management -->
+  <ellipse cx="550" cy="280" rx="80" ry="30" fill="white" stroke="#f59e0b" stroke-width="2" />
+  <text x="550" y="285" text-anchor="middle" font-family="Arial" font-size="14" fill="#1e293b">Monitor System</text>
+  
+  <!-- Content Management -->
+  <ellipse cx="550" cy="350" rx="80" ry="30" fill="white" stroke="#f59e0b" stroke-width="2" />
+  <text x="550" y="355" text-anchor="middle" font-family="Arial" font-size="14" fill="#1e293b">Manage Content</text>
+  
+  <!-- Share with Provider -->
+  <ellipse cx="400" cy="420" rx="80" ry="30" fill="white" stroke="#10b981" stroke-width="2" />
+  <text x="400" y="425" text-anchor="middle" font-family="Arial" font-size="14" fill="#1e293b">Share with Provider</text>
+  
+  <!-- Analyze Patient Data -->
+  <ellipse cx="400" cy="490" rx="80" ry="30" fill="white" stroke="#10b981" stroke-width="2" />
+  <text x="400" y="495" text-anchor="middle" font-family="Arial" font-size="14" fill="#1e293b">Review Patient Data</text>
+  
+  <!-- Connections -->
+  <!-- End User to Use Cases -->
+  <line x1="70" y1="200" x2="170" y2="120" stroke="#64748b" stroke-width="1.5" />
+  <line x1="70" y1="200" x2="170" y2="190" stroke="#64748b" stroke-width="1.5" />
+  <line x1="70" y1="200" x2="170" y2="260" stroke="#64748b" stroke-width="1.5" />
+  <line x1="70" y1="200" x2="170" y2="330" stroke="#64748b" stroke-width="1.5" />
+  <line x1="70" y1="200" x2="170" y2="400" stroke="#64748b" stroke-width="1.5" />
+  <line x1="70" y1="200" x2="170" y2="470" stroke="#64748b" stroke-width="1.5" />
+  
+  <!-- Healthcare Provider to Use Cases -->
+  <line x1="70" y1="400" x2="320" y2="420" stroke="#64748b" stroke-width="1.5" />
+  <line x1="70" y1="400" x2="320" y2="490" stroke="#64748b" stroke-width="1.5" />
+  
+  <!-- System Administrator to Use Cases -->
+  <line x1="730" y1="300" x2="630" y2="280" stroke="#64748b" stroke-width="1.5" />
+  <line x1="730" y1="300" x2="630" y2="350" stroke="#64748b" stroke-width="1.5" />
+  
+  <!-- Include relationships -->
+  <line x1="250" y1="260" x2="330" y2="230" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5,5" />
+  <polygon points="330,230 320,225 323,237" fill="#64748b" />
+  <text x="280" y="230" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b">«include»</text>
+  
+  <line x1="400" y1="240" x2="400" y2="250" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5,5" />
+  <polygon points="400,250 395,240 405,240" fill="#64748b" />
+  <text x="440" y="245" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b">«include»</text>
+  
+  <line x1="400" y1="380" x2="400" y2="390" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5,5" />
+  <polygon points="400,390 395,380 405,380" fill="#64748b" />
+  <text x="440" y="385" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b">«extend»</text>
+</svg>
