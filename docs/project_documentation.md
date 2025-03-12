@@ -356,7 +356,7 @@ The GlucoSmart Health Analytics platform addresses several key user scenarios:
 
 The GlucoSmart Health Analytics system involves three primary actors who interact with various features and functionalities of the platform:
 
-![Use Case Diagram](./images/glucosmart_use_case_diagram.svg)
+![Use Case Diagram](./images/glucosmart_use_case_diagram.jpg)
 
 The use case diagram illustrates the key interactions between users and the GlucoSmart system. For a text-based version of this diagram, see [Use Case Diagram](./use_case_diagram.md). The diagram shows three main actors:
 
