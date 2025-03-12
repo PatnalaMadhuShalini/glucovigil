@@ -34,11 +34,11 @@ export default function NavMenu() {
               <div className="flex items-center group cursor-pointer">
                 <img 
                   src="/logo.svg"
-                  alt="GlucoSmart Logo" 
+                  alt="GlucoVigile Logo" 
                   className="h-8 w-auto transition-transform duration-300 group-hover:scale-105"
                 />
                 <span className="ml-2 text-lg font-medium text-white/90">
-                  GlucoSmart
+                  GlucoVigile
                 </span>
               </div>
             </Link>
