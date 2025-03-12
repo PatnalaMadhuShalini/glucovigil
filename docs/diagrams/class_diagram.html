@@ -36,13 +36,37 @@
             margin-bottom: 20px;
             border-radius: 0 4px 4px 0;
         }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
     </style>
 </head>
 <body>
-    <h1>GlucoSmart Health Analytics - Class Diagram</h1>
+    <h1>GlucoVigile Health Analytics - Class Diagram</h1>
     
     <div class="info">
-        <p>This class diagram illustrates the key classes, their attributes, methods, and relationships in the GlucoSmart system architecture.</p>
+        <p>This class diagram illustrates the key classes, their attributes, methods, and relationships in the GlucoVigile system architecture.</p>
     </div>
     
     <div class="diagram-container">
@@ -161,73 +185,6 @@
         </div>
     </div>
     
-    <script>
-        mermaid.initialize({
-            startOnLoad: true,
-            theme: 'neutral'
-        });
-    </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GlucoSmart Health Analytics - Class Diagram</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f8f9fa;
-        }
-        h1, h2, h3 {
-            color: #2c3e50;
-        }
-        .container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-        .info {
-            background-color: #f1f8ff;
-            padding: 20px;
-            border-left: 4px solid #3498db;
-            margin-bottom: 20px;
-            border-radius: 0 4px 4px 0;
-        }
-        .image-container {
-            text-align: center;
-            margin: 20px 0;
-        }
-        .image-container img {
-            max-width: 100%;
-            height: auto;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        pre {
-            background-color: #f5f5f5;
-            padding: 15px;
-            border-radius: 4px;
-            overflow-x: auto;
-        }
-    </style>
-</head>
-<body>
-    <h1>GlucoSmart Health Analytics - Class Diagram</h1>
-    
-    <div class="info">
-        <p>This class diagram illustrates the object-oriented structure of the GlucoSmart system, showing the key classes, their attributes, methods, and relationships.</p>
-    </div>
-    
     <div class="container">
         <h2>Domain Model Classes</h2>
         
@@ -286,7 +243,7 @@
     </div>
     
     <div class="image-container">
-        <img src="https://www.plantuml.com/plantuml/png/bLJBRjim4BppAnRf8IrIeDIKGHX5O04aU-qQsXPFgmeiagikwHLRkxUNAgNYnVll_FTbhbXPtQEcTiXbIfYYPQXw_MyMp2SOIgCYmuI4jTXWC6OEUVu4Q1AmnTGSExnDrPF8Nk3JRIWmfQOQ2QqwA5tixCv1BKF8uY0-nJpaCqS9Lm9Pj8tEhGGSQiL4oAc_7s9QT3AaWYoGNQmB0zjAzK15Qxb86nJtgU8a0J2bHmsCKAk9LQQAn1CLOP28MzG-o1Qcw5VL_48xwaBB2S_6TdtWSQRvRGmshzb7JGD2-02eRp_ZmkJzEFd4pE9AkiLCJaXwmUZ-0000" alt="GlucoSmart Class Diagram">
+        <img src="https://www.plantuml.com/plantuml/png/bLJBRjim4BppAnRf8IrIeDIKGHX5O04aU-qQsXPFgmeiagikwHLRkxUNAgNYnVll_FTbhbXPtQEcTiXbIfYYPQXw_MyMp2SOIgCYmuI4jTXWC6OEUVu4Q1AmnTGSExnDrPF8Nk3JRIWmfQOQ2QqwA5tixCv1BKF8uY0-nJpaCqS9Lm9Pj8tEhGGSQiL4oAc_7s9QT3AaWYoGNQmB0zjAzK15Qxb86nJtgU8a0J2bHmsCKAk9LQQAn1CLOP28MzG-o1Qcw5VL_48xwaBB2S_6TdtWSQRvRGmshzb7JGD2-02eRp_ZmkJzEFd4pE9AkiLCJaXwmUZ-0000" alt="GlucoVigile Class Diagram">
     </div>
     
     <div class="container">
@@ -329,5 +286,12 @@
             <li><strong>Strategy Pattern:</strong> For interchangeable algorithms</li>
         </ul>
     </div>
+    
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
 </body>
 </html>
