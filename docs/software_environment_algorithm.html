@@ -1,0 +1,604 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlucoSmart - Software Environment & Algorithm</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+            margin-top: 30px;
+        }
+        h1 {
+            text-align: center;
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        pre {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            overflow: auto;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f5f5f5;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .section {
+            margin-bottom: 40px;
+            border-left: 4px solid #3498db;
+            padding-left: 20px;
+        }
+        .note {
+            background-color: #e7f5fe;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .algorithm {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>GlucoSmart Health Analytics - Software Environment & Algorithm</h1>
+
+    <div class="section">
+        <h2>1. Software Environment</h2>
+        
+        <h3>1.1 Development Environment</h3>
+        <table>
+            <tr>
+                <th>Component</th>
+                <th>Technology</th>
+                <th>Purpose</th>
+            </tr>
+            <tr>
+                <td>IDE</td>
+                <td>Visual Studio Code</td>
+                <td>Primary development environment with TypeScript and React extensions</td>
+            </tr>
+            <tr>
+                <td>Version Control</td>
+                <td>Git with GitHub</td>
+                <td>Source code management and collaboration</td>
+            </tr>
+            <tr>
+                <td>Package Management</td>
+                <td>npm</td>
+                <td>Dependency management for frontend and backend</td>
+            </tr>
+            <tr>
+                <td>Testing Framework</td>
+                <td>Jest with React Testing Library</td>
+                <td>Unit and component testing</td>
+            </tr>
+            <tr>
+                <td>CI/CD</td>
+                <td>GitHub Actions</td>
+                <td>Continuous integration and deployment pipeline</td>
+            </tr>
+        </table>
+
+        <h3>1.2 Runtime Environment</h3>
+        
+        <h4>1.2.1 Frontend Stack</h4>
+        <table>
+            <tr>
+                <th>Technology</th>
+                <th>Version</th>
+                <th>Purpose</th>
+            </tr>
+            <tr>
+                <td>React.js</td>
+                <td>18.x</td>
+                <td>UI component library</td>
+            </tr>
+            <tr>
+                <td>TypeScript</td>
+                <td>5.x</td>
+                <td>Type-safe JavaScript superset</td>
+            </tr>
+            <tr>
+                <td>Tailwind CSS</td>
+                <td>3.x</td>
+                <td>Utility-first CSS framework</td>
+            </tr>
+            <tr>
+                <td>React Router</td>
+                <td>6.x</td>
+                <td>Client-side routing</td>
+            </tr>
+            <tr>
+                <td>Zod</td>
+                <td>3.x</td>
+                <td>Schema validation</td>
+            </tr>
+            <tr>
+                <td>Chart.js with React-Chartjs-2</td>
+                <td>4.x</td>
+                <td>Data visualization</td>
+            </tr>
+        </table>
+
+        <h4>1.2.2 Backend Stack</h4>
+        <table>
+            <tr>
+                <th>Technology</th>
+                <th>Version</th>
+                <th>Purpose</th>
+            </tr>
+            <tr>
+                <td>Node.js</td>
+                <td>18.x</td>
+                <td>JavaScript runtime</td>
+            </tr>
+            <tr>
+                <td>Express.js</td>
+                <td>4.x</td>
+                <td>Web application framework</td>
+            </tr>
+            <tr>
+                <td>TypeScript</td>
+                <td>5.x</td>
+                <td>Type-safe JavaScript superset</td>
+            </tr>
+            <tr>
+                <td>Drizzle ORM</td>
+                <td>0.28.x</td>
+                <td>Type-safe SQL toolkit</td>
+            </tr>
+            <tr>
+                <td>PostgreSQL</td>
+                <td>14.x</td>
+                <td>Relational database</td>
+            </tr>
+            <tr>
+                <td>PDF.js</td>
+                <td>3.x</td>
+                <td>PDF document processing</td>
+            </tr>
+            <tr>
+                <td>JWT</td>
+                <td>9.x</td>
+                <td>User authentication</td>
+            </tr>
+        </table>
+
+        <h3>1.3 Deployment Environment</h3>
+        <table>
+            <tr>
+                <th>Component</th>
+                <th>Technology</th>
+                <th>Purpose</th>
+            </tr>
+            <tr>
+                <td>Hosting</td>
+                <td>Replit</td>
+                <td>Application hosting and continuous deployment</td>
+            </tr>
+            <tr>
+                <td>Database</td>
+                <td>PostgreSQL (Neon)</td>
+                <td>Serverless database platform</td>
+            </tr>
+            <tr>
+                <td>Static Assets</td>
+                <td>CDN</td>
+                <td>Fast content delivery</td>
+            </tr>
+            <tr>
+                <td>SSL/TLS</td>
+                <td>Let's Encrypt</td>
+                <td>Secure HTTPS connections</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>2. Algorithms</h2>
+        
+        <h3>2.1 Diabetes Risk Assessment Algorithm</h3>
+        
+        <div class="note">
+            <p>The GlucoSmart risk assessment algorithm calculates a diabetes risk score based on a weighted analysis of multiple health factors including demographic information, physiological measurements, lifestyle factors, mental health indicators, and family history.</p>
+        </div>
+        
+        <h4>2.1.1 Algorithm Overview</h4>
+        <ol>
+            <li>Collect comprehensive health data from user</li>
+            <li>Validate data completeness and consistency</li>
+            <li>Apply evidence-based weighting to each risk factor</li>
+            <li>Calculate cumulative risk score</li>
+            <li>Normalize score to standard scale (0-5)</li>
+            <li>Categorize risk level (low, moderate, high)</li>
+            <li>Identify specific contributing risk factors</li>
+            <li>Generate personalized recommendations</li>
+        </ol>
+
+        <h4>2.1.2 Risk Factor Weighting</h4>
+        <table>
+            <tr>
+                <th>Risk Factor</th>
+                <th>Weight</th>
+                <th>Evidence Basis</th>
+            </tr>
+            <tr>
+                <td>Age over 45</td>
+                <td>2</td>
+                <td>ADA Guidelines, WHO criteria</td>
+            </tr>
+            <tr>
+                <td>BMI ≥ 30 (Obese)</td>
+                <td>3</td>
+                <td>Multiple clinical studies, strongest predictor</td>
+            </tr>
+            <tr>
+                <td>BMI 25-29.9 (Overweight)</td>
+                <td>2</td>
+                <td>Framingham study data</td>
+            </tr>
+            <tr>
+                <td>Elevated blood sugar (>140mg/dL)</td>
+                <td>3</td>
+                <td>Prediabetic indicator</td>
+            </tr>
+            <tr>
+                <td>Elevated blood pressure</td>
+                <td>2</td>
+                <td>Comorbidity correlation</td>
+            </tr>
+            <tr>
+                <td>Severe/high stress</td>
+                <td>2</td>
+                <td>HPA axis impact on insulin resistance</td>
+            </tr>
+            <tr>
+                <td>Poor sleep quality</td>
+                <td>1</td>
+                <td>Sleep deprivation studies</td>
+            </tr>
+            <tr>
+                <td>Sedentary lifestyle</td>
+                <td>2</td>
+                <td>Physical activity intervention studies</td>
+            </tr>
+            <tr>
+                <td>Poor diet</td>
+                <td>2</td>
+                <td>Nutritional impact studies</td>
+            </tr>
+            <tr>
+                <td>Family history of diabetes</td>
+                <td>2</td>
+                <td>Genetic predisposition data</td>
+            </tr>
+            <tr>
+                <td>Heavy smoking</td>
+                <td>1</td>
+                <td>Nicotine impact on insulin sensitivity</td>
+            </tr>
+            <tr>
+                <td>Heavy alcohol consumption</td>
+                <td>1</td>
+                <td>Pancreatic function studies</td>
+            </tr>
+        </table>
+
+        <h4>2.1.3 Pseudocode Implementation</h4>
+        <div class="algorithm">
+            <pre><code>function calculateDiabetesRisk(healthData):
+    riskScore = 0
+    riskFactors = []
+    
+    // Demographic risk analysis
+    if healthData.demographics.age > 45:
+        riskScore += 2
+        riskFactors.push("Age over 45 - increases risk of type 2 diabetes")
+    
+    // Physiological risk analysis
+    bmi = calculateBMI(healthData.physiological.height, healthData.physiological.weight)
+    if bmi >= 30:
+        riskScore += 3
+        riskFactors.push("BMI over 30 (obese) - high impact on insulin resistance")
+    else if bmi >= 25:
+        riskScore += 2
+        riskFactors.push("BMI 25-30 (overweight) - moderate impact on insulin resistance")
+    
+    // Blood sugar analysis
+    if healthData.physiological.bloodSugar > 140:
+        riskScore += 3
+        riskFactors.push("Elevated blood sugar - potential pre-diabetic condition")
+    else if healthData.physiological.bloodSugar > 100:
+        riskScore += 1
+        riskFactors.push("Blood sugar at upper range of normal - monitor closely")
+    
+    // Blood pressure analysis
+    if healthData.physiological.bloodPressure.systolic > 140 or 
+       healthData.physiological.bloodPressure.diastolic > 90:
+        riskScore += 2
+        riskFactors.push("Hypertension - associated with increased diabetes risk")
+    
+    // Mental health factors
+    if healthData.mentalHealth.stressLevel in ["severe", "high"]:
+        riskScore += 2
+        riskFactors.push("Severe stress level - high impact on blood sugar control")
+    
+    if healthData.mentalHealth.sleepQuality == "poor":
+        riskScore += 1
+        riskFactors.push("Poor sleep quality - affects glucose metabolism")
+    
+    // Lifestyle factors
+    if healthData.lifestyle.exercise == "none":
+        riskScore += 2
+        riskFactors.push("Sedentary lifestyle - major risk factor for insulin resistance")
+    
+    if healthData.lifestyle.diet == "poor":
+        riskScore += 2
+        riskFactors.push("Poor diet quality - impacts blood sugar regulation")
+    
+    // Family history
+    if healthData.familyHistory.diabetesInFamily:
+        riskScore += 2
+        riskFactors.push("Family history of diabetes - genetic predisposition")
+    
+    // Substance use
+    if healthData.lifestyle.smoking in ["heavy", "binge", "dependent"]:
+        riskScore += 1
+        riskFactors.push("Heavy smoking - increases insulin resistance")
+    
+    if healthData.lifestyle.alcohol in ["heavy", "binge", "dependent"]:
+        riskScore += 1
+        riskFactors.push("Heavy alcohol consumption - affects pancreatic function")
+    
+    // Normalize score to 0-5 scale
+    maxPossibleScore = 21
+    normalizedScore = min(5, (riskScore / maxPossibleScore) * 5)
+    
+    // Determine risk level
+    if normalizedScore <= 2:
+        level = "low"
+    else if normalizedScore <= 3.5:
+        level = "moderate"
+    else:
+        level = "high"
+    
+    // Generate recommendations
+    recommendations = generateRecommendations(normalizedScore, healthData, riskFactors)
+    
+    return {
+        score: normalizedScore.toFixed(1),
+        level: level,
+        recommendations: recommendations,
+        riskFactors: riskFactors
+    }</code></pre>
+        </div>
+
+        <h3>2.2 Recommendation Generation Algorithm</h3>
+        
+        <div class="note">
+            <p>The recommendation algorithm creates personalized health suggestions based on identified risk factors and user-specific characteristics.</p>
+        </div>
+        
+        <h4>2.2.1 Algorithm Overview</h4>
+        <ol>
+            <li>Analyze identified risk factors from risk assessment</li>
+            <li>Cross-reference with user's health profile</li>
+            <li>Generate factor-specific recommendations</li>
+            <li>Prioritize recommendations by potential impact</li>
+            <li>Add general recommendations based on overall risk level</li>
+            <li>Personalize based on user characteristics (age, gender, preferences)</li>
+            <li>Ensure recommendations are actionable and achievable</li>
+            <li>Remove duplicate or contradictory recommendations</li>
+        </ol>
+
+        <h4>2.2.2 Pseudocode Implementation</h4>
+        <div class="algorithm">
+            <pre><code>function generateRecommendations(riskScore, healthData, riskFactors):
+    recommendations = []
+    
+    // Add specific recommendations based on identified risk factors
+    for each factor in riskFactors:
+        if factor contains "Severe stress level":
+            recommendations.push(
+                "Consider stress management techniques like meditation or deep breathing exercises",
+                "Establish a regular sleep schedule to improve stress resilience"
+            )
+        else if factor contains "Poor sleep quality":
+            recommendations.push(
+                "Aim for 7-8 hours of quality sleep each night",
+                "Create a calm bedtime routine without screens 1 hour before sleep"
+            )
+        else if factor contains "Sedentary lifestyle":
+            recommendations.push(
+                "Start with 10-minute walks after meals and gradually increase activity",
+                "Find physical activities you enjoy to make exercise sustainable"
+            )
+        else if factor contains "Poor diet quality":
+            recommendations.push(
+                "Increase vegetable intake to at least 3 servings per day",
+                "Reduce processed food and added sugar consumption"
+            )
+        // Additional factor-specific recommendations...
+    
+    // Add general recommendations based on overall risk score
+    if riskScore > 3.5:
+        recommendations.push(
+            "Schedule a comprehensive health assessment with your healthcare provider",
+            "Monitor your blood sugar levels regularly"
+        )
+    else if riskScore > 2:
+        recommendations.push(
+            "Consider discussing diabetes prevention strategies with your healthcare provider",
+            "Implement healthy lifestyle changes to reduce your risk factors"
+        )
+    else:
+        recommendations.push(
+            "Maintain your current healthy habits",
+            "Continue regular health check-ups"
+        )
+    
+    // Personalize recommendations based on user data
+    if healthData.physiological.weight > 0 and healthData.physiological.height > 0:
+        bmi = calculateBMI(healthData.physiological.height, healthData.physiological.weight)
+        if bmi > 25:
+            idealWeight = calculateIdealWeight(healthData.physiological.height)
+            recommendations.push(
+                "Consider a gradual weight loss goal of " + 
+                round(healthData.physiological.weight - idealWeight) + " kg"
+            )
+    
+    // Remove duplicates
+    return uniqueValues(recommendations)</code></pre>
+        </div>
+
+        <h3>2.3 Document Processing Algorithm</h3>
+        
+        <div class="note">
+            <p>The document processing algorithm extracts relevant health data from uploaded medical documents using text recognition and natural language processing techniques.</p>
+        </div>
+        
+        <h4>2.3.1 Algorithm Overview</h4>
+        <ol>
+            <li>Convert uploaded document to text using PDF.js</li>
+            <li>Apply regular expressions to identify health metrics</li>
+            <li>Extract values for key metrics (glucose, blood pressure, cholesterol, etc.)</li>
+            <li>Validate extracted values against expected ranges</li>
+            <li>Present extracted data to user for verification</li>
+            <li>Integrate confirmed data into health profile</li>
+            <li>Update risk assessment with new information</li>
+        </ol>
+
+        <h4>2.3.2 Key Metric Extraction Patterns</h4>
+        <table>
+            <tr>
+                <th>Health Metric</th>
+                <th>Regular Expression Pattern</th>
+                <th>Validation Range</th>
+            </tr>
+            <tr>
+                <td>Blood Glucose (mg/dL)</td>
+                <td>Glucose:?\s*(\d+)\s*mg\/dL</td>
+                <td>70-500</td>
+            </tr>
+            <tr>
+                <td>HbA1c (%)</td>
+                <td>HbA1c:?\s*(\d+\.?\d*)\s*%</td>
+                <td>3-15</td>
+            </tr>
+            <tr>
+                <td>Blood Pressure (mmHg)</td>
+                <td>BP:?\s*(\d+)\/(\d+)</td>
+                <td>Systolic: 80-220, Diastolic: 40-180</td>
+            </tr>
+            <tr>
+                <td>Total Cholesterol (mg/dL)</td>
+                <td>Cholesterol:?\s*(\d+)\s*mg\/dL</td>
+                <td>100-400</td>
+            </tr>
+            <tr>
+                <td>HDL Cholesterol (mg/dL)</td>
+                <td>HDL:?\s*(\d+)\s*mg\/dL</td>
+                <td>20-100</td>
+            </tr>
+            <tr>
+                <td>LDL Cholesterol (mg/dL)</td>
+                <td>LDL:?\s*(\d+)\s*mg\/dL</td>
+                <td>40-300</td>
+            </tr>
+            <tr>
+                <td>Triglycerides (mg/dL)</td>
+                <td>Triglycerides:?\s*(\d+)\s*mg\/dL</td>
+                <td>50-1000</td>
+            </tr>
+        </table>
+
+        <h3>2.4 Risk Trend Analysis Algorithm</h3>
+        
+        <div class="note">
+            <p>The trend analysis algorithm tracks changes in risk factors and overall risk score over time, providing insights into the effectiveness of implemented health interventions.</p>
+        </div>
+        
+        <h4>2.4.1 Algorithm Overview</h4>
+        <ol>
+            <li>Retrieve historical health data for user</li>
+            <li>Sort data points chronologically</li>
+            <li>Calculate risk score for each data point</li>
+            <li>Identify changes in specific risk factors</li>
+            <li>Calculate improvement percentages</li>
+            <li>Identify significant trends using statistical methods</li>
+            <li>Generate visual representations of progress</li>
+            <li>Project future trajectory based on current trend</li>
+        </ol>
+        
+        <h4>2.4.2 Key Performance Indicators</h4>
+        <table>
+            <tr>
+                <th>Indicator</th>
+                <th>Calculation Method</th>
+                <th>Interpretation</th>
+            </tr>
+            <tr>
+                <td>Risk Score Delta</td>
+                <td>Current Score - Initial Score</td>
+                <td>Negative values indicate improvement</td>
+            </tr>
+            <tr>
+                <td>Risk Reduction Percentage</td>
+                <td>(Initial Score - Current Score) / Initial Score * 100%</td>
+                <td>Higher percentages indicate better progress</td>
+            </tr>
+            <tr>
+                <td>Risk Factor Elimination</td>
+                <td>Count of Initial Risk Factors - Count of Current Risk Factors</td>
+                <td>Higher values indicate removal of risk factors</td>
+            </tr>
+            <tr>
+                <td>Health Metric Improvement</td>
+                <td>Percentage change in specific health metrics (BMI, BP, etc.)</td>
+                <td>Shows progress in specific areas</td>
+            </tr>
+            <tr>
+                <td>Recommendation Adherence</td>
+                <td>Number of recommendations followed / Total recommendations</td>
+                <td>Measures user engagement with platform guidance</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
