@@ -84,12 +84,12 @@ export default function AuthPage() {
             <div className="flex justify-center mb-6">
               <img
                 src="/logo.svg"
-                alt="GlucoVigile Logo"
+                alt="GlucoVigil Logo"
                 className="h-32 w-auto"
               />
             </div>
             <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-sky-600 to-sky-700 bg-clip-text text-transparent">
-              Welcome to GlucoVigile
+              Welcome to GlucoVigil
             </CardTitle>
           </CardHeader>
           <CardContent>
