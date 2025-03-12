@@ -207,26 +207,43 @@ export async function registerRoutes(router: Router): Promise<void> {
           <style>
             body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
             h1 { color: #2c3e50; }
+            h2 { color: #3498db; margin-top: 20px; }
             .links { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
             a { display: block; padding: 10px; background-color: #f1f8ff; text-decoration: none; color: #0366d6; border-radius: 4px; }
             a:hover { background-color: #e1e4e8; }
+            .section { margin-bottom: 30px; }
           </style>
         </head>
         <body>
           <h1>GlucoVigile Diagram Viewer</h1>
-          <p>Click on any of the links below to view the diagrams:</p>
           
-          <div class="links">
-            <a href="/api/diagrams/use-case" target="_blank">Use Case Diagram</a>
-            <a href="/api/diagrams/activity" target="_blank">Activity Diagram</a>
-            <a href="/api/diagrams/class" target="_blank">Class Diagram</a>
-            <a href="/api/diagrams/component" target="_blank">Component Diagram</a>
-            <a href="/api/diagrams/deployment" target="_blank">Deployment Diagram</a>
-            <a href="/api/diagrams/sequence" target="_blank">Sequence Diagram</a>
-            <a href="/api/diagrams/object" target="_blank">Object Diagram</a>
-            <a href="/api/diagrams/state-chart" target="_blank">State Chart Diagram</a>
-            <a href="/api/diagrams/database" target="_blank">Database Visualizer</a>
-            <a href="/api/diagrams/schema-tables" target="_blank">Schema Tables</a>
+          <div class="section">
+            <h2>Static Image Diagrams (PNG/JPG)</h2>
+            <p>View the diagrams as static images with download options:</p>
+            <div class="links">
+              <a href="/diagrams-static" target="_blank">View All Static Diagrams</a>
+              <a href="/diagrams/use_case_diagram.png" target="_blank">Use Case Diagram (PNG)</a>
+              <a href="/diagrams/use_case_diagram.jpg" target="_blank">Use Case Diagram (JPG)</a>
+              <a href="/diagrams/activity_diagram.png" target="_blank">Activity Diagram (PNG)</a>
+              <a href="/diagrams/activity_diagram.jpg" target="_blank">Activity Diagram (JPG)</a>
+            </div>
+          </div>
+          
+          <div class="section">
+            <h2>Interactive HTML Diagrams</h2>
+            <p>Click on any of the links below to view the interactive diagrams:</p>
+            <div class="links">
+              <a href="/diagrams/use-case" target="_blank">Use Case Diagram</a>
+              <a href="/diagrams/activity" target="_blank">Activity Diagram</a>
+              <a href="/diagrams/class" target="_blank">Class Diagram</a>
+              <a href="/diagrams/component" target="_blank">Component Diagram</a>
+              <a href="/diagrams/deployment" target="_blank">Deployment Diagram</a>
+              <a href="/diagrams/sequence" target="_blank">Sequence Diagram</a>
+              <a href="/diagrams/object" target="_blank">Object Diagram</a>
+              <a href="/diagrams/state-chart" target="_blank">State Chart Diagram</a>
+              <a href="/diagrams/database" target="_blank">Database Visualizer</a>
+              <a href="/diagrams/schema-tables" target="_blank">Schema Tables</a>
+            </div>
           </div>
         </body>
       </html>
@@ -276,6 +293,15 @@ export async function registerRoutes(router: Router): Promise<void> {
   
   // Serve static files from docs directory for diagrams
   router.use('/diagrams/docs', express.static(path.join(process.cwd(), 'docs')));
+  
+  // Add routes for direct viewing of static diagram images
+  router.get('/diagrams-static', (req, res) => {
+    log('Serving diagrams_viewer.html from /diagrams-static');
+    res.sendFile(path.resolve(process.cwd(), 'diagrams_viewer.html'));
+  });
+  
+  // Serve the static PNG and JPG diagram files directly
+  router.use('/diagrams', express.static(path.join(process.cwd(), 'public/diagrams')));
   
   log("Diagram routes setup complete");
 }
