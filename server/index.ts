@@ -60,12 +60,22 @@ apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     // Serve static files from public directory
     log('Setting up diagram routes...');
     const publicPath = path.join(process.cwd(), 'public');
-    app.use(express.static(publicPath));
     
-    // Specific route for diagrams.html
-    app.get('/diagrams', (req, res) => {
+    // Serve diagrams.html from both /diagrams and /diagrams.html routes
+    app.get(['/diagrams', '/diagrams.html'], (req, res) => {
+      log(`Serving diagrams.html from ${req.path}`);
       res.sendFile(path.join(publicPath, 'diagrams.html'));
     });
+    
+    // Serve static files
+    app.use(express.static(publicPath, {
+      setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.png') || filePath.endsWith('.jpg')) {
+          res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 24 hours
+        }
+      }
+    }));
+    
     log('Diagram routes setup complete');
 
     const port = process.env.PORT || 5000;
@@ -109,7 +119,7 @@ apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     }
 
     // Start server
-    server.listen(port, '0.0.0.0', () => {
+    server.listen(Number(port), '0.0.0.0', () => {
       log(`Server running at http://0.0.0.0:${port}`);
     }).on('error', (err: Error & { code?: string }) => {
       log(`Failed to start server: ${err.message}`);
