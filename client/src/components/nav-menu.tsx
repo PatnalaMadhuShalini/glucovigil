@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "./ui/button";
 import { Link, useLocation } from "wouter";
-import { User, Home, LayoutDashboard, LogOut, FileSymlink } from "lucide-react";
+import { User, Home, LayoutDashboard, LogOut } from "lucide-react";
 
 export default function NavMenu() {
   const { user, logoutMutation } = useAuth();
@@ -52,15 +52,6 @@ export default function NavMenu() {
                   </span>
                 </div>
               </Link>
-              
-              <a href="/api/diagrams" target="_blank" rel="noopener noreferrer">
-                <div className={linkClass('/api/diagrams')} title="Diagrams">
-                  <span className="flex items-center gap-2">
-                    <FileSymlink className="h-4 w-4" />
-                    Diagrams
-                  </span>
-                </div>
-              </a>
 
               {user && (
                 <>
