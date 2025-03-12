@@ -10,6 +10,7 @@ import ProfilePage from "@/pages/profile-page";
 import ProfileCreation from "@/pages/profile-creation";
 import Analysis from "@/pages/analysis";
 import Progress from "@/pages/progress";
+import DiagramsPage from "@/pages/diagrams-page";
 import NotFound from "@/pages/not-found";
 import { ProtectedRoute } from "./lib/protected-route";
 import ChatAssistant from "@/components/chat-assistant";
@@ -24,6 +25,7 @@ function Router() {
       <ProtectedRoute path="/profile-creation" component={ProfileCreation} />
       <ProtectedRoute path="/analysis" component={Analysis} />
       <ProtectedRoute path="/progress" component={Progress} />
+      <Route path="/diagrams" component={DiagramsPage} />
       <Route path="/" component={HomePage} />
       <Route component={NotFound} />
     </Switch>

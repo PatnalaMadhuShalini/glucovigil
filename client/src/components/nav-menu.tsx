@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "./ui/button";
 import { Link, useLocation } from "wouter";
-import { User, Home, LayoutDashboard, LogOut } from "lucide-react";
+import { User, Home, LayoutDashboard, LogOut, FileDigit } from "lucide-react";
 
 export default function NavMenu() {
   const { user, logoutMutation } = useAuth();
@@ -49,6 +49,15 @@ export default function NavMenu() {
                   <span className="flex items-center gap-2">
                     <Home className="h-4 w-4" />
                     Home
+                  </span>
+                </div>
+              </Link>
+
+              <Link href="/diagrams">
+                <div className={linkClass('/diagrams')} title="System Diagrams">
+                  <span className="flex items-center gap-2">
+                    <FileDigit className="h-4 w-4" />
+                    Diagrams
                   </span>
                 </div>
               </Link>
