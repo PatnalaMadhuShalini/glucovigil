@@ -1,11 +1,11 @@
 
-# GlucoVigile Health Analytics - Project Documentation
+# GlucoVigil Health Analytics - Project Documentation
 
 ## 1. Introduction
 
 Diabetes represents one of the most significant global health challenges of the 21st century, affecting over 537 million adults worldwide with projections suggesting this number will rise to 783 million by 2045. This chronic metabolic disorder disrupts how the body processes glucose, leading to elevated blood sugar levels that can cause severe long-term complications including heart disease, kidney failure, vision loss, and nerve damage. Despite its prevalence and severity, many individuals remain unaware of their risk status until complications have already begun to develop.
 
-GlucoVigile Health Analytics emerges as a pioneering solution in the proactive identification and management of diabetes risk. Our platform leverages cutting-edge technology to bridge the gap between clinical knowledge and personalized preventive care, making sophisticated risk assessment accessible to everyone regardless of their medical background or geographic location.
+GlucoVigil Health Analytics emerges as a pioneering solution in the proactive identification and management of diabetes risk. Our platform leverages cutting-edge technology to bridge the gap between clinical knowledge and personalized preventive care, making sophisticated risk assessment accessible to everyone regardless of their medical background or geographic location.
 
 ### The Challenge of Early Detection
 
@@ -15,23 +15,23 @@ Traditional diabetes screening methods often occur too late, typically after sym
 
 ### Our Innovative Approach
 
-GlucoVigile Health Analytics transforms diabetes risk assessment through a multifaceted approach:
+GlucoVigil Health Analytics transforms diabetes risk assessment through a multifaceted approach:
 
 1. **Comprehensive Data Integration**: Our platform analyzes a holistic set of health metrics including physiological measurements, lifestyle factors, mental health indicators, family history, and demographic information to provide a complete picture of an individual's risk profile.
 
-2. **Advanced Predictive Modeling**: Leveraging both machine learning (ML) and deep learning (DL) algorithms, GlucoVigile analyzes key health metrics such as age, BMI, glucose levels, and family history—direct indicators of diabetes risk—to assess an individual's likelihood of developing diabetes before symptoms manifest. Our models are trained on robust datasets including the Pima Indians Diabetes Database, employing sophisticated algorithms like Logistic Regression, Random Forests, and neural networks for deeper data insights.
+2. **Advanced Predictive Modeling**: Leveraging both machine learning (ML) and deep learning (DL) algorithms, GlucoVigil analyzes key health metrics such as age, BMI, glucose levels, and family history—direct indicators of diabetes risk—to assess an individual's likelihood of developing diabetes before symptoms manifest. Our models are trained on robust datasets including the Pima Indians Diabetes Database, employing sophisticated algorithms like Logistic Regression, Random Forests, and neural networks for deeper data insights.
 
-3. **Personalized Risk Assessment**: Unlike generic risk calculators, GlucoVigile generates individualized risk profiles that account for the unique combination of factors present in each user, allowing for truly personalized prevention strategies.
+3. **Personalized Risk Assessment**: Unlike generic risk calculators, GlucoVigil generates individualized risk profiles that account for the unique combination of factors present in each user, allowing for truly personalized prevention strategies.
 
 4. **Actionable Recommendations**: Beyond simply identifying risk, our platform provides prioritized, evidence-based recommendations tailored to each user's specific risk factors and personal circumstances.
 
-5. **Continuous Monitoring and Adaptation**: GlucoVigile enables users to track changes in their risk profile over time, adjusting recommendations as health metrics evolve and incorporating new research findings to ensure recommendations remain current and effective.
+5. **Continuous Monitoring and Adaptation**: GlucoVigil enables users to track changes in their risk profile over time, adjusting recommendations as health metrics evolve and incorporating new research findings to ensure recommendations remain current and effective.
 
 ### Beyond Conventional Metrics
 
 Our approach goes beyond conventional measurements by integrating data from daily life activities such as exercise routines, sleep patterns, dietary habits, and stress levels, each essential to overall health. Additionally, data from wearable devices and environmental factors can be incorporated to enhance the accuracy and adaptability of predictions in real-world conditions.
 
-The platform's architecture is designed to accommodate the integration of emerging biomarkers and risk factors as scientific understanding evolves, ensuring that GlucoVigile remains at the forefront of diabetes risk assessment technology.
+The platform's architecture is designed to accommodate the integration of emerging biomarkers and risk factors as scientific understanding evolves, ensuring that GlucoVigil remains at the forefront of diabetes risk assessment technology.
 
 ### Privacy and Security Focus
 
@@ -39,21 +39,21 @@ We recognize that health data is among the most sensitive personal information. 
 
 ### Vision and Impact
 
-GlucoVigile Health Analytics aims to democratize access to sophisticated diabetes risk assessment tools, empowering individuals to take control of their health through informed decision-making. By identifying at-risk individuals earlier and providing targeted interventions, our platform has the potential to significantly reduce the global burden of diabetes and its complications.
+GlucoVigil Health Analytics aims to democratize access to sophisticated diabetes risk assessment tools, empowering individuals to take control of their health through informed decision-making. By identifying at-risk individuals earlier and providing targeted interventions, our platform has the potential to significantly reduce the global burden of diabetes and its complications.
 
-As part of our long-term vision, we'll implement a continuous improvement mechanism that allows the model to evolve based on user feedback and outcomes data, increasing its precision and relevance over time. This adaptive approach ensures that GlucoVigile will continue to provide value as both technology and our understanding of diabetes risk factors advance.
+As part of our long-term vision, we'll implement a continuous improvement mechanism that allows the model to evolve based on user feedback and outcomes data, increasing its precision and relevance over time. This adaptive approach ensures that GlucoVigil will continue to provide value as both technology and our understanding of diabetes risk factors advance.
 
-In summary, GlucoVigile Health Analytics provides a comprehensive, accessible, and personalized tool for early diabetes risk detection by combining advanced analytics with user-friendly design. Our platform stands at the intersection of technology and preventive healthcare, helping individuals make informed health decisions while preserving their privacy through cutting-edge security practices.
+In summary, GlucoVigil Health Analytics provides a comprehensive, accessible, and personalized tool for early diabetes risk detection by combining advanced analytics with user-friendly design. Our platform stands at the intersection of technology and preventive healthcare, helping individuals make informed health decisions while preserving their privacy through cutting-edge security practices.
 
 ### 1.1 Background and Motivation
 
 Diabetes affects over 537 million adults globally, with projections indicating a rise to 783 million by 2045. Current approaches predominantly focus on treatment rather than prevention, creating an urgent need for proactive solutions. Despite significant advances in digital health technologies and data collection, a critical gap exists in translating health information into personalized, actionable insights for at-risk individuals.
 
-GlucoVigile Health Analytics addresses this gap by combining web technologies with evidence-based risk assessment methodologies. Our platform enables early identification of diabetes risk factors and delivers tailored recommendations, empowering users to take control of their health before symptoms develop.
+GlucoVigil Health Analytics addresses this gap by combining web technologies with evidence-based risk assessment methodologies. Our platform enables early identification of diabetes risk factors and delivers tailored recommendations, empowering users to take control of their health before symptoms develop.
 
 ### 1.2 Problem Statement
 
-Current diabetes risk assessment approaches suffer from significant shortcomings that limit their effectiveness in preventing this growing global health crisis. Existing screening tools rely on generic risk factors without considering each individual's unique combination of physiological, lifestyle, and mental health characteristics, resulting in one-size-fits-all assessments that lack personalization. Traditional methods typically require in-person clinical visits, creating accessibility barriers particularly for underserved communities with limited healthcare access. The fragmentation of health data across multiple providers and systems prevents individuals from gaining a comprehensive view of their diabetes risk profile. Additionally, most assessment tools provide only risk scores without actionable, personalized recommendations for risk reduction, leaving users uncertain about practical next steps. Despite established links between stress, mental health, and diabetes, many existing tools fail to incorporate these critical psychological factors. Finally, traditional methods typically lack user-friendly interfaces and interactive elements that could encourage consistent health monitoring and lifestyle modifications, reducing potential engagement and impact. GlucoVigile Health Analytics aims to address these limitations through an integrated digital platform that democratizes access to comprehensive, personalized diabetes risk assessment and management.
+Current diabetes risk assessment approaches suffer from significant shortcomings that limit their effectiveness in preventing this growing global health crisis. Existing screening tools rely on generic risk factors without considering each individual's unique combination of physiological, lifestyle, and mental health characteristics, resulting in one-size-fits-all assessments that lack personalization. Traditional methods typically require in-person clinical visits, creating accessibility barriers particularly for underserved communities with limited healthcare access. The fragmentation of health data across multiple providers and systems prevents individuals from gaining a comprehensive view of their diabetes risk profile. Additionally, most assessment tools provide only risk scores without actionable, personalized recommendations for risk reduction, leaving users uncertain about practical next steps. Despite established links between stress, mental health, and diabetes, many existing tools fail to incorporate these critical psychological factors. Finally, traditional methods typically lack user-friendly interfaces and interactive elements that could encourage consistent health monitoring and lifestyle modifications, reducing potential engagement and impact. GlucoVigil Health Analytics aims to address these limitations through an integrated digital platform that democratizes access to comprehensive, personalized diabetes risk assessment and management.
 
 ## 2. Requirements Elicitation and Analysis
 
@@ -83,11 +83,11 @@ Current diabetes risk assessment systems present several limitations that reduce
 
 ### 2.2 Proposed System
 
-GlucoVigile Health Analytics addresses the limitations of existing systems through a comprehensive web-based platform that offers an integrated approach to diabetes risk assessment and management:
+GlucoVigil Health Analytics addresses the limitations of existing systems through a comprehensive web-based platform that offers an integrated approach to diabetes risk assessment and management:
 
 1. **Holistic Risk Assessment**: Our platform integrates physiological metrics (BMI, blood pressure, glucose levels), lifestyle factors (diet, exercise, sleep patterns), mental health indicators (stress, anxiety), family history, and demographic information to provide a truly comprehensive risk evaluation that acknowledges the multifactorial nature of diabetes.
 
-2. **Personalized Dashboard**: GlucoVigile features a user-friendly interface that visualizes risk factors using intuitive graphics, provides a clear risk score with contextual explanation, and tracks progress over time through interactive charts. The dashboard adapts to show the most relevant information based on the user's specific risk profile.
+2. **Personalized Dashboard**: GlucoVigil features a user-friendly interface that visualizes risk factors using intuitive graphics, provides a clear risk score with contextual explanation, and tracks progress over time through interactive charts. The dashboard adapts to show the most relevant information based on the user's specific risk profile.
 
 3. **Evidence-based Algorithm**: Our solution employs a sophisticated risk calculation algorithm based on established clinical guidelines from the American Diabetes Association (ADA), World Health Organization (WHO), and peer-reviewed research. As demonstrated in our backend code, the algorithm weights different risk factors according to their clinical significance:
 
@@ -106,7 +106,7 @@ GlucoVigile Health Analytics addresses the limitations of existing systems throu
 
 4. **Actionable Recommendations**: The platform generates personalized, prioritized health recommendations based on identified risk factors and user-specific characteristics. These recommendations are practical, achievable, and ranked by potential impact, providing clear steps for risk reduction.
 
-5. **Medical Record Integration**: GlucoVigile includes the capability to extract and incorporate health data from uploaded medical documents using natural language processing techniques, enhancing risk assessment accuracy without requiring manual data entry for all metrics.
+5. **Medical Record Integration**: GlucoVigil includes the capability to extract and incorporate health data from uploaded medical documents using natural language processing techniques, enhancing risk assessment accuracy without requiring manual data entry for all metrics.
 
 6. **Mental Health Focus**: Our platform explicitly incorporates stress levels and other mental health factors as significant contributors to diabetes risk. The user interface visually represents mental health status through intuitive color coding:
 
@@ -123,15 +123,15 @@ GlucoVigile Health Analytics addresses the limitations of existing systems throu
    };
    ```
 
-7. **Longitudinal Tracking**: Unlike static assessment tools, GlucoVigile enables users to track changes in their risk profile over time, with visual representations of progress and adaptive recommendations that evolve based on changing health metrics.
+7. **Longitudinal Tracking**: Unlike static assessment tools, GlucoVigil enables users to track changes in their risk profile over time, with visual representations of progress and adaptive recommendations that evolve based on changing health metrics.
 
 8. **Health Report Generation**: The platform includes functionality to generate downloadable, professionally formatted health assessment reports for sharing with healthcare providers, facilitating better communication between users and medical professionals.
 
-9. **Educational Components**: GlucoVigile integrates contextual information about clinical markers and health metrics throughout the interface, improving health literacy while users engage with the platform. Medical terminology is explained in plain language with hover tooltips and expandable information panels.
+9. **Educational Components**: GlucoVigil integrates contextual information about clinical markers and health metrics throughout the interface, improving health literacy while users engage with the platform. Medical terminology is explained in plain language with hover tooltips and expandable information panels.
 
 10. **Accessibility and Inclusivity**: Our solution is designed with responsive interfaces for all device types and follows WCAG 2.1 accessibility guidelines to ensure usability for people with disabilities. The platform also considers cultural competence in health communication and offers multilingual support.
 
-11. **Privacy-Focused Design**: GlucoVigile implements privacy by design principles, giving users control over their data sharing preferences while ensuring HIPAA compliance and employing advanced encryption for sensitive health information.
+11. **Privacy-Focused Design**: GlucoVigil implements privacy by design principles, giving users control over their data sharing preferences while ensuring HIPAA compliance and employing advanced encryption for sensitive health information.
 
 12. **Integration Capabilities**: The platform features APIs for connecting with wearable devices, electronic health records, and third-party health applications, creating a more comprehensive health ecosystem.
 
@@ -247,7 +247,7 @@ GlucoVigile Health Analytics addresses the limitations of existing systems throu
 
 ### 4.1 System Architecture
 
-GlucoVigile Health Analytics employs a modern, scalable three-tier architecture designed to provide a seamless user experience while ensuring security, performance, and maintainability:
+GlucoVigil Health Analytics employs a modern, scalable three-tier architecture designed to provide a seamless user experience while ensuring security, performance, and maintainability:
 
 1. **Presentation Layer (Client)**
    - **Technology Stack**: React.js with TypeScript for type safety
@@ -311,10 +311,10 @@ The system employs a microservices-inspired architecture where each component ha
 
 #### 4.2.1 Scenarios
 
-The GlucoVigile Health Analytics platform addresses the following key user scenarios:
+The GlucoVigil Health Analytics platform addresses the following key user scenarios:
 
 **Scenario 1: User Registration and Profile Setup**
-A new user discovers GlucoVigile while researching diabetes prevention options. They register for an account and complete their profile by providing demographic information, basic health metrics, and family history. The system creates a user account, initializes their health profile, and presents an initial diabetes risk assessment based on the limited information provided, prompting the user to complete additional health data inputs for a more comprehensive analysis.
+A new user discovers GlucoVigil while researching diabetes prevention options. They register for an account and complete their profile by providing demographic information, basic health metrics, and family history. The system creates a user account, initializes their health profile, and presents an initial diabetes risk assessment based on the limited information provided, prompting the user to complete additional health data inputs for a more comprehensive analysis.
 
 **Scenario 2: Comprehensive Health Data Input**
 A registered user completes a detailed health profile by entering physiological measurements (height, weight, blood pressure, blood glucose), lifestyle information (exercise frequency, diet quality, smoking status), and mental health indicators (stress level, sleep quality). The system validates the data for completeness and plausibility, persists the information securely, and updates the user's diabetes risk assessment based on the comprehensive dataset.
@@ -326,7 +326,7 @@ A user who recently had a medical check-up uploads their lab results PDF documen
 After completing their health profile, a user views their personalized diabetes risk assessment results. The system presents their normalized risk score (3.8 out of 5), categorizes them as "high risk," identifies contributing risk factors (elevated BMI, family history, sedentary lifestyle), and generates tailored recommendations prioritized by potential impact. The user reviews each recommendation with accompanying explanations and selects specific items to implement.
 
 **Scenario 5: Progress Tracking and Longitudinal Analysis**
-A user who has been using GlucoVigile for three months logs in to record updated health metrics following lifestyle changes. The system compares the new measurements with historical data, calculates an improved risk score (reduced from 3.8 to 3.2), visually represents the progress through trend charts, and adjusts recommendations based on the user's progress and changing health status.
+A user who has been using GlucoVigil for three months logs in to record updated health metrics following lifestyle changes. The system compares the new measurements with historical data, calculates an improved risk score (reduced from 3.8 to 3.2), visually represents the progress through trend charts, and adjusts recommendations based on the user's progress and changing health status.
 
 **Scenario 6: Health Report Generation and Provider Sharing**
 A user with an upcoming doctor's appointment generates a comprehensive health report summarizing their diabetes risk assessment, key health metrics, and progress over time. The system creates a professionally formatted PDF document with graphs and explanatory text, which the user downloads and shares with their healthcare provider to facilitate a more informed discussion about diabetes prevention strategies.
@@ -340,9 +340,9 @@ A user sets specific health goals based on their personalized recommendations (e
 **Scenario 9: System Administration and Analytics**
 A system administrator reviews platform usage analytics to identify opportunities for improvement. The system provides anonymized data on user engagement patterns, frequently viewed educational content, common risk factors, and recommendation adherence rates. This information guides refinements to the user interface, content strategy, and recommendation algorithms to enhance overall platform effectiveness.
 
-Each scenario represents a distinct user journey within the GlucoVigile platform, with the system responding appropriately based on user inputs, stored data, and programmed logic to provide a personalized, supportive experience for diabetes risk management.
+Each scenario represents a distinct user journey within the GlucoVigil platform, with the system responding appropriately based on user inputs, stored data, and programmed logic to provide a personalized, supportive experience for diabetes risk management.
 
-The GlucoVigile Health Analytics platform addresses several key user scenarios:
+The GlucoVigil Health Analytics platform addresses several key user scenarios:
 
 1. **New User Registration**: A first-time user creates an account and completes their health profile.
 2. **Health Data Input**: A user enters or updates their physiological measurements, lifestyle factors, and mental health information.
@@ -354,7 +354,7 @@ The GlucoVigile Health Analytics platform addresses several key user scenarios:
 
 #### 4.2.2 Use Case Diagrams
 
-The GlucoVigile Health Analytics system involves three primary actors who interact with various features and functionalities of the platform:
+The GlucoVigil Health Analytics system involves three primary actors who interact with various features and functionalities of the platform:
 
 ### Text-Based Use Case Diagram
 
@@ -407,7 +407,7 @@ The GlucoVigile Health Analytics system involves three primary actors who intera
 +------------------------+
 ```
 
-The use case diagram illustrates the key interactions between users and the GlucoVigile system. The diagram shows three main actors:
+The use case diagram illustrates the key interactions between users and the GlucoVigil system. The diagram shows three main actors:
 
 1. **End User** - The primary system user who registers, inputs health data, tracks progress, and accesses recommendations
 2. **Healthcare Provider** - Medical professionals who review shared reports and patient data
@@ -468,7 +468,7 @@ The diagram also shows include/extend relationships between use cases, highlight
 - **Extend Relationships**: Optional extensions to base use cases (e.g., report generation can extend to sharing with providers)
 - **Generalization**: Common patterns shared across multiple use cases (e.g., data validation across different input types)
 
-The use case diagram illustrates the comprehensive nature of the GlucoVigile platform, showing how it serves different stakeholder needs while maintaining a focus on the end user's health management journey. The clear separation of user management, health data operations, risk assessment, educational components, and system administration demonstrates the well-structured approach to addressing the complexities of diabetes risk assessment and prevention.
+The use case diagram illustrates the comprehensive nature of the GlucoVigil platform, showing how it serves different stakeholder needs while maintaining a focus on the end user's health management journey. The clear separation of user management, health data operations, risk assessment, educational components, and system administration demonstrates the well-structured approach to addressing the complexities of diabetes risk assessment and prevention.
 
 #### 4.2.3 Activity Diagrams
 
@@ -497,7 +497,7 @@ The use case diagram illustrates the comprehensive nature of the GlucoVigile pla
 
 #### 4.2.4 Class Diagrams
 
-The GlucoVigile system is organized into the following primary classes:
+The GlucoVigil system is organized into the following primary classes:
 
 **Core Domain Classes:**
 - **User**: Represents a registered user of the system
@@ -516,7 +516,7 @@ The GlucoVigile system is organized into the following primary classes:
 - **DocumentProcessingService**: Extracts data from medical records
 - **ReportGenerationService**: Creates downloadable health reports
 
-![Class Diagram](https://via.placeholder.com/800x600?text=GlucoVigile+Class+Diagram)
+![Class Diagram](https://via.placeholder.com/800x600?text=GlucoVigil+Class+Diagram)
 
 #### 4.2.5 Object Diagrams
 
@@ -530,7 +530,7 @@ Object diagrams illustrate concrete instances of the class structure in action:
   - MentalHealth: (stressLevel: high, sleepQuality: poor)
   - Prediction: (score: 3.7, level: high, recommendations: ["Increase physical activity", "Reduce carbohydrate intake"])
 
-![Object Diagram](https://via.placeholder.com/800x400?text=GlucoVigile+Object+Diagram)
+![Object Diagram](https://via.placeholder.com/800x400?text=GlucoVigil+Object+Diagram)
 
 #### 4.2.6 Other Diagrams
 
@@ -561,7 +561,7 @@ The component diagram shows the major architectural components and their depende
 - **Reporting Service**: Health report creation and formatting
 - **Database**: Persistent data storage
 
-![Component Diagram](https://via.placeholder.com/800x500?text=GlucoVigile+Component+Diagram)
+![Component Diagram](https://via.placeholder.com/800x500?text=GlucoVigil+Component+Diagram)
 
 ### 4.3 Software Environment
 
@@ -778,14 +778,14 @@ function generateRecommendations(
 
 ### 4.5 ER Diagram
 
-The GlucoVigile database schema is designed to efficiently store and retrieve user health information:
+The GlucoVigil database schema is designed to efficiently store and retrieve user health information:
 
 **Entity Relationship Diagram:**
 - Users (1) → (0..n) HealthData (One user can have multiple health data entries)
 - Users (1) → (0..n) Feedback (One user can provide multiple feedback entries)
 - HealthData contains nested JSON structures for different health categories
 
-![ER Diagram](https://via.placeholder.com/800x600?text=GlucoVigile+ER+Diagram)
+![ER Diagram](https://via.placeholder.com/800x600?text=GlucoVigil+ER+Diagram)
 
 ### 4.6 Database
 
@@ -841,13 +841,13 @@ The database consists of the following tables:
 
 ### 4.7 Output Screens
 
-The GlucoVigile Health Analytics platform features a modern, responsive user interface with the following key screens:
+The GlucoVigil Health Analytics platform features a modern, responsive user interface with the following key screens:
 
 #### 4.7.1 Homepage
 
-The homepage features an overview of the GlucoVigile platform, highlighting key features and benefits with a clean, medical-themed design.
+The homepage features an overview of the GlucoVigil platform, highlighting key features and benefits with a clean, medical-themed design.
 
-![Homepage](https://via.placeholder.com/800x500?text=GlucoVigile+Homepage)
+![Homepage](https://via.placeholder.com/800x500?text=GlucoVigil+Homepage)
 
 #### 4.7.2 User Registration and Login
 
@@ -904,7 +904,7 @@ Interface for uploading and processing medical documents with:
 
 ### 4.8 Testing
 
-The GlucoVigile platform employs a comprehensive testing strategy to ensure reliability and accuracy:
+The GlucoVigil platform employs a comprehensive testing strategy to ensure reliability and accuracy:
 
 #### 4.8.1 Testing Methodology
 
@@ -941,11 +941,11 @@ The GlucoVigile platform employs a comprehensive testing strategy to ensure reli
 
 #### 4.8.3 Test Results
 
-The GlucoVigile platform maintains a test coverage of over 85% across all components, with critical paths like risk assessment and authentication achieving 95% coverage.
+The GlucoVigil platform maintains a test coverage of over 85% across all components, with critical paths like risk assessment and authentication achieving 95% coverage.
 
 ### 4.9 Conclusions
 
-The GlucoVigile Health Analytics platform represents a significant advancement in personalized diabetes risk assessment and management. By combining comprehensive health data collection with sophisticated risk algorithms and actionable recommendations, the system empowers users to understand and actively manage their diabetes risk factors.
+The GlucoVigil Health Analytics platform represents a significant advancement in personalized diabetes risk assessment and management. By combining comprehensive health data collection with sophisticated risk algorithms and actionable recommendations, the system empowers users to understand and actively manage their diabetes risk factors.
 
 Key strengths of the implementation include:
 
@@ -971,19 +971,19 @@ Future enhancements could include:
 
 5. **Expanded Language Support**: Multilingual capabilities for broader accessibility.
 
-The GlucoVigile platform demonstrates the potential of digital health technologies to democratize access to sophisticated health risk assessment tools, potentially improving early intervention and diabetes prevention outcomes on a population scale.
+The GlucoVigil platform demonstrates the potential of digital health technologies to democratize access to sophisticated health risk assessment tools, potentially improving early intervention and diabetes prevention outcomes on a population scale.
 ## 3. SYSTEM DESIGN AND IMPLEMENTATION
 
 ### 3.1 OBJECT ORIENTED ANALYSIS AND DESIGN
 
-Object-Oriented Analysis and Design (OOAD) provides the foundation for GlucoVigile's architecture, ensuring a modular, maintainable, and scalable system.
+Object-Oriented Analysis and Design (OOAD) provides the foundation for GlucoVigil's architecture, ensuring a modular, maintainable, and scalable system.
 
 #### 3.1.1 Scenarios
 
-The GlucoVigile Health Analytics platform addresses the following key user scenarios:
+The GlucoVigil Health Analytics platform addresses the following key user scenarios:
 
 **Scenario 1: Initial User Registration and Risk Assessment**
-A 45-year-old individual with a family history of diabetes discovers the GlucoVigile platform while researching diabetes prevention. They register an account, providing basic demographic information (age, gender, ethnicity) and preliminary health data (height, weight, recent blood glucose reading). The system creates a user profile, securely stores the health data, and runs an initial risk assessment algorithm. Based on the limited information, GlucoVigile calculates a preliminary risk score and categorizes the user as "moderate risk," highlighting age and family history as key risk factors. The system generates initial recommendations for further health data collection to refine the assessment.
+A 45-year-old individual with a family history of diabetes discovers the GlucoVigil platform while researching diabetes prevention. They register an account, providing basic demographic information (age, gender, ethnicity) and preliminary health data (height, weight, recent blood glucose reading). The system creates a user profile, securely stores the health data, and runs an initial risk assessment algorithm. Based on the limited information, GlucoVigil calculates a preliminary risk score and categorizes the user as "moderate risk," highlighting age and family history as key risk factors. The system generates initial recommendations for further health data collection to refine the assessment.
 
 **Scenario 2: Comprehensive Health Profile Completion**
 Following the initial assessment, the user returns to complete a comprehensive health profile. They input detailed physiological measurements (blood pressure, hemoglobin A1C, additional glucose readings), lifestyle information (exercise frequency, diet quality, smoking status, alcohol consumption), and mental health data (stress levels, sleep patterns). The HealthDataService validates the new information, stores it securely in the user's profile, and the RiskAssessmentService recalculates a more precise risk score based on the complete dataset. The system identifies additional risk factors, including elevated BMI and high stress levels, and adjusts the risk category.
@@ -992,23 +992,23 @@ Following the initial assessment, the user returns to complete a comprehensive h
 After the comprehensive assessment, the RecommendationService analyzes the specific risk factors identified and generates a prioritized list of personalized health interventions. For this user, recommendations focus on gradual weight reduction through specific dietary changes (reducing processed carbohydrates), a beginning walking regimen, and stress management techniques suited to their work schedule. Each recommendation includes rationale linking it to the specific risk factors identified and practical implementation steps. The user reviews each recommendation and selects several to implement.
 
 **Scenario 4: Medical Document Integration**
-The user has recently received laboratory results from their annual physical examination. They upload the PDF document to GlucoVigile using the document upload feature. The DocumentProcessingService extracts relevant health metrics from the report, including fasting glucose levels, cholesterol readings, and blood pressure measurements. The system presents the extracted data for the user's verification, and upon confirmation, integrates it into their health profile. The risk assessment is automatically updated with the clinical measurements, providing a more accurate evaluation.
+The user has recently received laboratory results from their annual physical examination. They upload the PDF document to GlucoVigil using the document upload feature. The DocumentProcessingService extracts relevant health metrics from the report, including fasting glucose levels, cholesterol readings, and blood pressure measurements. The system presents the extracted data for the user's verification, and upon confirmation, integrates it into their health profile. The risk assessment is automatically updated with the clinical measurements, providing a more accurate evaluation.
 
 **Scenario 5: Progress Tracking and Longitudinal Analysis**
 Three months after implementing selected recommendations, the user returns to input updated health metrics, including weight, blood pressure, and a new glucose reading. The system compares the new values against baseline measurements, calculating the percentage improvements and visualizing trends. The RiskAssessmentService recalculates the diabetes risk score, which has decreased from 3.8 to 3.3, moving from "high" toward "moderate" risk. The system generates positive reinforcement messages highlighting the improvements and adapts recommendations based on the progress made and changing risk profile.
 
 **Scenario 6: Health Report Generation**
-Prior to a scheduled doctor's appointment, the user generates a comprehensive health report from GlucoVigile. The ReportGenerationService compiles a professional document that includes risk assessment results, identified risk factors, key health metrics with trend analysis, and a summary of implemented lifestyle changes. The PDF report uses clear visualizations and plain language explanations suitable for sharing with healthcare providers. This facilitates a more informed discussion about diabetes prevention strategies during the medical appointment.
+Prior to a scheduled doctor's appointment, the user generates a comprehensive health report from GlucoVigil. The ReportGenerationService compiles a professional document that includes risk assessment results, identified risk factors, key health metrics with trend analysis, and a summary of implemented lifestyle changes. The PDF report uses clear visualizations and plain language explanations suitable for sharing with healthcare providers. This facilitates a more informed discussion about diabetes prevention strategies during the medical appointment.
 
 **Scenario 7: Educational Content Interaction**
 While reviewing their mental health risk factors, the user notices that stress is significantly contributing to their diabetes risk. They navigate to the related educational content, where the system presents evidence-based information about the stress-diabetes connection, explaining how stress hormones affect insulin sensitivity and blood glucose regulation. The content includes practical stress management techniques specifically beneficial for diabetes prevention. The user completes a brief knowledge assessment to reinforce their understanding and bookmarks relevant content for future reference.
 
 **Scenario 8: Mobile Health Tracking Integration**
-The user connects their fitness wearable device to GlucoVigile using the integration feature. The system begins receiving regular data feeds of step counts, heart rate, sleep duration, and exercise sessions. This automated data collection enriches the user's health profile with objective measurements without requiring manual entry. The RiskAssessmentService incorporates this continuous data stream into a more dynamic risk model, providing more frequent updates and correlational analyses between activity patterns and glucose regulation.
+The user connects their fitness wearable device to GlucoVigil using the integration feature. The system begins receiving regular data feeds of step counts, heart rate, sleep duration, and exercise sessions. This automated data collection enriches the user's health profile with objective measurements without requiring manual entry. The RiskAssessmentService incorporates this continuous data stream into a more dynamic risk model, providing more frequent updates and correlational analyses between activity patterns and glucose regulation.
 
-Each scenario represents a distinct user journey within the GlucoVigile platform, highlighting how the object-oriented architecture responds appropriately to different user needs and contexts, providing a personalized, comprehensive approach to diabetes risk management.
+Each scenario represents a distinct user journey within the GlucoVigil platform, highlighting how the object-oriented architecture responds appropriately to different user needs and contexts, providing a personalized, comprehensive approach to diabetes risk management.
 
-The GlucoVigile system is built around a comprehensive domain model that represents the key entities and relationships:
+The GlucoVigil system is built around a comprehensive domain model that represents the key entities and relationships:
 
 **User Domain:**
 - The `User` class represents registered system users with attributes including username, password (hashed), fullName, email, phone, gender, place, and verification status.
@@ -1031,7 +1031,7 @@ The GlucoVigile system is built around a comprehensive domain model that represe
 
 #### 3.1.2 Service Layer Design
 
-GlucoVigile implements a service-oriented architecture with specialized services handling distinct responsibilities:
+GlucoVigil implements a service-oriented architecture with specialized services handling distinct responsibilities:
 
 **Authentication Services:**
 - Manage user registration, verification, and secure authentication
@@ -1058,7 +1058,7 @@ GlucoVigile implements a service-oriented architecture with specialized services
 
 #### 3.1.3 Design Patterns Implemented
 
-GlucoVigile leverages several design patterns to ensure maintainable, extensible code:
+GlucoVigil leverages several design patterns to ensure maintainable, extensible code:
 
 - **Repository Pattern**: Abstracts data access through the `IStorage` interface, allowing for different storage implementations without affecting business logic
 - **Service Layer Pattern**: Encapsulates business logic in dedicated service classes that operate on domain entities
@@ -1069,7 +1069,7 @@ GlucoVigile leverages several design patterns to ensure maintainable, extensible
 
 #### 3.1.4 Object-Oriented Principles Application
 
-The GlucoVigile system embodies core OO principles:
+The GlucoVigil system embodies core OO principles:
 
 - **Encapsulation**: Each class encapsulates its data and behavior, exposing only necessary interfaces
 - **Inheritance**: Specialized classes extend base functionality (e.g., different types of health recommendations)
@@ -1078,7 +1078,7 @@ The GlucoVigile system embodies core OO principles:
 
 #### 3.1.5 Type System and Schema Validation
 
-GlucoVigile leverages TypeScript's strong typing system and Zod schema validation to ensure:
+GlucoVigil leverages TypeScript's strong typing system and Zod schema validation to ensure:
 
 - Compile-time type checking
 - Runtime data validation 

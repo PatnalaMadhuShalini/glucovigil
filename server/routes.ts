@@ -203,7 +203,7 @@ export async function registerRoutes(router: Router): Promise<void> {
     res.send(`
       <html>
         <head>
-          <title>GlucoVigile Diagrams</title>
+          <title>GlucoVigil Diagrams</title>
           <style>
             body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
             h1 { color: #2c3e50; }
@@ -215,7 +215,7 @@ export async function registerRoutes(router: Router): Promise<void> {
           </style>
         </head>
         <body>
-          <h1>GlucoVigile Diagram Viewer</h1>
+          <h1>GlucoVigil Diagram Viewer</h1>
           
           <div class="section">
             <h2>Static Image Diagrams (PNG/JPG)</h2>
