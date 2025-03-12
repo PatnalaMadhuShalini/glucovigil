@@ -35,6 +35,16 @@
             margin-bottom: 20px;
             border-radius: 0 4px 4px 0;
         }
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -46,35 +56,54 @@
     
     <div class="diagram-container">
         <div class="mermaid">
-        %%{init: {'theme': 'neutral'}}%%
+        %%{init: {'theme': 'neutral', 'themeVariables': { 'primaryColor': '#f4f4f4', 'primaryTextColor': '#323232'}}}%%
         flowchart TD
-            Start([Start]) --> A[User Inputs Health Data]
-            A --> B[System Validates Data]
-            B --> C{Data Complete?}
-            C -->|No| D[Request Additional Data]
-            D --> A
-            C -->|Yes| E[Process Health Metrics]
-            E --> F[Calculate Risk Score]
-            F --> G[Identify Risk Factors]
-            G --> H[Determine Risk Level]
-            H --> I[Generate Personalized Recommendations]
-            I --> J[Display Results to User]
-            J --> K{User Wants Report?}
-            K -->|Yes| L[Generate PDF Report]
-            L --> M[Allow Download/Share]
-            K -->|No| N[End Session]
-            M --> N
-            N --> End([End])
+            Start([Start])
+            InputData[User Inputs Health Data]
+            ValidateData{Data Complete?}
+            CalculateRisk[Risk Calculation Algorithm]
+            IdentifyFactors[Identify Risk Factors]
+            AssignWeights[Assign Weights to Factors]
+            CalculateScore[Calculate Cumulative Score]
+            DetermineLevel{Determine Risk Level}
+            GenerateLowRec[Generate Low Risk Recommendations]
+            GenerateMedRec[Generate Medium Risk Recommendations]
+            GenerateHighRec[Generate High Risk Recommendations]
+            StoreResults[Store Risk Assessment Results]
+            PresentResults[Present Results to User]
+            End([End])
             
-            classDef start fill:#6BCB77,color:white;
-            classDef end fill:#FF6B6B,color:white;
-            classDef process fill:#4D96FF,color:white;
-            classDef decision fill:#FFD93D,color:black;
+            Start --> InputData
+            InputData --> ValidateData
+            ValidateData -- No --> InputData
+            ValidateData -- Yes --> CalculateRisk
+            CalculateRisk --> IdentifyFactors
+            IdentifyFactors --> AssignWeights
+            AssignWeights --> CalculateScore
+            CalculateScore --> DetermineLevel
+            DetermineLevel -- Low Risk --> GenerateLowRec
+            DetermineLevel -- Medium Risk --> GenerateMedRec
+            DetermineLevel -- High Risk --> GenerateHighRec
+            GenerateLowRec --> StoreResults
+            GenerateMedRec --> StoreResults
+            GenerateHighRec --> StoreResults
+            StoreResults --> PresentResults
+            PresentResults --> End
             
-            class Start,End start;
-            class A,B,E,F,G,H,I,J,L,M,N process;
-            class C,K decision;
+            classDef start fill:#a8e6cf,stroke:#333,stroke-width:1px
+            classDef process fill:#eeeeee,stroke:#333,stroke-width:1px
+            classDef decision fill:#ffd3b6,stroke:#333,stroke-width:1px
+            classDef end fill:#ffaaa5,stroke:#333,stroke-width:1px
+            
+            class Start,End start
+            class InputData,CalculateRisk,IdentifyFactors,AssignWeights,CalculateScore,GenerateLowRec,GenerateMedRec,GenerateHighRec,StoreResults,PresentResults process
+            class ValidateData,DetermineLevel decision
         </div>
+    </div>
+    
+    <div class="image-container">
+        <h3>Alternative Static Image</h3>
+        <img src="https://www.plantuml.com/plantuml/png/VP91QiCm44NtESLUjkbiL54BWX3G8XmK9hOH1ZqXKPK3IhALGKcVt5TGjwWDfb_x_VpPkQfYSYYfZ3qiQoahAIm6XLQkfT-54uecMCXxH1IuLrA8G-o_uIb7u1-lUhZQ9XymVnERSeCCYdWnAbpxFFAxlm8X0KdX_CtMKPUfHHFzFU9WyYA7_Fv2KXSN4XZmGRmK2TwkWsQ_fC3l8UM2IMSYJpD0ND90aCvpZELSa8R-mQ6OzTaYUwVWiuwrQ36YuJoHGKnFPyeIRnBnqh_LwFAZLMmP2eZ9cSr-zg7J1pIwPMzNujLBvpblL0NzDyFv-dq1JdvZE5x9pzc79PLb8O-Kgr9tFtXQ90iKYEzqlh9U9H-sLnw_JMKZ02Pn-d3JQAjWHMgkfkQ7_UF_HQqPfzZ_zG80" alt="GlucoSmart Activity Diagram">
     </div>
     
     <script>
