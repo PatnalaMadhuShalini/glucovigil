@@ -1,0 +1,543 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlucoSmart - Database Schema Tables</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .info {
+            background-color: #f1f8ff;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            text-align: left;
+            padding: 12px;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #e9e9e9;
+        }
+        .key {
+            font-weight: bold;
+        }
+        .primary-key {
+            color: #e74c3c;
+        }
+        .foreign-key {
+            color: #3498db;
+        }
+        .json-type {
+            color: #9b59b6;
+        }
+        .download-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .download-btn:hover {
+            background-color: #45a049;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+        .table-title {
+            background-color: #34495e;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px 5px 0 0;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>GlucoSmart Health Analytics</h1>
+    <h2>Database Schema Tables</h2>
+    
+    <div class="container">
+        <div class="info">
+            <p>The following tables represent the database schema for the GlucoSmart Health Analytics platform. Each table is designed to store a specific aspect of the system's data, with relationships between tables defined through primary and foreign keys.</p>
+        </div>
+        
+        <div class="table-container">
+            <h3 class="table-title">USERS Table</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Column Name</th>
+                        <th>Data Type</th>
+                        <th>Constraints</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="key primary-key">id</td>
+                        <td>SERIAL</td>
+                        <td>PRIMARY KEY</td>
+                        <td>Unique identifier for user</td>
+                    </tr>
+                    <tr>
+                        <td>username</td>
+                        <td>VARCHAR(50)</td>
+                        <td>UNIQUE, NOT NULL</td>
+                        <td>User's chosen username</td>
+                    </tr>
+                    <tr>
+                        <td>email</td>
+                        <td>VARCHAR(100)</td>
+                        <td>UNIQUE, NOT NULL</td>
+                        <td>User's email address</td>
+                    </tr>
+                    <tr>
+                        <td>password</td>
+                        <td>VARCHAR(255)</td>
+                        <td>NOT NULL</td>
+                        <td>Hashed password</td>
+                    </tr>
+                    <tr>
+                        <td>full_name</td>
+                        <td>VARCHAR(100)</td>
+                        <td></td>
+                        <td>User's full name</td>
+                    </tr>
+                    <tr>
+                        <td>phone</td>
+                        <td>VARCHAR(20)</td>
+                        <td></td>
+                        <td>Contact phone number</td>
+                    </tr>
+                    <tr>
+                        <td>gender</td>
+                        <td>VARCHAR(20)</td>
+                        <td></td>
+                        <td>User's gender</td>
+                    </tr>
+                    <tr>
+                        <td>place</td>
+                        <td>VARCHAR(100)</td>
+                        <td></td>
+                        <td>User's location</td>
+                    </tr>
+                    <tr>
+                        <td class="json-type">achievements</td>
+                        <td>JSONB</td>
+                        <td></td>
+                        <td>Array of user achievements</td>
+                    </tr>
+                    <tr>
+                        <td>preferred_language</td>
+                        <td>VARCHAR(20)</td>
+                        <td></td>
+                        <td>User's language preference</td>
+                    </tr>
+                    <tr>
+                        <td class="json-type">health_goals</td>
+                        <td>JSONB</td>
+                        <td></td>
+                        <td>Array of user health goals</td>
+                    </tr>
+                    <tr>
+                        <td>verification_token</td>
+                        <td>VARCHAR(255)</td>
+                        <td></td>
+                        <td>Email verification token</td>
+                    </tr>
+                    <tr>
+                        <td>verified</td>
+                        <td>BOOLEAN</td>
+                        <td>DEFAULT FALSE</td>
+                        <td>Account verification status</td>
+                    </tr>
+                    <tr>
+                        <td>created_at</td>
+                        <td>TIMESTAMP</td>
+                        <td>DEFAULT NOW()</td>
+                        <td>Account creation timestamp</td>
+                    </tr>
+                    <tr>
+                        <td>updated_at</td>
+                        <td>TIMESTAMP</td>
+                        <td>DEFAULT NOW()</td>
+                        <td>Last update timestamp</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="table-container">
+            <h3 class="table-title">HEALTH_DATA Table</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Column Name</th>
+                        <th>Data Type</th>
+                        <th>Constraints</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="key primary-key">id</td>
+                        <td>SERIAL</td>
+                        <td>PRIMARY KEY</td>
+                        <td>Unique identifier for health data entry</td>
+                    </tr>
+                    <tr>
+                        <td class="key foreign-key">user_id</td>
+                        <td>INTEGER</td>
+                        <td>FOREIGN KEY REFERENCES users(id)</td>
+                        <td>Reference to user who owns this data</td>
+                    </tr>
+                    <tr>
+                        <td class="json-type">demographics</td>
+                        <td>JSONB</td>
+                        <td></td>
+                        <td>Demographic information (age, gender, ethnicity)</td>
+                    </tr>
+                    <tr>
+                        <td class="json-type">physiological</td>
+                        <td>JSONB</td>
+                        <td></td>
+                        <td>Physical measurements (height, weight, blood sugar, etc.)</td>
+                    </tr>
+                    <tr>
+                        <td class="json-type">lifestyle</td>
+                        <td>JSONB</td>
+                        <td></td>
+                        <td>Lifestyle factors (exercise, diet, smoking, alcohol)</td>
+                    </tr>
+                    <tr>
+                        <td class="json-type">mental_health</td>
+                        <td>JSONB</td>
+                        <td></td>
+                        <td>Mental health indicators (stress, sleep, anxiety)</td>
+                    </tr>
+                    <tr>
+                        <td class="json-type">prediction</td>
+                        <td>JSONB</td>
+                        <td></td>
+                        <td>Risk assessment results and recommendations</td>
+                    </tr>
+                    <tr>
+                        <td>created_at</td>
+                        <td>TIMESTAMP</td>
+                        <td>DEFAULT NOW()</td>
+                        <td>Timestamp of data collection</td>
+                    </tr>
+                    <tr>
+                        <td class="json-type">nutrition_plan</td>
+                        <td>JSONB</td>
+                        <td></td>
+                        <td>Personalized nutrition recommendations</td>
+                    </tr>
+                    <tr>
+                        <td class="json-type">exercise_plan</td>
+                        <td>JSONB</td>
+                        <td></td>
+                        <td>Personalized exercise recommendations</td>
+                    </tr>
+                    <tr>
+                        <td class="json-type">achievements</td>
+                        <td>JSONB</td>
+                        <td></td>
+                        <td>Health achievements related to this entry</td>
+                    </tr>
+                    <tr>
+                        <td class="json-type">medical_records</td>
+                        <td>JSONB</td>
+                        <td></td>
+                        <td>Processed data from medical documents</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="table-container">
+            <h3 class="table-title">FEEDBACK Table</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Column Name</th>
+                        <th>Data Type</th>
+                        <th>Constraints</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="key primary-key">id</td>
+                        <td>SERIAL</td>
+                        <td>PRIMARY KEY</td>
+                        <td>Unique identifier for feedback entry</td>
+                    </tr>
+                    <tr>
+                        <td class="key foreign-key">user_id</td>
+                        <td>INTEGER</td>
+                        <td>FOREIGN KEY REFERENCES users(id)</td>
+                        <td>Reference to user who provided feedback</td>
+                    </tr>
+                    <tr>
+                        <td>rating</td>
+                        <td>INTEGER</td>
+                        <td>CHECK (rating BETWEEN 1 AND 5)</td>
+                        <td>Numerical rating (1-5)</td>
+                    </tr>
+                    <tr>
+                        <td>category</td>
+                        <td>VARCHAR(50)</td>
+                        <td></td>
+                        <td>Category of feedback (UI, recommendations, etc.)</td>
+                    </tr>
+                    <tr>
+                        <td>comment</td>
+                        <td>TEXT</td>
+                        <td></td>
+                        <td>Detailed feedback comments</td>
+                    </tr>
+                    <tr>
+                        <td>created_at</td>
+                        <td>TIMESTAMP</td>
+                        <td>DEFAULT NOW()</td>
+                        <td>Timestamp of feedback submission</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="table-container">
+            <h3 class="table-title">MEDICAL_DOCUMENTS Table</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Column Name</th>
+                        <th>Data Type</th>
+                        <th>Constraints</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="key primary-key">id</td>
+                        <td>SERIAL</td>
+                        <td>PRIMARY KEY</td>
+                        <td>Unique identifier for document</td>
+                    </tr>
+                    <tr>
+                        <td class="key foreign-key">user_id</td>
+                        <td>INTEGER</td>
+                        <td>FOREIGN KEY REFERENCES users(id)</td>
+                        <td>Reference to document owner</td>
+                    </tr>
+                    <tr>
+                        <td class="key foreign-key">health_data_id</td>
+                        <td>INTEGER</td>
+                        <td>FOREIGN KEY REFERENCES health_data(id)</td>
+                        <td>Reference to related health data entry</td>
+                    </tr>
+                    <tr>
+                        <td>document_name</td>
+                        <td>VARCHAR(255)</td>
+                        <td>NOT NULL</td>
+                        <td>Original filename</td>
+                    </tr>
+                    <tr>
+                        <td>document_type</td>
+                        <td>VARCHAR(50)</td>
+                        <td>NOT NULL</td>
+                        <td>MIME type or document category</td>
+                    </tr>
+                    <tr>
+                        <td>document_content</td>
+                        <td>BYTEA</td>
+                        <td></td>
+                        <td>Binary content of document or reference to storage</td>
+                    </tr>
+                    <tr>
+                        <td class="json-type">extracted_data</td>
+                        <td>JSONB</td>
+                        <td></td>
+                        <td>Health data extracted from document</td>
+                    </tr>
+                    <tr>
+                        <td>uploaded_at</td>
+                        <td>TIMESTAMP</td>
+                        <td>DEFAULT NOW()</td>
+                        <td>Upload timestamp</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="table-container">
+            <h3 class="table-title">RECOMMENDATIONS Table</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Column Name</th>
+                        <th>Data Type</th>
+                        <th>Constraints</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="key primary-key">id</td>
+                        <td>SERIAL</td>
+                        <td>PRIMARY KEY</td>
+                        <td>Unique identifier for recommendation</td>
+                    </tr>
+                    <tr>
+                        <td class="key foreign-key">health_data_id</td>
+                        <td>INTEGER</td>
+                        <td>FOREIGN KEY REFERENCES health_data(id)</td>
+                        <td>Reference to health data that generated this recommendation</td>
+                    </tr>
+                    <tr>
+                        <td>category</td>
+                        <td>VARCHAR(50)</td>
+                        <td>NOT NULL</td>
+                        <td>Category (diet, exercise, lifestyle, etc.)</td>
+                    </tr>
+                    <tr>
+                        <td>title</td>
+                        <td>VARCHAR(255)</td>
+                        <td>NOT NULL</td>
+                        <td>Short title of recommendation</td>
+                    </tr>
+                    <tr>
+                        <td>description</td>
+                        <td>TEXT</td>
+                        <td>NOT NULL</td>
+                        <td>Detailed recommendation text</td>
+                    </tr>
+                    <tr>
+                        <td>priority</td>
+                        <td>INTEGER</td>
+                        <td>DEFAULT 5</td>
+                        <td>Priority level (1-10, higher is more important)</td>
+                    </tr>
+                    <tr>
+                        <td>implemented</td>
+                        <td>BOOLEAN</td>
+                        <td>DEFAULT FALSE</td>
+                        <td>Whether user has marked as implemented</td>
+                    </tr>
+                    <tr>
+                        <td>created_at</td>
+                        <td>TIMESTAMP</td>
+                        <td>DEFAULT NOW()</td>
+                        <td>Timestamp of recommendation creation</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="table-container">
+            <h3 class="table-title">HEALTH_REPORTS Table</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Column Name</th>
+                        <th>Data Type</th>
+                        <th>Constraints</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="key primary-key">id</td>
+                        <td>SERIAL</td>
+                        <td>PRIMARY KEY</td>
+                        <td>Unique identifier for report</td>
+                    </tr>
+                    <tr>
+                        <td class="key foreign-key">user_id</td>
+                        <td>INTEGER</td>
+                        <td>FOREIGN KEY REFERENCES users(id)</td>
+                        <td>Reference to report owner</td>
+                    </tr>
+                    <tr>
+                        <td>report_type</td>
+                        <td>VARCHAR(50)</td>
+                        <td>NOT NULL</td>
+                        <td>Type of report (summary, comprehensive, progress)</td>
+                    </tr>
+                    <tr>
+                        <td>summary</td>
+                        <td>TEXT</td>
+                        <td></td>
+                        <td>Executive summary text</td>
+                    </tr>
+                    <tr>
+                        <td class="json-type">included_metrics</td>
+                        <td>JSONB</td>
+                        <td></td>
+                        <td>Health metrics included in report</td>
+                    </tr>
+                    <tr>
+                        <td>shared_with_provider</td>
+                        <td>BOOLEAN</td>
+                        <td>DEFAULT FALSE</td>
+                        <td>Whether shared with healthcare provider</td>
+                    </tr>
+                    <tr>
+                        <td>generated_at</td>
+                        <td>TIMESTAMP</td>
+                        <td>DEFAULT NOW()</td>
+                        <td>Report generation timestamp</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+        function printPage() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

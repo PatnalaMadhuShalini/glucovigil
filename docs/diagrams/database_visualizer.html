@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlucoSmart - Database ER Diagram</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .info {
+            background-color: #f1f8ff;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+        .download-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .download-btn:hover {
+            background-color: #45a049;
+        }
+        .diagram-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>GlucoSmart Health Analytics</h1>
+    <h2>Database Entity Relationship Diagram</h2>
+    
+    <div class="container">
+        <div class="info">
+            <p>This ER diagram illustrates the database schema for the GlucoSmart Health Analytics platform, showing tables, relationships, and key attributes.</p>
+        </div>
+        
+        <div class="diagram-container">
+            <div class="mermaid">
+            %%{init: {'theme': 'neutral'}}%%
+            erDiagram
+                USERS {
+                    serial id PK
+                    varchar username UK
+                    varchar email UK
+                    varchar password
+                    varchar full_name
+                    varchar phone
+                    varchar gender
+                    varchar place
+                    jsonb achievements
+                    varchar preferred_language
+                    jsonb health_goals
+                    varchar verification_token
+                    boolean verified
+                    timestamp created_at
+                    timestamp updated_at
+                }
+                
+                HEALTH_DATA {
+                    serial id PK
+                    integer user_id FK
+                    jsonb demographics
+                    jsonb physiological
+                    jsonb lifestyle
+                    jsonb mental_health
+                    jsonb prediction
+                    timestamp created_at
+                    jsonb nutrition_plan
+                    jsonb exercise_plan
+                    jsonb achievements
+                    jsonb medical_records
+                }
+                
+                FEEDBACK {
+                    serial id PK
+                    integer user_id FK
+                    integer rating
+                    varchar category
+                    text comment
+                    timestamp created_at
+                }
+                
+                USERS ||--o{ HEALTH_DATA : has
+                USERS ||--o{ FEEDBACK : provides
+                
+                ACHIEVEMENTS {
+                    serial id PK
+                    integer user_id FK
+                    varchar title
+                    varchar description
+                    timestamp achieved_at
+                    varchar category
+                    integer points
+                }
+                
+                MEDICAL_DOCUMENTS {
+                    serial id PK
+                    integer user_id FK
+                    integer health_data_id FK
+                    varchar document_name
+                    varchar document_type
+                    bytea document_content
+                    jsonb extracted_data
+                    timestamp uploaded_at
+                }
+                
+                RECOMMENDATIONS {
+                    serial id PK
+                    integer health_data_id FK
+                    varchar category
+                    varchar title
+                    text description
+                    integer priority
+                    boolean implemented
+                    timestamp created_at
+                }
+                
+                EDUCATIONAL_CONTENT {
+                    serial id PK
+                    varchar title
+                    text content
+                    varchar category
+                    jsonb related_risk_factors
+                    timestamp published_at
+                    timestamp updated_at
+                }
+                
+                HEALTH_REPORTS {
+                    serial id PK
+                    integer user_id FK
+                    varchar report_type
+                    text summary
+                    jsonb included_metrics
+                    boolean shared_with_provider
+                    timestamp generated_at
+                }
+                
+                USERS ||--o{ ACHIEVEMENTS : earns
+                USERS ||--o{ MEDICAL_DOCUMENTS : uploads
+                HEALTH_DATA ||--o{ RECOMMENDATIONS : generates
+                HEALTH_DATA ||--o{ MEDICAL_DOCUMENTS : linked_to
+                USERS ||--o{ HEALTH_REPORTS : receives
+            </div>
+        </div>
+        
+        <button id="download-btn" class="download-btn">Download ER Diagram as PNG</button>
+    </div>
+    
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            er: { 
+                diagramPadding: 20,
+                layoutDirection: 'TB',
+                minEntityWidth: 100,
+                minEntityHeight: 75,
+                entityPadding: 15
+            }
+        });
+        
+        document.getElementById('download-btn').addEventListener('click', function() {
+            const svg = document.querySelector('.mermaid svg');
+            
+            if (svg) {
+                // Create a canvas
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Get SVG dimensions
+                const svgRect = svg.getBoundingClientRect();
+                
+                // Set canvas dimensions with padding
+                canvas.width = svgRect.width + 40;
+                canvas.height = svgRect.height + 40;
+                
+                // Fill with white background
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Convert SVG to data URL
+                const svgData = new XMLSerializer().serializeToString(svg);
+                const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+                const url = URL.createObjectURL(svgBlob);
+                
+                // Create image from SVG
+                const img = new Image();
+                img.onload = function() {
+                    // Draw image on canvas with padding
+                    ctx.drawImage(img, 20, 20, svgRect.width, svgRect.height);
+                    
+                    // Create download link
+                    const pngData = canvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    link.download = 'GlucoSmart-ER-Diagram.png';
+                    link.href = pngData;
+                    link.click();
+                    
+                    // Clean up
+                    URL.revokeObjectURL(url);
+                };
+                img.src = url;
+            }
+        });
+    </script>
+</body>
+</html>

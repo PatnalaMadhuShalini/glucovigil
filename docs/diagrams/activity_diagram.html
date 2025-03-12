@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlucoSmart - Activity Diagram</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .diagram-container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .info {
+            background-color: #f1f8ff;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>GlucoSmart Health Analytics - Activity Diagram</h1>
+    
+    <div class="info">
+        <p>This activity diagram illustrates the risk assessment process flow in the GlucoSmart system, showing how user health data is processed to generate personalized health recommendations.</p>
+    </div>
+    
+    <div class="diagram-container">
+        <div class="mermaid">
+        %%{init: {'theme': 'neutral'}}%%
+        flowchart TD
+            Start([Start]) --> A[User Inputs Health Data]
+            A --> B[System Validates Data]
+            B --> C{Data Complete?}
+            C -->|No| D[Request Additional Data]
+            D --> A
+            C -->|Yes| E[Process Health Metrics]
+            E --> F[Calculate Risk Score]
+            F --> G[Identify Risk Factors]
+            G --> H[Determine Risk Level]
+            H --> I[Generate Personalized Recommendations]
+            I --> J[Display Results to User]
+            J --> K{User Wants Report?}
+            K -->|Yes| L[Generate PDF Report]
+            L --> M[Allow Download/Share]
+            K -->|No| N[End Session]
+            M --> N
+            N --> End([End])
+            
+            classDef start fill:#6BCB77,color:white;
+            classDef end fill:#FF6B6B,color:white;
+            classDef process fill:#4D96FF,color:white;
+            classDef decision fill:#FFD93D,color:black;
+            
+            class Start,End start;
+            class A,B,E,F,G,H,I,J,L,M,N process;
+            class C,K decision;
+        </div>
+    </div>
+    
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            flowchart: { useMaxWidth: false }
+        });
+    </script>
+</body>
+</html>

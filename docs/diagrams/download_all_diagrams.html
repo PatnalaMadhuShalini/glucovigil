@@ -1,0 +1,541 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlucoSmart - Download All Diagrams</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .diagram-container {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .download-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .download-btn:hover {
+            background-color: #45a049;
+        }
+        .diagram-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .diagram-title {
+            margin: 0;
+            font-size: 1.3em;
+        }
+    </style>
+</head>
+<body>
+    <h1>GlucoSmart Health Analytics - System Diagrams</h1>
+    
+    <div class="container">
+        <h2>All System Diagrams</h2>
+        <p>This page displays all system diagrams for the GlucoSmart Health Analytics platform. Each diagram can be downloaded as a PNG image.</p>
+        
+        <div class="diagram-container" id="use-case-diagram">
+            <div class="diagram-header">
+                <h3 class="diagram-title">Use Case Diagram</h3>
+                <button class="download-btn" onclick="downloadDiagram('use-case-diagram', 'GlucoSmart-Use-Case-Diagram')">Download as PNG</button>
+            </div>
+            <div class="mermaid">
+            %%{init: {'theme': 'neutral', 'themeVariables': { 'primaryColor': '#f4f4f4', 'primaryTextColor': '#323232'}}}%%
+            graph TB
+              subgraph "GlucoSmart System"
+                direction TB
+                
+                subgraph "User Management"
+                  UC1["Register Account"]
+                  UC2["Authenticate User"]
+                  UC3["Update Profile"]
+                  UC4["Manage Privacy Settings"]
+                end
+                
+                subgraph "Health Data Management"
+                  UC5["Input Health Metrics"]
+                  UC6["Upload Medical Records"]
+                  UC7["View Historical Data"]
+                  UC8["Track Health Trends"]
+                end
+                
+                subgraph "Risk Assessment"
+                  UC9["Calculate Diabetes Risk Score"]
+                  UC10["Generate Recommendations"]
+                  UC11["Create Health Reports"]
+                  UC12["Provide Educational Content"]
+                end
+              end
+              
+              Actor1(("End User"))
+              Actor2(("Healthcare Provider"))
+              Actor3(("System Administrator"))
+              
+              Actor1 --> UC1
+              Actor1 --> UC2
+              Actor1 --> UC3
+              Actor1 --> UC4
+              Actor1 --> UC5
+              Actor1 --> UC6
+              Actor1 --> UC7
+              Actor1 --> UC8
+              
+              Actor1 --> UC9
+              Actor1 --> UC10
+              Actor1 --> UC11
+              Actor1 --> UC12
+              
+              Actor2 --> UC11
+              
+              Actor3 --> UC1
+              Actor3 --> UC2
+              
+              classDef actor fill:#f9d5e5,stroke:#333,stroke-width:1px
+              classDef usecases fill:#eeeeee,stroke:#333,stroke-width:1px
+              classDef subgraph fill:#f4f4f4,stroke:#333,stroke-width:1px
+              
+              class Actor1,Actor2,Actor3 actor
+              class UC1,UC2,UC3,UC4,UC5,UC6,UC7,UC8,UC9,UC10,UC11,UC12 usecases
+            </div>
+        </div>
+        
+        <div class="diagram-container" id="activity-diagram">
+            <div class="diagram-header">
+                <h3 class="diagram-title">Activity Diagram</h3>
+                <button class="download-btn" onclick="downloadDiagram('activity-diagram', 'GlucoSmart-Activity-Diagram')">Download as PNG</button>
+            </div>
+            <div class="mermaid">
+            %%{init: {'theme': 'neutral'}}%%
+            flowchart TD
+                Start([Start]) --> A[User Inputs Health Data]
+                A --> B[System Validates Data]
+                B --> C{Data Complete?}
+                C -->|No| D[Request Additional Data]
+                D --> A
+                C -->|Yes| E[Process Health Metrics]
+                E --> F[Calculate Risk Score]
+                F --> G[Identify Risk Factors]
+                G --> H[Determine Risk Level]
+                H --> I[Generate Personalized Recommendations]
+                I --> J[Display Results to User]
+                J --> K{User Wants Report?}
+                K -->|Yes| L[Generate PDF Report]
+                L --> M[Allow Download/Share]
+                K -->|No| N[End Session]
+                M --> N
+                N --> End([End])
+                
+                classDef start fill:#6BCB77,color:white;
+                classDef end fill:#FF6B6B,color:white;
+                classDef process fill:#4D96FF,color:white;
+                classDef decision fill:#FFD93D,color:black;
+                
+                class Start,End start;
+                class A,B,E,F,G,H,I,J,L,M,N process;
+                class C,K decision;
+            </div>
+        </div>
+        
+        <div class="diagram-container" id="class-diagram">
+            <div class="diagram-header">
+                <h3 class="diagram-title">Class Diagram</h3>
+                <button class="download-btn" onclick="downloadDiagram('class-diagram', 'GlucoSmart-Class-Diagram')">Download as PNG</button>
+            </div>
+            <div class="mermaid">
+            %%{init: {'theme': 'neutral'}}%%
+            classDiagram
+                class User {
+                    +int id
+                    +string username
+                    +string email
+                    +string fullName
+                    +string hashedPassword
+                    +boolean verified
+                    +register()
+                    +login()
+                    +updateProfile()
+                    +managePrivacySettings()
+                }
+                
+                class HealthData {
+                    +int id
+                    +int userId
+                    +Demographics demographics
+                    +Physiological physiological
+                    +Lifestyle lifestyle
+                    +MentalHealth mentalHealth
+                    +Date createdAt
+                    +storeHealthData()
+                    +retrieveHealthData()
+                    +updateHealthData()
+                }
+                
+                class Demographics {
+                    +int age
+                    +string gender
+                    +string ethnicity
+                    +string location
+                }
+                
+                class Physiological {
+                    +float height
+                    +float weight
+                    +int bloodSugar
+                    +BloodPressure bloodPressure
+                    +float hba1c
+                    +calculateBMI()
+                }
+                
+                class BloodPressure {
+                    +int systolic
+                    +int diastolic
+                }
+                
+                class Lifestyle {
+                    +string exercise
+                    +string diet
+                    +string smoking
+                    +string alcohol
+                    +string workStyle
+                }
+                
+                class MentalHealth {
+                    +string stressLevel
+                    +string sleepQuality
+                    +string anxiety
+                    +evaluateImpact()
+                }
+                
+                class Prediction {
+                    +float score
+                    +string level
+                    +string[] riskFactors
+                    +string[] recommendations
+                    +Date generatedAt
+                    +generateReport()
+                }
+                
+                class AuthService {
+                    +validateCredentials()
+                    +generateToken()
+                    +verifyToken()
+                    +hashPassword()
+                }
+                
+                class RiskAssessmentService {
+                    +calculateRiskScore()
+                    +identifyRiskFactors()
+                    +determineRiskLevel()
+                    +trackProgressOverTime()
+                }
+                
+                User "1" -- "0..*" HealthData : has
+                HealthData "1" *-- "1" Demographics : contains
+                HealthData "1" *-- "1" Physiological : contains
+                HealthData "1" *-- "1" Lifestyle : contains
+                HealthData "1" *-- "1" MentalHealth : contains
+                Physiological "1" *-- "1" BloodPressure : contains
+                HealthData "1" -- "0..*" Prediction : generates
+                RiskAssessmentService --> Prediction : creates
+                RiskAssessmentService --> HealthData : analyzes
+            </div>
+        </div>
+        
+        <div class="diagram-container" id="sequence-diagram">
+            <div class="diagram-header">
+                <h3 class="diagram-title">Sequence Diagram</h3>
+                <button class="download-btn" onclick="downloadDiagram('sequence-diagram', 'GlucoSmart-Sequence-Diagram')">Download as PNG</button>
+            </div>
+            <div class="mermaid">
+            %%{init: {'theme': 'neutral'}}%%
+            sequenceDiagram
+                actor User
+                participant UI as User Interface
+                participant API as API Gateway
+                participant HDS as HealthDataService
+                participant RAS as RiskAssessmentService
+                participant RCS as RecommendationService
+                participant DB as Database
+                
+                User->>UI: Submit health data
+                UI->>API: POST /api/health-data
+                API->>HDS: processHealthData(data)
+                HDS->>HDS: validateData()
+                HDS->>DB: storeHealthData(data)
+                DB-->>HDS: confirmation
+                HDS->>RAS: calculateRisk(userId)
+                RAS->>DB: getHealthData(userId)
+                DB-->>RAS: healthData
+                
+                RAS->>RAS: applyRiskAlgorithm()
+                RAS->>RAS: identifyRiskFactors()
+                RAS->>RCS: generateRecommendations(riskFactors)
+                RCS->>RCS: prioritizeRecommendations()
+                RCS-->>RAS: recommendations
+                
+                RAS->>DB: storePrediction(prediction)
+                DB-->>RAS: confirmation
+                RAS-->>HDS: riskAssessment
+                HDS-->>API: riskAssessmentResponse
+                API-->>UI: JSON Response
+                UI->>UI: renderRiskDashboard()
+                UI-->>User: Display risk assessment
+            </div>
+        </div>
+        
+        <div class="diagram-container" id="state-chart-diagram">
+            <div class="diagram-header">
+                <h3 class="diagram-title">State Chart Diagram</h3>
+                <button class="download-btn" onclick="downloadDiagram('state-chart-diagram', 'GlucoSmart-State-Chart-Diagram')">Download as PNG</button>
+            </div>
+            <div class="mermaid">
+            %%{init: {'theme': 'neutral'}}%%
+            stateDiagram-v2
+                [*] --> UnregisteredUser
+                UnregisteredUser --> RegisteredUser: Register
+                RegisteredUser --> ProfileIncomplete: Initial Login
+                
+                ProfileIncomplete --> BasicProfileComplete: Add Demographics
+                BasicProfileComplete --> ComprehensiveProfile: Add Health Metrics
+                ComprehensiveProfile --> RiskAssessmentReady: All Required Data Provided
+                
+                RiskAssessmentReady --> PreliminaryAssessment: Calculate Initial Risk
+                PreliminaryAssessment --> DetailedAssessment: Add Additional Health Data
+                DetailedAssessment --> RecommendationsGenerated: Generate Personalized Recommendations
+                
+                RecommendationsGenerated --> ImplementationPhase: User Accepts Recommendations
+                ImplementationPhase --> ProgressTracking: User Reports Progress
+                ProgressTracking --> ReassessmentPhase: Time for Reassessment
+                
+                ReassessmentPhase --> DetailedAssessment: Update Health Data
+            </div>
+        </div>
+        
+        <div class="diagram-container" id="deployment-diagram">
+            <div class="diagram-header">
+                <h3 class="diagram-title">Deployment Diagram</h3>
+                <button class="download-btn" onclick="downloadDiagram('deployment-diagram', 'GlucoSmart-Deployment-Diagram')">Download as PNG</button>
+            </div>
+            <div class="mermaid">
+            %%{init: {'theme': 'neutral'}}%%
+            flowchart TB
+                subgraph Client["Client Devices"]
+                    Browser["Web Browser"]
+                    MobileApp["Mobile App"]
+                end
+                
+                subgraph CDN["Content Delivery Network"]
+                    StaticAssets["Static Assets"]
+                end
+                
+                subgraph LoadBalancer["Load Balancer"]
+                    nginx["NGINX Load Balancer"]
+                end
+                
+                subgraph ApplicationServers["Application Servers"]
+                    WebServer1["Web Server 1"]
+                    WebServer2["Web Server 2"]
+                    WebServer3["Web Server 3"]
+                end
+                
+                subgraph APIGateway["API Gateway"]
+                    Gateway["API Gateway Service"]
+                end
+                
+                subgraph Services["Backend Services"]
+                    AuthService["Authentication Service"]
+                    HealthDataService["Health Data Service"]
+                    RiskAssessmentService["Risk Assessment Service"]
+                    RecommendationService["Recommendation Service"]
+                    ReportService["Report Generation Service"]
+                end
+                
+                subgraph Database["Database Cluster"]
+                    PrimaryDB["Primary Database"]
+                    SecondaryDB["Secondary Database"]
+                end
+                
+                Browser --> CDN
+                MobileApp --> CDN
+                Browser --> LoadBalancer
+                MobileApp --> LoadBalancer
+                
+                CDN --> LoadBalancer
+                LoadBalancer --> ApplicationServers
+                ApplicationServers --> APIGateway
+                APIGateway --> Services
+                
+                Services --> Database
+                
+                classDef client fill:#FFADAD,stroke:#333,stroke-width:1px
+                classDef infrastructure fill:#FDFFB6,stroke:#333,stroke-width:1px
+                classDef server fill:#CAFFBF,stroke:#333,stroke-width:1px
+                classDef service fill:#9BF6FF,stroke:#333,stroke-width:1px
+                classDef database fill:#A0C4FF,stroke:#333,stroke-width:1px
+                
+                class Browser,MobileApp client
+                class CDN,LoadBalancer,nginx infrastructure
+                class WebServer1,WebServer2,WebServer3,Gateway server
+                class AuthService,HealthDataService,RiskAssessmentService,RecommendationService,ReportService service
+                class PrimaryDB,SecondaryDB database
+            </div>
+        </div>
+        
+        <div class="diagram-container" id="component-diagram">
+            <div class="diagram-header">
+                <h3 class="diagram-title">Component Diagram</h3>
+                <button class="download-btn" onclick="downloadDiagram('component-diagram', 'GlucoSmart-Component-Diagram')">Download as PNG</button>
+            </div>
+            <div class="mermaid">
+            %%{init: {'theme': 'neutral'}}%%
+            flowchart TB
+                subgraph Presentation["Presentation Layer"]
+                    UserInterface["User Interface"]
+                    Dashboard["Dashboard Components"]
+                    Forms["Form Components"]
+                    Visualizations["Data Visualizations"]
+                end
+                
+                subgraph API["API Layer"]
+                    APIGateway["API Gateway"]
+                    AuthAPI["Authentication API"]
+                    HealthDataAPI["Health Data API"]
+                    RiskAPI["Risk Assessment API"]
+                    ReportsAPI["Reports API"]
+                end
+                
+                subgraph Business["Business Logic Layer"]
+                    AuthenticationService["Authentication Service"]
+                    HealthDataService["Health Data Service"]
+                    RiskAssessmentEngine["Risk Assessment Engine"]
+                    RecommendationEngine["Recommendation Engine"]
+                    ReportGenerator["Report Generator"]
+                end
+                
+                subgraph Data["Data Access Layer"]
+                    UserRepository["User Repository"]
+                    HealthDataRepository["Health Data Repository"]
+                    PredictionRepository["Prediction Repository"]
+                end
+                
+                %% Connections between layers
+                UserInterface --> APIGateway
+                Dashboard --> APIGateway
+                Forms --> APIGateway
+                
+                APIGateway --> AuthAPI
+                APIGateway --> HealthDataAPI
+                APIGateway --> RiskAPI
+                APIGateway --> ReportsAPI
+                
+                AuthAPI --> AuthenticationService
+                HealthDataAPI --> HealthDataService
+                RiskAPI --> RiskAssessmentEngine
+                ReportsAPI --> ReportGenerator
+                
+                AuthenticationService --> UserRepository
+                HealthDataService --> HealthDataRepository
+                RiskAssessmentEngine --> HealthDataRepository
+                RiskAssessmentEngine --> PredictionRepository
+                
+                classDef presentation fill:#FFD6A5,stroke:#333,stroke-width:1px
+                classDef api fill:#FDFFB6,stroke:#333,stroke-width:1px
+                classDef service fill:#CAFFBF,stroke:#333,stroke-width:1px
+                classDef data fill:#9BF6FF,stroke:#333,stroke-width:1px
+                
+                class UserInterface,Dashboard,Forms,Visualizations presentation
+                class APIGateway,AuthAPI,HealthDataAPI,RiskAPI,ReportsAPI api
+                class AuthenticationService,HealthDataService,RiskAssessmentEngine,RecommendationEngine,ReportGenerator service
+                class UserRepository,HealthDataRepository,PredictionRepository data
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+        
+        function downloadDiagram(containerId, filename) {
+            const container = document.getElementById(containerId);
+            const svg = container.querySelector('svg');
+            
+            if (svg) {
+                // Create a canvas with the SVG dimensions
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                
+                // Get the computed style of the SVG
+                const svgRect = svg.getBoundingClientRect();
+                
+                // Set canvas dimensions (adding some padding)
+                canvas.width = svgRect.width + 40;
+                canvas.height = svgRect.height + 40;
+                
+                // Fill white background
+                context.fillStyle = 'white';
+                context.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Convert SVG to a data URL
+                const svgData = new XMLSerializer().serializeToString(svg);
+                const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+                const url = URL.createObjectURL(svgBlob);
+                
+                // Create an image from the SVG
+                const img = new Image();
+                img.onload = function() {
+                    // Draw the image on the canvas with some padding
+                    context.drawImage(img, 20, 20, svgRect.width, svgRect.height);
+                    
+                    // Convert canvas to data URL and trigger download
+                    const pngData = canvas.toDataURL('image/png');
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = pngData;
+                    downloadLink.download = filename + '.png';
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+                    
+                    // Clean up
+                    URL.revokeObjectURL(url);
+                };
+                img.src = url;
+            }
+        }
+    </script>
+</body>
+</html>

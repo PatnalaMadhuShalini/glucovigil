@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlucoSmart - Sequence Diagram</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .diagram-container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+        .info {
+            background-color: #f1f8ff;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>GlucoSmart Health Analytics - Sequence Diagram</h1>
+    
+    <div class="info">
+        <p>This sequence diagram illustrates the interactions between system components during the risk assessment process.</p>
+    </div>
+    
+    <div class="diagram-container">
+        <div class="mermaid">
+        %%{init: {'theme': 'neutral'}}%%
+        sequenceDiagram
+            actor User
+            participant UI as User Interface
+            participant API as API Gateway
+            participant HDS as HealthDataService
+            participant RAS as RiskAssessmentService
+            participant RCS as RecommendationService
+            participant DB as Database
+            
+            User->>UI: Submit health data
+            UI->>API: POST /api/health-data
+            API->>HDS: processHealthData(data)
+            HDS->>HDS: validateData()
+            HDS->>DB: storeHealthData(data)
+            DB-->>HDS: confirmation
+            HDS->>RAS: calculateRisk(userId)
+            RAS->>DB: getHealthData(userId)
+            DB-->>RAS: healthData
+            
+            RAS->>RAS: applyRiskAlgorithm()
+            RAS->>RAS: identifyRiskFactors()
+            RAS->>RCS: generateRecommendations(riskFactors)
+            RCS->>RCS: prioritizeRecommendations()
+            RCS-->>RAS: recommendations
+            
+            RAS->>DB: storePrediction(prediction)
+            DB-->>RAS: confirmation
+            RAS-->>HDS: riskAssessment
+            HDS-->>API: riskAssessmentResponse
+            API-->>UI: JSON Response
+            UI->>UI: renderRiskDashboard()
+            UI-->>User: Display risk assessment
+            
+            User->>UI: Request detailed report
+            UI->>API: GET /api/reports/generate
+            API->>DB: getPredictionData(userId)
+            DB-->>API: predictionData
+            API->>API: generatePDFReport()
+            API-->>UI: PDF Report
+            UI-->>User: Display/download report
+        </div>
+    </div>
+    
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            sequence: {
+                showSequenceNumbers: false,
+                actorMargin: 80,
+                messageMargin: 40
+            }
+        });
+    </script>
+</body>
+</html>

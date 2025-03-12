@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlucoSmart - State Chart Diagram</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .diagram-container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .info {
+            background-color: #f1f8ff;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>GlucoSmart Health Analytics - State Chart Diagram</h1>
+    
+    <div class="info">
+        <p>This state chart diagram illustrates the lifecycle of a user health assessment in the GlucoSmart system, showing the different states and transitions that occur during the process.</p>
+    </div>
+    
+    <div class="diagram-container">
+        <div class="mermaid">
+        %%{init: {'theme': 'neutral'}}%%
+        stateDiagram-v2
+            [*] --> UnregisteredUser
+            UnregisteredUser --> RegisteredUser: Register
+            RegisteredUser --> ProfileIncomplete: Initial Login
+            
+            ProfileIncomplete --> BasicProfileComplete: Add Demographics
+            BasicProfileComplete --> ComprehensiveProfile: Add Health Metrics
+            ComprehensiveProfile --> RiskAssessmentReady: All Required Data Provided
+            
+            RiskAssessmentReady --> PreliminaryAssessment: Calculate Initial Risk
+            PreliminaryAssessment --> DetailedAssessment: Add Additional Health Data
+            DetailedAssessment --> RecommendationsGenerated: Generate Personalized Recommendations
+            
+            RecommendationsGenerated --> ImplementationPhase: User Accepts Recommendations
+            ImplementationPhase --> ProgressTracking: User Reports Progress
+            ProgressTracking --> ReassessmentPhase: Time for Reassessment
+            
+            ReassessmentPhase --> DetailedAssessment: Update Health Data
+            
+            RegisteredUser --> InactiveUser: No Activity (30 days)
+            InactiveUser --> RegisteredUser: User Returns
+            
+            state ImplementationPhase {
+                [*] --> Planning
+                Planning --> Executing
+                Executing --> Evaluating
+                Evaluating --> Adjusting
+                Adjusting --> Executing
+            }
+            
+            RecommendationsGenerated --> ReportGeneration: User Requests Report
+            ReportGeneration --> ReportShared: User Shares with Provider
+            ReportShared --> ProviderFeedback: Provider Gives Input
+            ProviderFeedback --> ReassessmentPhase: Apply Provider Insights
+            
+            ProgressTracking --> AchievementUnlocked: Goal Reached
+            AchievementUnlocked --> ProgressTracking
+            
+            RegisteredUser --> [*]: Account Deleted
+        </div>
+    </div>
+    
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</body>
+</html>

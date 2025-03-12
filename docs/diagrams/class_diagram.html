@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlucoSmart - Class Diagram</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .diagram-container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+        .info {
+            background-color: #f1f8ff;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>GlucoSmart Health Analytics - Class Diagram</h1>
+    
+    <div class="info">
+        <p>This class diagram illustrates the key classes, their attributes, methods, and relationships in the GlucoSmart system architecture.</p>
+    </div>
+    
+    <div class="diagram-container">
+        <div class="mermaid">
+        %%{init: {'theme': 'neutral'}}%%
+        classDiagram
+            class User {
+                +int id
+                +string username
+                +string email
+                +string fullName
+                +string hashedPassword
+                +boolean verified
+                +register()
+                +login()
+                +updateProfile()
+                +managePrivacySettings()
+            }
+            
+            class HealthData {
+                +int id
+                +int userId
+                +Demographics demographics
+                +Physiological physiological
+                +Lifestyle lifestyle
+                +MentalHealth mentalHealth
+                +Date createdAt
+                +storeHealthData()
+                +retrieveHealthData()
+                +updateHealthData()
+            }
+            
+            class Demographics {
+                +int age
+                +string gender
+                +string ethnicity
+                +string location
+            }
+            
+            class Physiological {
+                +float height
+                +float weight
+                +int bloodSugar
+                +BloodPressure bloodPressure
+                +float hba1c
+                +calculateBMI()
+            }
+            
+            class BloodPressure {
+                +int systolic
+                +int diastolic
+            }
+            
+            class Lifestyle {
+                +string exercise
+                +string diet
+                +string smoking
+                +string alcohol
+                +string workStyle
+            }
+            
+            class MentalHealth {
+                +string stressLevel
+                +string sleepQuality
+                +string anxiety
+                +evaluateImpact()
+            }
+            
+            class Prediction {
+                +float score
+                +string level
+                +string[] riskFactors
+                +string[] recommendations
+                +Date generatedAt
+                +generateReport()
+            }
+            
+            class AuthService {
+                +validateCredentials()
+                +generateToken()
+                +verifyToken()
+                +hashPassword()
+            }
+            
+            class RiskAssessmentService {
+                +calculateRiskScore()
+                +identifyRiskFactors()
+                +determineRiskLevel()
+                +trackProgressOverTime()
+            }
+            
+            class RecommendationService {
+                +generateRecommendations()
+                +prioritizeRecommendations()
+                +adaptRecommendations()
+            }
+            
+            class ReportService {
+                +createPDFReport()
+                +formatHealthData()
+                +includeVisualization()
+            }
+            
+            User "1" -- "0..*" HealthData : has
+            HealthData "1" *-- "1" Demographics : contains
+            HealthData "1" *-- "1" Physiological : contains
+            HealthData "1" *-- "1" Lifestyle : contains
+            HealthData "1" *-- "1" MentalHealth : contains
+            Physiological "1" *-- "1" BloodPressure : contains
+            HealthData "1" -- "0..*" Prediction : generates
+            RiskAssessmentService --> Prediction : creates
+            RiskAssessmentService --> HealthData : analyzes
+            RecommendationService --> Prediction : contributes to
+            ReportService --> Prediction : formats
+            AuthService --> User : authenticates
+        </div>
+    </div>
+    
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</body>
+</html>

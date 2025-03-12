@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlucoSmart - Component Diagram</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .diagram-container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+        .info {
+            background-color: #f1f8ff;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>GlucoSmart Health Analytics - Component Diagram</h1>
+    
+    <div class="info">
+        <p>This component diagram illustrates the modular architecture of the GlucoSmart system, showing the main components and their interfaces.</p>
+    </div>
+    
+    <div class="diagram-container">
+        <div class="mermaid">
+        %%{init: {'theme': 'neutral'}}%%
+        flowchart TB
+            subgraph Presentation["Presentation Layer"]
+                UserInterface["User Interface"]
+                Dashboard["Dashboard Components"]
+                Forms["Form Components"]
+                Visualizations["Data Visualizations"]
+                Navigation["Navigation System"]
+            end
+            
+            subgraph API["API Layer"]
+                APIGateway["API Gateway"]
+                AuthAPI["Authentication API"]
+                HealthDataAPI["Health Data API"]
+                RiskAPI["Risk Assessment API"]
+                ReportsAPI["Reports API"]
+            end
+            
+            subgraph Business["Business Logic Layer"]
+                AuthenticationService["Authentication Service"]
+                HealthDataService["Health Data Service"]
+                RiskAssessmentEngine["Risk Assessment Engine"]
+                RecommendationEngine["Recommendation Engine"]
+                ReportGenerator["Report Generator"]
+                NotificationManager["Notification Manager"]
+                HealthMetricsAnalyzer["Health Metrics Analyzer"]
+                DocumentProcessor["Document Processor"]
+            end
+            
+            subgraph Data["Data Access Layer"]
+                UserRepository["User Repository"]
+                HealthDataRepository["Health Data Repository"]
+                PredictionRepository["Prediction Repository"]
+                FeedbackRepository["Feedback Repository"]
+                MedicalKnowledgeRepository["Medical Knowledge Repository"]
+            end
+            
+            subgraph External["External Integrations"]
+                EmailService["Email Service"]
+                PDFGenerator["PDF Generator"]
+                NLPService["NLP Service"]
+                Analytics["Analytics Service"]
+            end
+            
+            %% Connections between layers
+            UserInterface --> APIGateway
+            Dashboard --> APIGateway
+            Forms --> APIGateway
+            
+            APIGateway --> AuthAPI
+            APIGateway --> HealthDataAPI
+            APIGateway --> RiskAPI
+            APIGateway --> ReportsAPI
+            
+            AuthAPI --> AuthenticationService
+            HealthDataAPI --> HealthDataService
+            RiskAPI --> RiskAssessmentEngine
+            ReportsAPI --> ReportGenerator
+            
+            AuthenticationService --> UserRepository
+            HealthDataService --> HealthDataRepository
+            RiskAssessmentEngine --> HealthMetricsAnalyzer
+            RiskAssessmentEngine --> HealthDataRepository
+            RiskAssessmentEngine --> PredictionRepository
+            RecommendationEngine --> MedicalKnowledgeRepository
+            ReportGenerator --> HealthDataRepository
+            ReportGenerator --> PredictionRepository
+            DocumentProcessor --> HealthDataService
+            
+            %% External integrations
+            AuthenticationService --> EmailService
+            ReportGenerator --> PDFGenerator
+            DocumentProcessor --> NLPService
+            HealthMetricsAnalyzer --> Analytics
+            
+            %% Interfaces
+            UserInterface -- "HTTP/HTTPS" --> APIGateway
+            APIGateway -- "REST" --> AuthAPI
+            APIGateway -- "REST" --> HealthDataAPI
+            AuthenticationService -- "SQL/NoSQL" --> UserRepository
+            RiskAssessmentEngine -- "Machine Learning" --> HealthMetricsAnalyzer
+            
+            classDef presentation fill:#FFD6A5,stroke:#333,stroke-width:1px
+            classDef api fill:#FDFFB6,stroke:#333,stroke-width:1px
+            classDef service fill:#CAFFBF,stroke:#333,stroke-width:1px
+            classDef data fill:#9BF6FF,stroke:#333,stroke-width:1px
+            classDef external fill:#BDB2FF,stroke:#333,stroke-width:1px
+            
+            class UserInterface,Dashboard,Forms,Visualizations,Navigation presentation
+            class APIGateway,AuthAPI,HealthDataAPI,RiskAPI,ReportsAPI api
+            class AuthenticationService,HealthDataService,RiskAssessmentEngine,RecommendationEngine,ReportGenerator,NotificationManager,HealthMetricsAnalyzer,DocumentProcessor service
+            class UserRepository,HealthDataRepository,PredictionRepository,FeedbackRepository,MedicalKnowledgeRepository data
+            class EmailService,PDFGenerator,NLPService,Analytics external
+        </div>
+    </div>
+    
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            flowchart: { useMaxWidth: false }
+        });
+    </script>
+</body>
+</html>

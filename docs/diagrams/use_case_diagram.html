@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlucoSmart - Use Case Diagram</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .diagram-container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .info {
+            background-color: #f1f8ff;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>GlucoSmart Health Analytics - Use Case Diagram</h1>
+    
+    <div class="info">
+        <p>This diagram illustrates the key interactions between different actors and the GlucoSmart system, showing the primary functions and relationships.</p>
+    </div>
+    
+    <div class="diagram-container">
+        <div class="mermaid">
+        %%{init: {'theme': 'neutral', 'themeVariables': { 'primaryColor': '#f4f4f4', 'primaryTextColor': '#323232'}}}%%
+        graph TB
+          subgraph "GlucoSmart System"
+            direction TB
+            
+            subgraph "User Management"
+              UC1["Register Account"]
+              UC2["Authenticate User"]
+              UC3["Update Profile"]
+              UC4["Manage Privacy Settings"]
+            end
+            
+            subgraph "Health Data Management"
+              UC5["Input Health Metrics"]
+              UC6["Upload Medical Records"]
+              UC7["View Historical Data"]
+              UC8["Track Health Trends"]
+            end
+            
+            subgraph "Risk Assessment"
+              UC9["Calculate Diabetes Risk Score"]
+              UC10["Generate Recommendations"]
+              UC11["Create Health Reports"]
+              UC12["Provide Educational Content"]
+            end
+          end
+          
+          Actor1(("End User"))
+          Actor2(("Healthcare Provider"))
+          Actor3(("System Administrator"))
+          
+          Actor1 --> UC1
+          Actor1 --> UC2
+          Actor1 --> UC3
+          Actor1 --> UC4
+          Actor1 --> UC5
+          Actor1 --> UC6
+          Actor1 --> UC7
+          Actor1 --> UC8
+          
+          Actor1 --> UC9
+          Actor1 --> UC10
+          Actor1 --> UC11
+          Actor1 --> UC12
+          
+          Actor2 --> UC11
+          
+          Actor3 --> UC1
+          Actor3 --> UC2
+          
+          classDef actor fill:#f9d5e5,stroke:#333,stroke-width:1px
+          classDef usecases fill:#eeeeee,stroke:#333,stroke-width:1px
+          classDef subgraph fill:#f4f4f4,stroke:#333,stroke-width:1px
+          
+          class Actor1,Actor2,Actor3 actor
+          class UC1,UC2,UC3,UC4,UC5,UC6,UC7,UC8,UC9,UC10,UC11,UC12 usecases
+        </div>
+    </div>
+    
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            flowchart: { useMaxWidth: false }
+        });
+    </script>
+</body>
+</html>

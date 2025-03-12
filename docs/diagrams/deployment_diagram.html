@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlucoSmart - Deployment Diagram</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .diagram-container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .info {
+            background-color: #f1f8ff;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>GlucoSmart Health Analytics - Deployment Diagram</h1>
+    
+    <div class="info">
+        <p>This deployment diagram illustrates the physical architecture of the GlucoSmart system, showing how the different components are deployed across servers and infrastructure.</p>
+    </div>
+    
+    <div class="diagram-container">
+        <div class="mermaid">
+        %%{init: {'theme': 'neutral'}}%%
+        flowchart TB
+            subgraph Client["Client Devices"]
+                Browser["Web Browser"]
+                MobileApp["Mobile App"]
+            end
+            
+            subgraph CDN["Content Delivery Network"]
+                StaticAssets["Static Assets"]
+            end
+            
+            subgraph LoadBalancer["Load Balancer"]
+                nginx["NGINX Load Balancer"]
+            end
+            
+            subgraph ApplicationServers["Application Servers"]
+                WebServer1["Web Server 1"]
+                WebServer2["Web Server 2"]
+                WebServer3["Web Server 3"]
+            end
+            
+            subgraph APIGateway["API Gateway"]
+                Gateway["API Gateway Service"]
+            end
+            
+            subgraph Services["Backend Services"]
+                AuthService["Authentication Service"]
+                HealthDataService["Health Data Service"]
+                RiskAssessmentService["Risk Assessment Service"]
+                RecommendationService["Recommendation Service"]
+                ReportService["Report Generation Service"]
+                NotificationService["Notification Service"]
+            end
+            
+            subgraph Database["Database Cluster"]
+                PrimaryDB["Primary Database"]
+                SecondaryDB["Secondary Database"]
+            end
+            
+            subgraph Storage["Storage Services"]
+                ObjectStorage["Object Storage"]
+                DocumentStorage["Document Storage"]
+            end
+            
+            subgraph Monitoring["Monitoring & Logging"]
+                Prometheus["Prometheus"]
+                Grafana["Grafana Dashboards"]
+                ELK["ELK Stack"]
+            end
+            
+            Browser --> CDN
+            MobileApp --> CDN
+            Browser --> LoadBalancer
+            MobileApp --> LoadBalancer
+            
+            CDN --> LoadBalancer
+            LoadBalancer --> ApplicationServers
+            ApplicationServers --> APIGateway
+            APIGateway --> Services
+            
+            Services --> Database
+            Services --> Storage
+            
+            ApplicationServers -.-> Monitoring
+            Services -.-> Monitoring
+            Database -.-> Monitoring
+            
+            classDef client fill:#FFADAD,stroke:#333,stroke-width:1px
+            classDef infrastructure fill:#FDFFB6,stroke:#333,stroke-width:1px
+            classDef server fill:#CAFFBF,stroke:#333,stroke-width:1px
+            classDef service fill:#9BF6FF,stroke:#333,stroke-width:1px
+            classDef database fill:#A0C4FF,stroke:#333,stroke-width:1px
+            classDef monitoring fill:#FFC6FF,stroke:#333,stroke-width:1px
+            
+            class Browser,MobileApp client
+            class CDN,LoadBalancer,nginx infrastructure
+            class WebServer1,WebServer2,WebServer3,Gateway server
+            class AuthService,HealthDataService,RiskAssessmentService,RecommendationService,ReportService,NotificationService service
+            class PrimaryDB,SecondaryDB,ObjectStorage,DocumentStorage database
+            class Prometheus,Grafana,ELK monitoring
+        </div>
+    </div>
+    
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            flowchart: { useMaxWidth: false }
+        });
+    </script>
+</body>
+</html>
