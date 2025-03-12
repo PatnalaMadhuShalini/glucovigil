@@ -57,6 +57,17 @@ apiRouter.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       next();
     });
 
+    // Serve static files from public directory
+    log('Setting up diagram routes...');
+    const publicPath = path.join(process.cwd(), 'public');
+    app.use(express.static(publicPath));
+    
+    // Specific route for diagrams.html
+    app.get('/diagrams', (req, res) => {
+      res.sendFile(path.join(publicPath, 'diagrams.html'));
+    });
+    log('Diagram routes setup complete');
+
     const port = process.env.PORT || 5000;
     log(`Using port ${port}`);
 
