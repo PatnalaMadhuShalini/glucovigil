@@ -6,6 +6,9 @@ import { healthDataSchema, feedbackSchema } from "@shared/schema";
 import { ZodError } from "zod";
 import fileUpload from 'express-fileupload';
 import crypto from 'crypto';
+import path from 'path';
+import express from 'express';
+import { log } from './vite';
 
 export async function registerRoutes(router: Router): Promise<void> {
   // Add test endpoint for API verification
@@ -181,6 +184,100 @@ export async function registerRoutes(router: Router): Promise<void> {
       });
     }
   });
+  
+  // Diagram viewing endpoints
+  log("Setting up diagram routes...");
+  
+  // Helper function to send diagram HTML files
+  const sendDiagramFile = (filePath: string, res: any) => {
+    try {
+      res.sendFile(path.resolve(process.cwd(), filePath));
+    } catch (error) {
+      log(`Error serving diagram: ${error instanceof Error ? error.message : String(error)}`);
+      res.status(500).send('Error loading diagram');
+    }
+  };
+  
+  // Diagram index page
+  router.get('/diagrams', (req, res) => {
+    res.send(`
+      <html>
+        <head>
+          <title>GlucoVigile Diagrams</title>
+          <style>
+            body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+            h1 { color: #2c3e50; }
+            .links { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+            a { display: block; padding: 10px; background-color: #f1f8ff; text-decoration: none; color: #0366d6; border-radius: 4px; }
+            a:hover { background-color: #e1e4e8; }
+          </style>
+        </head>
+        <body>
+          <h1>GlucoVigile Diagram Viewer</h1>
+          <p>Click on any of the links below to view the diagrams:</p>
+          
+          <div class="links">
+            <a href="/api/diagrams/use-case" target="_blank">Use Case Diagram</a>
+            <a href="/api/diagrams/activity" target="_blank">Activity Diagram</a>
+            <a href="/api/diagrams/class" target="_blank">Class Diagram</a>
+            <a href="/api/diagrams/component" target="_blank">Component Diagram</a>
+            <a href="/api/diagrams/deployment" target="_blank">Deployment Diagram</a>
+            <a href="/api/diagrams/sequence" target="_blank">Sequence Diagram</a>
+            <a href="/api/diagrams/object" target="_blank">Object Diagram</a>
+            <a href="/api/diagrams/state-chart" target="_blank">State Chart Diagram</a>
+            <a href="/api/diagrams/database" target="_blank">Database Visualizer</a>
+            <a href="/api/diagrams/schema-tables" target="_blank">Schema Tables</a>
+          </div>
+        </body>
+      </html>
+    `);
+  });
+  
+  // Individual diagram routes
+  router.get('/diagrams/use-case', (req, res) => {
+    sendDiagramFile('docs/diagrams/use_case_diagram.html', res);
+  });
+  
+  router.get('/diagrams/activity', (req, res) => {
+    sendDiagramFile('docs/diagrams/activity_diagram.html', res);
+  });
+  
+  router.get('/diagrams/class', (req, res) => {
+    sendDiagramFile('docs/diagrams/class_diagram.html', res);
+  });
+  
+  router.get('/diagrams/component', (req, res) => {
+    sendDiagramFile('docs/diagrams/component_diagram.html', res);
+  });
+  
+  router.get('/diagrams/deployment', (req, res) => {
+    sendDiagramFile('docs/diagrams/deployment_diagram.html', res);
+  });
+  
+  router.get('/diagrams/sequence', (req, res) => {
+    sendDiagramFile('docs/diagrams/sequence_diagram.html', res);
+  });
+  
+  router.get('/diagrams/object', (req, res) => {
+    sendDiagramFile('docs/diagrams/object_diagram.html', res);
+  });
+  
+  router.get('/diagrams/state-chart', (req, res) => {
+    sendDiagramFile('docs/diagrams/state_chart_diagram.html', res);
+  });
+  
+  router.get('/diagrams/database', (req, res) => {
+    sendDiagramFile('docs/diagrams/database_visualizer.html', res);
+  });
+  
+  router.get('/diagrams/schema-tables', (req, res) => {
+    sendDiagramFile('docs/diagrams/schema_tables.html', res);
+  });
+  
+  // Serve static files from docs directory for diagrams
+  router.use('/diagrams/docs', express.static(path.join(process.cwd(), 'docs')));
+  
+  log("Diagram routes setup complete");
 }
 
 function calculateDiabetesRisk(data: any) {
@@ -430,7 +527,14 @@ function generateRecommendations(riskScore: number, data: any, riskFactors: stri
     );
   }
 
-  return [...new Set(recommendations)]; // Remove any duplicate recommendations
+  // Remove duplicate recommendations
+  const uniqueRecommendations: string[] = [];
+  recommendations.forEach(rec => {
+    if (!uniqueRecommendations.includes(rec)) {
+      uniqueRecommendations.push(rec);
+    }
+  });
+  return uniqueRecommendations;
 }
 
 async function extractHealthData(text: string) {
