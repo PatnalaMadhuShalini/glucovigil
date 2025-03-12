@@ -21,14 +21,14 @@ export default function HomePage() {
             <div className="relative">
               <img 
                 src="/logo.svg" 
-                alt="GlucoVigile Logo" 
+                alt="GlucoVigil Logo" 
                 className="h-28 w-auto drop-shadow-lg animate-float-gentle"
               />
               <Sparkles className="absolute -top-4 -right-4 h-6 w-6 text-sky-700 animate-pulse-subtle" /> {/*Darker icon*/}
             </div>
           </div>
           <h1 className="text-5xl font-medium mb-6 animate-text-gradient bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 bg-[length:400%_100%] bg-clip-text text-transparent drop-shadow"> {/*Added animated color-changing text*/}
-            Welcome to GlucoVigile
+            Welcome to GlucoVigil
           </h1>
           <p className="text-xl font-light text-gray-800 max-w-3xl mx-auto leading-relaxed mb-8"> {/*Improved contrast*/}
             Your intelligent companion for diabetes risk assessment and personalized health management
@@ -83,9 +83,9 @@ export default function HomePage() {
           ))}
         </div>
 
-        {/* How GlucoVigile Works section - Updated with direct links */}
+        {/* How GlucoVigil Works section - Updated with direct links */}
         <div className="mb-20">
-          <h2 className="text-3xl font-semibold text-center text-gray-800 mb-10">How GlucoVigile Works</h2>
+          <h2 className="text-3xl font-semibold text-center text-gray-800 mb-10">How GlucoVigil Works</h2>
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
@@ -126,7 +126,7 @@ export default function HomePage() {
 
         {/* Benefits Section */}
         <div className="mb-20 bg-gradient-to-r from-sky-50 to-blue-50 rounded-xl p-8 shadow-lg border border-sky-100">
-          <h2 className="text-3xl font-semibold text-center text-gray-800 mb-8">Why Choose GlucoVigile?</h2>
+          <h2 className="text-3xl font-semibold text-center text-gray-800 mb-8">Why Choose GlucoVigil?</h2>
           <div className="grid md:grid-cols-2 gap-6">
             <div className="flex items-start gap-4">
               <CheckCircle className="h-6 w-6 text-green-500 flex-shrink-0 mt-1" />
@@ -161,7 +161,7 @@ export default function HomePage() {
 
         <footer className="mt-24 py-8 border-t border-gray-200"> {/*Brighter border*/}
           <div className="text-center text-gray-700"> {/*Improved contrast*/}
-            <p className="font-normal text-base">GlucoVigile Health Analytics</p>
+            <p className="font-normal text-base">GlucoVigil Health Analytics</p>
             <p className="mt-2 text-sm font-light">Your trusted partner in health management</p>
             <p className="mt-1 text-sm font-medium">Created by PDMS</p>
           </div>
