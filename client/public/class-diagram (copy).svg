@@ -21,7 +21,7 @@
   <rect class="background" width="100%" height="100%" />
   
   <!-- Title -->
-  <text class="title" x="400" y="40">GlucoSmart Class Diagram</text>
+  <text class="title" x="400" y="40">GlucoVigile Class Diagram</text>
   
   <!-- Data Model Package -->
   <rect class="package" x="50" y="80" width="700" height="420" />

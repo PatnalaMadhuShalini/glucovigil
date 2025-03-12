@@ -1,4 +1,4 @@
-# GlucoSmart Health Analytics - Software Requirements Specification
+# GlucoVigile Health Analytics - Software Requirements Specification
 
 ## Core Requirements Table
 

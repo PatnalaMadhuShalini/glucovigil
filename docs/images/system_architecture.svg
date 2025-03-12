@@ -4,7 +4,7 @@
   <rect width="800" height="600" fill="#f8f9fa" />
   
   <!-- Title -->
-  <text x="400" y="40" font-family="Arial" font-size="24" text-anchor="middle" font-weight="bold" fill="#333">GlucoSmart Health Analytics - System Architecture</text>
+  <text x="400" y="40" font-family="Arial" font-size="24" text-anchor="middle" font-weight="bold" fill="#333">GlucoVigile Health Analytics - System Architecture</text>
   
   <!-- Three-tier architecture boxes -->
   <rect x="50" y="80" width="700" height="120" rx="10" fill="#e3f2fd" stroke="#2196f3" stroke-width="2" />
