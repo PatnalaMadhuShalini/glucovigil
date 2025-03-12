@@ -356,9 +356,58 @@ The GlucoSmart Health Analytics platform addresses several key user scenarios:
 
 The GlucoSmart Health Analytics system involves three primary actors who interact with various features and functionalities of the platform:
 
-![Use Case Diagram](./images/glucosmart_use_case_diagram.jpg)
+### Text-Based Use Case Diagram
 
-The use case diagram illustrates the key interactions between users and the GlucoSmart system. For a text-based version of this diagram, see [Use Case Diagram](./use_case_diagram.md). The diagram shows three main actors:
+```
++------------------------+       +------------------------+
+|                        |       |                        |
+|    End User            |       |  Healthcare Provider   |
+|                        |       |                        |
++------------------------+       +------------------------+
+         |                                 |
+         |                                 |
+         v                                 v
++------------------------------------------------------+
+|                                                      |
+|          +----------------------------+              |
+|          | User Management            |              |
+|          | - Register Account         |              |
+|          | - Manage Profile           |              |
+|          | - Authenticate             |              |
+|          +----------------------------+              |
+|                                                      |
+|          +----------------------------+              |
+|          | Health Data Management     |              |
+|          | - Input Health Data        |              |
+|          | - Upload Medical Records   |              |
+|          | - View Historical Data     |              |
+|          +----------------------------+              |
+|                                                      |
+|          +----------------------------+              |
+|          | Risk Assessment            |              |
+|          | - Calculate Risk Score     |              |
+|          | - Generate Recommendations |              |
+|          | - Monitor Progress         |              |
+|          +----------------------------+              |
+|                                                      |
+|          +----------------------------+              |
+|          | Reports & Education        |              |
+|          | - Generate Health Report   |              |
+|          | - Share with Provider      |              |
+|          | - Access Educational Content|             |
+|          +----------------------------+              |
+|                                                      |
++------------------------------------------------------+
+         ^
+         |
++------------------------+
+|                        |
+|  System Administrator  |
+|                        |
++------------------------+
+```
+
+The use case diagram illustrates the key interactions between users and the GlucoSmart system. The diagram shows three main actors:
 
 1. **End User** - The primary system user who registers, inputs health data, tracks progress, and accesses recommendations
 2. **Healthcare Provider** - Medical professionals who review shared reports and patient data
