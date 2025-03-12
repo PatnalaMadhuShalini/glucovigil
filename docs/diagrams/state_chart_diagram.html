@@ -97,3 +97,111 @@
     </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlucoSmart Health Analytics - State Chart Diagram</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .info {
+            background-color: #f1f8ff;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>GlucoSmart Health Analytics - State Chart Diagram</h1>
+    
+    <div class="info">
+        <p>This state chart diagram illustrates the different states a user account can be in within the GlucoSmart system, and the transitions between these states based on events and conditions.</p>
+    </div>
+    
+    <div class="container">
+        <h2>User Account Lifecycle States</h2>
+        <p>The state chart shows the progression of a user account through various states:</p>
+        <ul>
+            <li><strong>Unregistered:</strong> Initial state before user creates an account</li>
+            <li><strong>Registered (Unverified):</strong> Account created but email not verified</li>
+            <li><strong>Verified:</strong> Email verification completed</li>
+            <li><strong>Profile Incomplete:</strong> Basic profile information pending</li>
+            <li><strong>Profile Complete:</strong> User has provided necessary profile information</li>
+            <li><strong>Health Data Incomplete:</strong> Waiting for health metrics input</li>
+            <li><strong>Health Data Complete:</strong> Required health data provided</li>
+            <li><strong>Risk Assessed:</strong> Risk calculation completed</li>
+            <li><strong>Inactive:</strong> User hasn't logged in for extended period</li>
+            <li><strong>Suspended:</strong> Account temporarily disabled</li>
+            <li><strong>Terminated:</strong> Account permanently closed</li>
+        </ul>
+    </div>
+    
+    <div class="image-container">
+        <img src="https://www.plantuml.com/plantuml/png/bPF1Rjim38RlVWehWzvW0OJo0XW86sGPtWIGTYk9Jm0sCI1PbeUrKV-_UhOl4bwbW-FZcFVUt_UCMmhE2fMb0X9OScSKIrnXISZ8lEGJrDEWPOrL-WLeZMYz3XYk2PgWi2MqTjRRvTGEYuX4qCm-I5gR_WKdMMZmVUwj_g5sNYVgz0DwQcKtdZIEGm_yDojTGtaNQnwxEXfLfgCvWlbCiGy0NQBOFQWAZBNVa-dZp4yPmC6FZrswqQeQDMGLXRxgIeWBLCkNz2vpNM0x_0qb-7Vd6U5rRUn1ZnQSUr9-UUYdjc6Rr0R44NfadAHQLZKx5a7eqDnf1wDJh9-nTAufmB1LZdRiswC_aA1e_BQ9gnmejajdCUPw3_LplYHCNhFKRQWcxHE91NQgTcLccbzMSaUr-sTgZmvg6W4gG-RxV84UNkcQ55JGQX10FXrRSbAUofO7vqDqcVcKzj4JHPyQ3N6x_fhYLKoXpTUXLVRnxKjrYfqrUJSZ_Zi0" alt="GlucoSmart User Account State Chart">
+    </div>
+    
+    <div class="container">
+        <h2>Key Transitions</h2>
+        <p>The diagram illustrates important transitions between states:</p>
+        <ul>
+            <li><strong>Registration:</strong> Unregistered → Registered (Unverified)</li>
+            <li><strong>Email Verification:</strong> Registered (Unverified) → Verified</li>
+            <li><strong>Profile Completion:</strong> Profile Incomplete → Profile Complete</li>
+            <li><strong>Health Data Entry:</strong> Health Data Incomplete → Health Data Complete</li>
+            <li><strong>Risk Assessment:</strong> Health Data Complete → Risk Assessed</li>
+            <li><strong>Inactivity Timeout:</strong> Any Active State → Inactive</li>
+            <li><strong>Reactivation:</strong> Inactive → Last Active State</li>
+            <li><strong>Account Closure:</strong> Any State → Terminated</li>
+        </ul>
+        
+        <h2>Guards and Conditions</h2>
+        <p>The state transitions are controlled by guards and conditions:</p>
+        <ul>
+            <li><strong>Email Verification Required:</strong> Controls transition to Verified state</li>
+            <li><strong>Minimum Profile Info Required:</strong> Controls transition to Profile Complete</li>
+            <li><strong>Sufficient Health Data Required:</strong> Controls transition to Health Data Complete</li>
+            <li><strong>Inactivity Timeout (90 days):</strong> Triggers transition to Inactive</li>
+            <li><strong>Policy Violation:</strong> Triggers transition to Suspended</li>
+        </ul>
+        
+        <h2>Composite States</h2>
+        <p>The diagram shows nested states within larger state groups:</p>
+        <ul>
+            <li><strong>Active Account:</strong> Contains multiple sub-states (Verified, Profile stages, etc.)</li>
+            <li><strong>Onboarding Process:</strong> Groups the progressive states of initial account setup</li>
+        </ul>
+    </div>
+</body>
+</html>

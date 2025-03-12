@@ -236,3 +236,587 @@
     </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlucoSmart Health Analytics - Database & ER Diagram</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .info {
+            background-color: #f1f8ff;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .key {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .fk {
+            color: #3498db;
+            font-weight: bold;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>GlucoSmart Health Analytics - Database Design & ER Diagram</h1>
+    
+    <div class="info">
+        <p>This document presents the Entity-Relationship (ER) diagram and database schema for the GlucoSmart Health Analytics system, showing the key entities, their attributes, and relationships.</p>
+    </div>
+    
+    <div class="container">
+        <h2>Database Design Principles</h2>
+        <p>The GlucoSmart database is designed with the following principles:</p>
+        <ul>
+            <li><strong>Hybrid Schema:</strong> Combines traditional relational tables with JSON document storage for flexibility</li>
+            <li><strong>Normalization:</strong> Core entities are normalized to reduce redundancy</li>
+            <li><strong>Performance Focus:</strong> Indexes on frequently queried columns</li>
+            <li><strong>Data Integrity:</strong> Foreign key constraints and validation rules</li>
+            <li><strong>Security:</strong> Row-level security policies for data isolation</li>
+            <li><strong>Extensibility:</strong> JSON columns for schema evolution without migrations</li>
+        </ul>
+    </div>
+    
+    <div class="image-container">
+        <h2>Entity-Relationship Diagram</h2>
+        <img src="https://www.plantuml.com/plantuml/png/hLLDRzim3BthLn3VrWU2wXcKfZ7K9FqV5WWijqgw2pImCfCcHQnLIV_xcWpK9JIhYP71FJBzptvtPcswfejYhxruwwftrrOPGYKlmKojfcIrGkAUl7jitgGRGJ1KRNF5IPiMMkJqFhDnCMzXMbWxWwzOPQ3ZD7GDK_aVMajQ-UWB-tCCXvGZTlW-aMJqIf-QX84j-DtdHZAZLpqWe0wKVBM9mB1ZYy3PCF3FW4MFvCnBLW9DLAufv4nNTIRt1hVmMftpYNbDuL9gS0ygHyT9kS6-1_wgEwswVnKlhbA44AHTQfL34x5EpTxSuUhvIJIgvvmaSFk90t5SOUMzTGxwsOoddIakdtPXaJCdQ6qXeNNlFk91CqL71aSrK_Tod2Lm4YWyVhfXc13ZhCr9QRCBEp2nxQ61-FLbFijx4g5Qi7qdxzD5OIxKdZ9dL3VC2vp5Tp4m8Y0C8s_hODUBhsyB_FhJXAa_XuO7NNGOJ9NkIkOa2QeAeikNu0o2-3tGmKEaV75_KRY0PJQDr1m50c6B2k1XLbJk_HKhMGO1ErO2p2FmEa0YJw5tVFhGP6UUIyLOXG8_3XFBDyLQI6v0rPPNa24txDfMrMiYZqVYsFZdJlTw_GC0" alt="GlucoSmart ER Diagram">
+    </div>
+    
+    <div class="container">
+        <h2>Database Schema</h2>
+        
+        <h3>Table: users</h3>
+        <table>
+            <tr>
+                <th>Column Name</th>
+                <th>Data Type</th>
+                <th>Constraints</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td class="key">id</td>
+                <td>uuid</td>
+                <td>PRIMARY KEY</td>
+                <td>Unique identifier for the user</td>
+            </tr>
+            <tr>
+                <td>username</td>
+                <td>varchar(50)</td>
+                <td>UNIQUE, NOT NULL</td>
+                <td>User's login identifier</td>
+            </tr>
+            <tr>
+                <td>password</td>
+                <td>varchar(255)</td>
+                <td>NOT NULL</td>
+                <td>Hashed password</td>
+            </tr>
+            <tr>
+                <td>full_name</td>
+                <td>varchar(100)</td>
+                <td>NOT NULL</td>
+                <td>User's full name</td>
+            </tr>
+            <tr>
+                <td>email</td>
+                <td>varchar(100)</td>
+                <td>UNIQUE, NOT NULL</td>
+                <td>User's email address</td>
+            </tr>
+            <tr>
+                <td>phone</td>
+                <td>varchar(20)</td>
+                <td>NULL</td>
+                <td>Contact phone number</td>
+            </tr>
+            <tr>
+                <td>gender</td>
+                <td>varchar(20)</td>
+                <td>NULL</td>
+                <td>User's gender</td>
+            </tr>
+            <tr>
+                <td>place</td>
+                <td>varchar(100)</td>
+                <td>NULL</td>
+                <td>User's location</td>
+            </tr>
+            <tr>
+                <td>achievements</td>
+                <td>jsonb</td>
+                <td>NULL</td>
+                <td>Array of user achievements</td>
+            </tr>
+            <tr>
+                <td>preferred_language</td>
+                <td>varchar(10)</td>
+                <td>DEFAULT 'en'</td>
+                <td>User's preferred language</td>
+            </tr>
+            <tr>
+                <td>health_goals</td>
+                <td>jsonb</td>
+                <td>NULL</td>
+                <td>Array of user health goals</td>
+            </tr>
+            <tr>
+                <td>verification_token</td>
+                <td>varchar(255)</td>
+                <td>NULL</td>
+                <td>Email verification token</td>
+            </tr>
+            <tr>
+                <td>verified</td>
+                <td>boolean</td>
+                <td>DEFAULT false</td>
+                <td>Account verification status</td>
+            </tr>
+            <tr>
+                <td>created_at</td>
+                <td>timestamp</td>
+                <td>DEFAULT now()</td>
+                <td>Account creation timestamp</td>
+            </tr>
+            <tr>
+                <td>updated_at</td>
+                <td>timestamp</td>
+                <td>DEFAULT now()</td>
+                <td>Last update timestamp</td>
+            </tr>
+        </table>
+        
+        <h3>Table: health_data</h3>
+        <table>
+            <tr>
+                <th>Column Name</th>
+                <th>Data Type</th>
+                <th>Constraints</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td class="key">id</td>
+                <td>uuid</td>
+                <td>PRIMARY KEY</td>
+                <td>Unique identifier for health record</td>
+            </tr>
+            <tr>
+                <td class="fk">user_id</td>
+                <td>uuid</td>
+                <td>FOREIGN KEY, NOT NULL</td>
+                <td>Reference to users table</td>
+            </tr>
+            <tr>
+                <td>demographics</td>
+                <td>jsonb</td>
+                <td>NULL</td>
+                <td>Demographic information (age, ethnicity)</td>
+            </tr>
+            <tr>
+                <td>physiological</td>
+                <td>jsonb</td>
+                <td>NULL</td>
+                <td>Physical measurements (height, weight, blood pressure)</td>
+            </tr>
+            <tr>
+                <td>lifestyle</td>
+                <td>jsonb</td>
+                <td>NULL</td>
+                <td>Lifestyle factors (exercise, diet, smoking)</td>
+            </tr>
+            <tr>
+                <td>mental_health</td>
+                <td>jsonb</td>
+                <td>NULL</td>
+                <td>Mental health indicators (stress, sleep)</td>
+            </tr>
+            <tr>
+                <td>family_history</td>
+                <td>jsonb</td>
+                <td>NULL</td>
+                <td>Family health background</td>
+            </tr>
+            <tr>
+                <td>prediction</td>
+                <td>jsonb</td>
+                <td>NULL</td>
+                <td>Risk assessment results</td>
+            </tr>
+            <tr>
+                <td>nutrition_plan</td>
+                <td>jsonb</td>
+                <td>NULL</td>
+                <td>Dietary recommendations</td>
+            </tr>
+            <tr>
+                <td>exercise_plan</td>
+                <td>jsonb</td>
+                <td>NULL</td>
+                <td>Exercise recommendations</td>
+            </tr>
+            <tr>
+                <td>medical_records</td>
+                <td>jsonb</td>
+                <td>NULL</td>
+                <td>Processed medical record data</td>
+            </tr>
+            <tr>
+                <td>created_at</td>
+                <td>timestamp</td>
+                <td>DEFAULT now()</td>
+                <td>Record creation timestamp</td>
+            </tr>
+            <tr>
+                <td>updated_at</td>
+                <td>timestamp</td>
+                <td>DEFAULT now()</td>
+                <td>Last update timestamp</td>
+            </tr>
+        </table>
+        
+        <h3>Table: feedback</h3>
+        <table>
+            <tr>
+                <th>Column Name</th>
+                <th>Data Type</th>
+                <th>Constraints</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td class="key">id</td>
+                <td>uuid</td>
+                <td>PRIMARY KEY</td>
+                <td>Unique identifier for feedback</td>
+            </tr>
+            <tr>
+                <td class="fk">user_id</td>
+                <td>uuid</td>
+                <td>FOREIGN KEY, NOT NULL</td>
+                <td>Reference to users table</td>
+            </tr>
+            <tr>
+                <td>rating</td>
+                <td>integer</td>
+                <td>NOT NULL</td>
+                <td>Numerical rating (1-5)</td>
+            </tr>
+            <tr>
+                <td>category</td>
+                <td>varchar(50)</td>
+                <td>NOT NULL</td>
+                <td>Feedback category</td>
+            </tr>
+            <tr>
+                <td>comment</td>
+                <td>text</td>
+                <td>NULL</td>
+                <td>Detailed feedback text</td>
+            </tr>
+            <tr>
+                <td>created_at</td>
+                <td>timestamp</td>
+                <td>DEFAULT now()</td>
+                <td>Feedback submission timestamp</td>
+            </tr>
+        </table>
+        
+        <h3>Table: documents</h3>
+        <table>
+            <tr>
+                <th>Column Name</th>
+                <th>Data Type</th>
+                <th>Constraints</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td class="key">id</td>
+                <td>uuid</td>
+                <td>PRIMARY KEY</td>
+                <td>Unique identifier for document</td>
+            </tr>
+            <tr>
+                <td class="fk">user_id</td>
+                <td>uuid</td>
+                <td>FOREIGN KEY, NOT NULL</td>
+                <td>Reference to users table</td>
+            </tr>
+            <tr>
+                <td>file_name</td>
+                <td>varchar(255)</td>
+                <td>NOT NULL</td>
+                <td>Original document file name</td>
+            </tr>
+            <tr>
+                <td>file_type</td>
+                <td>varchar(50)</td>
+                <td>NOT NULL</td>
+                <td>Document MIME type</td>
+            </tr>
+            <tr>
+                <td>file_size</td>
+                <td>integer</td>
+                <td>NOT NULL</td>
+                <td>Document size in bytes</td>
+            </tr>
+            <tr>
+                <td>file_path</td>
+                <td>varchar(255)</td>
+                <td>NOT NULL</td>
+                <td>Storage path reference</td>
+            </tr>
+            <tr>
+                <td>extracted_data</td>
+                <td>jsonb</td>
+                <td>NULL</td>
+                <td>Data extracted from document</td>
+            </tr>
+            <tr>
+                <td>processing_status</td>
+                <td>varchar(20)</td>
+                <td>DEFAULT 'pending'</td>
+                <td>Document processing status</td>
+            </tr>
+            <tr>
+                <td>created_at</td>
+                <td>timestamp</td>
+                <td>DEFAULT now()</td>
+                <td>Upload timestamp</td>
+            </tr>
+            <tr>
+                <td>updated_at</td>
+                <td>timestamp</td>
+                <td>DEFAULT now()</td>
+                <td>Last update timestamp</td>
+            </tr>
+        </table>
+        
+        <h3>Table: reports</h3>
+        <table>
+            <tr>
+                <th>Column Name</th>
+                <th>Data Type</th>
+                <th>Constraints</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td class="key">id</td>
+                <td>uuid</td>
+                <td>PRIMARY KEY</td>
+                <td>Unique identifier for report</td>
+            </tr>
+            <tr>
+                <td class="fk">user_id</td>
+                <td>uuid</td>
+                <td>FOREIGN KEY, NOT NULL</td>
+                <td>Reference to users table</td>
+            </tr>
+            <tr>
+                <td>report_type</td>
+                <td>varchar(50)</td>
+                <td>NOT NULL</td>
+                <td>Type of report generated</td>
+            </tr>
+            <tr>
+                <td>file_path</td>
+                <td>varchar(255)</td>
+                <td>NOT NULL</td>
+                <td>Storage path reference</td>
+            </tr>
+            <tr>
+                <td>health_data_snapshot</td>
+                <td>jsonb</td>
+                <td>NULL</td>
+                <td>Health data used in report</td>
+            </tr>
+            <tr>
+                <td>created_at</td>
+                <td>timestamp</td>
+                <td>DEFAULT now()</td>
+                <td>Report generation timestamp</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="container">
+        <h2>Database Schema Implementation (Drizzle ORM)</h2>
+        
+        <pre>
+// users.ts
+import { pgTable, uuid, varchar, boolean, timestamp, jsonb } from 'drizzle-orm/pg-core';
+
+export const users = pgTable('users', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  username: varchar('username', { length: 50 }).notNull().unique(),
+  password: varchar('password', { length: 255 }).notNull(),
+  fullName: varchar('full_name', { length: 100 }).notNull(),
+  email: varchar('email', { length: 100 }).notNull().unique(),
+  phone: varchar('phone', { length: 20 }),
+  gender: varchar('gender', { length: 20 }),
+  place: varchar('place', { length: 100 }),
+  achievements: jsonb('achievements'),
+  preferredLanguage: varchar('preferred_language', { length: 10 }).default('en'),
+  healthGoals: jsonb('health_goals'),
+  verificationToken: varchar('verification_token', { length: 255 }),
+  verified: boolean('verified').default(false),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+});
+
+// healthData.ts
+import { pgTable, uuid, jsonb, timestamp, foreignKey } from 'drizzle-orm/pg-core';
+import { users } from './users';
+
+export const healthData = pgTable('health_data', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  demographics: jsonb('demographics'),
+  physiological: jsonb('physiological'),
+  lifestyle: jsonb('lifestyle'),
+  mentalHealth: jsonb('mental_health'),
+  familyHistory: jsonb('family_history'),
+  prediction: jsonb('prediction'),
+  nutritionPlan: jsonb('nutrition_plan'),
+  exercisePlan: jsonb('exercise_plan'),
+  medicalRecords: jsonb('medical_records'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+});
+
+// feedback.ts
+import { pgTable, uuid, integer, varchar, text, timestamp, foreignKey } from 'drizzle-orm/pg-core';
+import { users } from './users';
+
+export const feedback = pgTable('feedback', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  rating: integer('rating').notNull(),
+  category: varchar('category', { length: 50 }).notNull(),
+  comment: text('comment'),
+  createdAt: timestamp('created_at').defaultNow()
+});
+        </pre>
+        
+        <h2>Database Relationships</h2>
+        <ul>
+            <li><strong>Users to Health Data:</strong> One-to-many (one user can have multiple health data entries over time)</li>
+            <li><strong>Users to Feedback:</strong> One-to-many (one user can provide multiple feedback entries)</li>
+            <li><strong>Users to Documents:</strong> One-to-many (one user can upload multiple medical documents)</li>
+            <li><strong>Users to Reports:</strong> One-to-many (one user can generate multiple health reports)</li>
+        </ul>
+        
+        <h2>Database Indexes</h2>
+        <p>The following indexes are created to optimize query performance:</p>
+        <ul>
+            <li>Index on users.email for login lookups</li>
+            <li>Index on health_data.user_id for retrieving user health history</li>
+            <li>Index on health_data.created_at for time-based queries</li>
+            <li>Index on prediction -> risk_level for filtering users by risk level</li>
+            <li>Index on documents.processing_status for background processing queues</li>
+        </ul>
+        
+        <h2>JSON Schema Examples</h2>
+        <h4>Demographics JSON Schema:</h4>
+        <pre>
+{
+  "age": 45,
+  "gender": "male",
+  "ethnicity": "Caucasian"
+}
+        </pre>
+        
+        <h4>Physiological JSON Schema:</h4>
+        <pre>
+{
+  "height": 175,
+  "weight": 82,
+  "bloodSugar": 110,
+  "bloodPressure": {
+    "systolic": 135,
+    "diastolic": 85
+  },
+  "a1c": 5.7
+}
+        </pre>
+        
+        <h4>Prediction JSON Schema:</h4>
+        <pre>
+{
+  "score": 3.7,
+  "level": "high",
+  "riskFactors": [
+    "Age over 45 years",
+    "Elevated blood sugar",
+    "High stress levels",
+    "Poor sleep quality",
+    "Family history of diabetes",
+    "Sedentary work style"
+  ],
+  "recommendations": [
+    "Increase physical activity to at least 150 minutes per week",
+    "Reduce carbohydrate intake, especially refined sugars",
+    "Implement stress management techniques like meditation",
+    "Improve sleep hygiene for better quality rest",
+    "Schedule regular blood sugar monitoring"
+  ]
+}
+        </pre>
+    </div>
+</body>
+</html>

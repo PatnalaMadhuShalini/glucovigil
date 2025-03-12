@@ -169,3 +169,165 @@
     </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlucoSmart Health Analytics - Class Diagram</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .info {
+            background-color: #f1f8ff;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>GlucoSmart Health Analytics - Class Diagram</h1>
+    
+    <div class="info">
+        <p>This class diagram illustrates the object-oriented structure of the GlucoSmart system, showing the key classes, their attributes, methods, and relationships.</p>
+    </div>
+    
+    <div class="container">
+        <h2>Domain Model Classes</h2>
+        
+        <h3>User Domain</h3>
+        <pre>
++------------------------+        +-------------------------+        +-------------------------+
+|         User           |        |       HealthData       |        |       Prediction        |
++------------------------+        +-------------------------+        +-------------------------+
+| -id: string            |        | -id: string            |        | -score: number          |
+| -username: string      |        | -userId: string        |        | -level: RiskLevel       |
+| -password: string      |o-------| -demographics: object  |        | -recommendations: string[]
+| -fullName: string      |        | -physiological: object |o-------| -riskFactors: string[]  |
+| -email: string         |        | -lifestyle: object     |        | -createdAt: Date        |
+| -phone: string         |        | -mentalHealth: object  |        +-------------------------+
+| -gender: string        |        | -prediction: object    |
+| -place: string         |        | -createdAt: Date       |
+| -achievements: string[]|        +-------------------------+
+| -verified: boolean     |
++------------------------+
+         |
+         |
+         v
++------------------------+
+|       Feedback         |
++------------------------+
+| -id: string            |
+| -userId: string        |
+| -rating: number        |
+| -category: string      |
+| -comment: string       |
+| -createdAt: Date       |
++------------------------+
+        </pre>
+        
+        <h3>Health Data Components</h3>
+        <pre>
++------------------------+        +-------------------------+        +-------------------------+
+|     Demographics       |        |     Physiological      |        |       Lifestyle         |
++------------------------+        +-------------------------+        +-------------------------+
+| -age: number           |        | -height: number        |        | -exercise: string       |
+| -gender: string        |        | -weight: number        |        | -diet: string           |
+| -ethnicity: string     |        | -bloodSugar: number    |        | -smoking: string        |
++------------------------+        | -bloodPressure: object |        | -alcohol: string        |
+                                  | -a1c: number           |        | -workStyle: string      |
+                                  +-------------------------+        +-------------------------+
+
++------------------------+        +-------------------------+
+|     MentalHealth       |        |    FamilyHistory       |
++------------------------+        +-------------------------+
+| -stressLevel: string   |        | -diabetesInFamily: bool|
+| -sleepQuality: string  |        | -firstDegree: boolean  |
+| -anxiety: string       |        | -secondDegree: boolean |
+| -mood: string          |        | -otherConditions: str[]|
++------------------------+        +-------------------------+
+        </pre>
+    </div>
+    
+    <div class="image-container">
+        <img src="https://www.plantuml.com/plantuml/png/bLJBRjim4BppAnRf8IrIeDIKGHX5O04aU-qQsXPFgmeiagikwHLRkxUNAgNYnVll_FTbhbXPtQEcTiXbIfYYPQXw_MyMp2SOIgCYmuI4jTXWC6OEUVu4Q1AmnTGSExnDrPF8Nk3JRIWmfQOQ2QqwA5tixCv1BKF8uY0-nJpaCqS9Lm9Pj8tEhGGSQiL4oAc_7s9QT3AaWYoGNQmB0zjAzK15Qxb86nJtgU8a0J2bHmsCKAk9LQQAn1CLOP28MzG-o1Qcw5VL_48xwaBB2S_6TdtWSQRvRGmshzb7JGD2-02eRp_ZmkJzEFd4pE9AkiLCJaXwmUZ-0000" alt="GlucoSmart Class Diagram">
+    </div>
+    
+    <div class="container">
+        <h2>Service Classes</h2>
+        <pre>
++------------------------+        +-------------------------+        +-------------------------+
+| AuthenticationService  |        |   HealthDataService    |        | RiskAssessmentService   |
++------------------------+        +-------------------------+        +-------------------------+
+| +register(user)        |        | +saveHealthData(data)   |        | +calculateRisk(data)    |
+| +login(creds)          |        | +getUserHealthData(id)  |        | +identifyRiskFactors()  |
+| +resetPassword(email)  |        | +updateHealthData(data) |        | +determineRiskLevel()   |
+| +verifyUser(token)     |        | +deleteHealthData(id)   |        | +generateRecommendations|
+| +logout(token)         |        | +validateHealthData()   |        +-------------------------+
++------------------------+        +-------------------------+
+
++------------------------+        +-------------------------+        +-------------------------+
+| RecommendationService  |        |   DocumentProcessor    |        |  ReportGenerationService|
++------------------------+        +-------------------------+        +-------------------------+
+| +generateForUser(id)   |        | +processDocument(doc)   |        | +generatePDFReport(id)  |
+| +prioritize(recs)      |        | +extractHealthData(text)|        | +createSummary(data)    |
+| +updateBasedOnProgress |        | +validateExtractedData()|        | +formatForProvider(data)|
+| +trackImplementation() |        | +integrateWithProfile() |        | +addVisualization(data) |
++------------------------+        +-------------------------+        +-------------------------+
+        </pre>
+        
+        <h2>Class Relationships</h2>
+        <ul>
+            <li><strong>Association:</strong> User has HealthData, HealthData contains Prediction</li>
+            <li><strong>Composition:</strong> HealthData is composed of Demographics, Physiological, Lifestyle, etc.</li>
+            <li><strong>Dependency:</strong> RiskAssessmentService depends on HealthDataService</li>
+            <li><strong>Inheritance:</strong> Not shown but could include specialized recommendation types</li>
+        </ul>
+        
+        <h2>Design Patterns</h2>
+        <p>The class structure implements several design patterns:</p>
+        <ul>
+            <li><strong>Repository Pattern:</strong> For data access abstraction</li>
+            <li><strong>Service Layer Pattern:</strong> For business logic encapsulation</li>
+            <li><strong>Factory Pattern:</strong> For creating complex objects</li>
+            <li><strong>Strategy Pattern:</strong> For interchangeable algorithms</li>
+        </ul>
+    </div>
+</body>
+</html>

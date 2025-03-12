@@ -104,3 +104,106 @@
     </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlucoSmart Health Analytics - Sequence Diagram</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .info {
+            background-color: #f1f8ff;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>GlucoSmart Health Analytics - Sequence Diagram</h1>
+    
+    <div class="info">
+        <p>This sequence diagram illustrates the interaction between system components during the risk assessment process, showing the flow of messages and the temporal order of operations.</p>
+    </div>
+    
+    <div class="container">
+        <h2>Risk Assessment Process Flow</h2>
+        <p>The sequence diagram demonstrates the interaction between the following participants:</p>
+        <ul>
+            <li><strong>User:</strong> The end user interacting with the system</li>
+            <li><strong>Client UI:</strong> The user interface components</li>
+            <li><strong>API Gateway:</strong> The entry point for client requests</li>
+            <li><strong>HealthDataService:</strong> Handles health data operations</li>
+            <li><strong>RiskAssessmentService:</strong> Calculates risk scores</li>
+            <li><strong>RecommendationService:</strong> Generates personalized recommendations</li>
+            <li><strong>Database:</strong> Stores user health records</li>
+        </ul>
+    </div>
+    
+    <div class="image-container">
+        <img src="https://www.plantuml.com/plantuml/png/hLLDRzim3BthLn3VB_e8GZJLfZ7K9FqV5WWijqgw2pImCfCcHQnLIV_xcWpK9JIhYP71FJBzptvtPcswfejYhxruwwftrrOPGYKlmKojfcIrGkAUl7jitgGRGJ1KRNF5IPiMMkJqFhDnCMzXMbWxWwzOPQ3ZD7GDK_aVMajQ-UWB-tCCXvGZTlW-aMJqIf-QX84j-DtdHZAZLpqWe0wKVBM9mB1ZYy3PCF3FW4MFvCnBLW9DLAufv4nNTIRt1hVmMftpYNbDuL9gS0ygHyT9kS6-1_wgEwswVnKlhbA44AHTQfL34x5EpTxSuUhvIJIgvvmaSFk90t5SOUMzTGxwsOoddIakdtPXaJCdQ6qXeNNlFk91CqL71aSrK_Tod2Lm4YWyVhfXc13ZhCr9QRCBEp2nxQ61-FLbFijx4g5Qi7qdxzD5OIxKdZ9dL3VC2vp5Tp4m8Y0C8s_hODUBhsyB_FhJXAa_XuO7NNGOJ9NkIkOa2QeAeikNu0o2-3tGmKEaV75_KRY0PJQDr1m50c6B2k1XLbJk_HKhMGO1ErO2p2FmEa0YJw5tVFhGP6UUIyLOXG8_3XFBDyLQI6v0rPPNa24txDfMrMiYZqVYsFZdJlTw_GC0" alt="GlucoSmart Risk Assessment Sequence Diagram">
+    </div>
+    
+    <div class="container">
+        <h2>Key Interactions</h2>
+        <ol>
+            <li><strong>Health Data Submission:</strong> User submits health data via the UI</li>
+            <li><strong>Data Validation:</strong> HealthDataService validates the data format and completeness</li>
+            <li><strong>Data Storage:</strong> Validated health data is stored in the database</li>
+            <li><strong>Risk Calculation:</strong> RiskAssessmentService retrieves data and calculates risk score</li>
+            <li><strong>Risk Factor Identification:</strong> System identifies specific risk factors</li>
+            <li><strong>Recommendation Generation:</strong> RecommendationService creates personalized health guidance</li>
+            <li><strong>Results Storage:</strong> Assessment results are stored for future reference</li>
+            <li><strong>Results Presentation:</strong> Results are returned to the Client UI for display</li>
+        </ol>
+        
+        <h2>Timing Considerations</h2>
+        <p>The sequence diagram demonstrates several important temporal aspects:</p>
+        <ul>
+            <li>Synchronous calls where the client waits for responses</li>
+            <li>Asynchronous operations that allow for parallel processing</li>
+            <li>The order of steps required to generate a complete risk assessment</li>
+            <li>Database interactions that may introduce latency</li>
+        </ul>
+        
+        <h2>Error Handling</h2>
+        <p>The diagram also includes error handling paths:</p>
+        <ul>
+            <li>Data validation failures returning error messages</li>
+            <li>Service fallbacks when optimal data is unavailable</li>
+            <li>Confirmation messages at key completion points</li>
+        </ul>
+    </div>
+</body>
+</html>

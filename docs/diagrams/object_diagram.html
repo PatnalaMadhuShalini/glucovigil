@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlucoSmart Health Analytics - Object Diagram</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .info {
+            background-color: #f1f8ff;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .object-example {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 3px solid #3498db;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>GlucoSmart Health Analytics - Object Diagram</h1>
+    
+    <div class="info">
+        <p>This object diagram illustrates concrete instances of the class structure in action, showing real data examples of how objects interact in the GlucoSmart system.</p>
+    </div>
+    
+    <div class="container">
+        <h2>Sample User Health Assessment Instance</h2>
+        
+        <div class="object-example">
+            <h3>User: JohnDoe</h3>
+            <ul>
+                <li>id: "user-1a2b3c"</li>
+                <li>username: "johndoe45"</li>
+                <li>password: "[hashed]"</li>
+                <li>fullName: "John Doe"</li>
+                <li>email: "john@example.com"</li>
+                <li>phone: "+1234567890"</li>
+                <li>gender: "male"</li>
+                <li>place: "New York"</li>
+                <li>verified: true</li>
+            </ul>
+        </div>
+        
+        <div class="object-example">
+            <h3>HealthData: JohnDoeHealth</h3>
+            <ul>
+                <li>id: "health-7x8y9z"</li>
+                <li>userId: "user-1a2b3c"</li>
+                <li>createdAt: "2023-07-15T14:30:00Z"</li>
+                
+                <li><strong>Demographics:</strong>
+                    <ul>
+                        <li>age: 45</li>
+                        <li>gender: "male"</li>
+                        <li>ethnicity: "Caucasian"</li>
+                    </ul>
+                </li>
+                
+                <li><strong>Physiological:</strong>
+                    <ul>
+                        <li>height: 175</li>
+                        <li>weight: 82</li>
+                        <li>bloodSugar: 110</li>
+                        <li>bloodPressure: {systolic: 135, diastolic: 85}</li>
+                        <li>a1c: 5.7</li>
+                    </ul>
+                </li>
+                
+                <li><strong>Lifestyle:</strong>
+                    <ul>
+                        <li>exercise: "moderate"</li>
+                        <li>diet: "fair"</li>
+                        <li>smoking: "former"</li>
+                        <li>alcohol: "moderate"</li>
+                        <li>workStyle: "sedentary"</li>
+                    </ul>
+                </li>
+                
+                <li><strong>MentalHealth:</strong>
+                    <ul>
+                        <li>stressLevel: "high"</li>
+                        <li>sleepQuality: "poor"</li>
+                        <li>anxiety: "moderate"</li>
+                        <li>mood: "variable"</li>
+                    </ul>
+                </li>
+                
+                <li><strong>FamilyHistory:</strong>
+                    <ul>
+                        <li>diabetesInFamily: true</li>
+                        <li>firstDegree: true</li>
+                        <li>secondDegree: false</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="object-example">
+            <h3>Prediction: JohnDoePrediction</h3>
+            <ul>
+                <li>score: 3.7</li>
+                <li>level: "high"</li>
+                <li>riskFactors: [
+                    "Age over 45 years",
+                    "Elevated blood sugar",
+                    "High stress levels",
+                    "Poor sleep quality",
+                    "Family history of diabetes",
+                    "Sedentary work style"
+                ]</li>
+                <li>recommendations: [
+                    "Increase physical activity to at least 150 minutes per week",
+                    "Reduce carbohydrate intake, especially refined sugars",
+                    "Implement stress management techniques like meditation",
+                    "Improve sleep hygiene for better quality rest",
+                    "Schedule regular blood sugar monitoring"
+                ]</li>
+                <li>createdAt: "2023-07-15T14:32:15Z"</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="image-container">
+        <img src="https://www.plantuml.com/plantuml/png/hLHDRzim3BthLn3VvXt00MJeZXe5tIY2aEHU1n8I51ZXB6CsDQn9X-_VTITxeJ3KZu_FpMzp_-PGPwt9m8qzRy7qzx_r6rkA8K7-tOSnWF1GSBIJnvtALnnYHuF8RhNRoXWFbL2UlFRE4RXkMh18i_0qhBbmLRaEYTwCVUXY-EWB-tC8XPGZTlW-aMHqIf-wvHFjzDtdHZAZLpqWe0wKVBM9mB1ZYy3PCF3FW4MFvKnBLWtDLAufv4nNTIRt1hVmMvnpYNbDuL9gu6gQNj6aSO7F9y910sQ9NHZLyeL9TJVPCd54gDMKNPgkUUiSGDIvJnUhgdI9_UhQPrJ3OEnUhYpBQG1Qn6EKUQ6qXiRNVFl91CqL71aBrW_Tob2Lm4EQLbgD562FHw293yVsEZfIUKS6B2MYGpQlCgnw4wHJ8jlGWGPXnKCdYKX7FbW_-oF7G4xS_X3e2y0MYJrKpfS6-8ZcR_Z4cGO1GnE2NUkIgPIIRVY3" alt="GlucoSmart Object Diagram">
+    </div>
+    
+    <div class="container">
+        <h2>Object Interactions</h2>
+        <p>The diagram illustrates how objects interact in a typical use case:</p>
+        <ol>
+            <li>The User instance "JohnDoe" is associated with a HealthData instance "JohnDoeHealth"</li>
+            <li>The HealthData instance contains nested objects for different health aspects</li>
+            <li>A Prediction instance "JohnDoePrediction" is generated based on the health data</li>
+            <li>Service objects process and analyze these domain objects to provide functionality</li>
+        </ol>
+        
+        <h2>Real-World Representation</h2>
+        <p>This object diagram represents a concrete example of how data flows through the system:</p>
+        <ul>
+            <li>User John Doe has entered his health information into the system</li>
+            <li>The system has analyzed his risk factors, particularly noting his age, elevated blood sugar, stress levels, and family history</li>
+            <li>A personalized set of recommendations has been generated based on identified risk factors</li>
+            <li>This specific instance shows a high-risk assessment (3.7 out of 5), triggering more intensive interventions</li>
+        </ul>
+    </div>
+</body>
+</html>

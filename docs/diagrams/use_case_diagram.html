@@ -129,3 +129,93 @@
     </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlucoSmart Health Analytics - Use Case Diagram</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .info {
+            background-color: #f1f8ff;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>GlucoSmart Health Analytics - Use Case Diagram</h1>
+    
+    <div class="info">
+        <p>This diagram illustrates the key interactions between different actors and the GlucoSmart system, showing the primary functions and relationships.</p>
+    </div>
+    
+    <div class="container">
+        <h2>Primary Actors</h2>
+        <ul>
+            <li><strong>End User:</strong> The primary user of the system seeking diabetes risk assessment</li>
+            <li><strong>Healthcare Provider:</strong> Medical professionals who review patient data and reports</li>
+            <li><strong>System Administrator:</strong> Technical personnel responsible for system maintenance</li>
+        </ul>
+        
+        <h2>Key Use Cases</h2>
+        <ul>
+            <li><strong>User Management:</strong> Registration, authentication, profile management</li>
+            <li><strong>Health Data Management:</strong> Input health metrics, upload medical records</li>
+            <li><strong>Risk Assessment:</strong> Calculate risk score, identify risk factors</li>
+            <li><strong>Recommendation Generation:</strong> Create personalized health guidance</li>
+            <li><strong>Progress Tracking:</strong> Monitor changes in health metrics over time</li>
+            <li><strong>Report Generation:</strong> Create downloadable health reports</li>
+        </ul>
+    </div>
+    
+    <div class="image-container">
+        <img src="https://www.plantuml.com/plantuml/png/ZLJ1RjD04BtxAuPmW0lKfA92LR1Qk0fQ51YJsWNfSifI9zP50WQYkGsOwR_FDYi0TbxUBR_-qMfQmk1KebTXZRy8v7Af_FoNWIyqWa3h6-N4OJSL73g97PkK3u5-eTrfVQYy07PahIzAYRE1tTYvVCnX3-mj-1E2tQcPWKO4Kb0KoODMCf0VeG6g-0JDO3T2w9U8e1RnZUU1a2bD1VbAXnEjL6r5eO9fJyXAPmF-Ae7kqVDikLGxmqWm1Ia7XsYR2IH8Vy2SLRxW_EAM4GBLT6fRqTK-1cF6OSzUPm0OYKQhc3OcYKLa0YlfpgHY_8W_mWq4gBKiXQX8MSaZyRh49bNEGq1Bq6Vvvw24Wh-wekVekMz0f2CZ4nAg1uh0pWLw8Ufr2HJMSHUzwPnKwm6ZfVzQ7qW9bIx1L-01umGe5ULEZxDnpTvLO2Wd2uTTBjLWFk9kUe6CkCTPSwW1l6NrlW6EBRUVuESS8IgSBk1mVZARVX-YvnE8qQXQBzILdcHqTpUF0VEIEe4DkW5Xrho8vjKVTK5yOxp8KQsL-_xyDU2hUW0Ks4cTbF6pJYTD7S6-nnGZVZW5Tm01KVN-Gy2v8Q5GFvKZCwzW_-XK8FJcVDpxWpN2_9YvYlZs8_t-3G00" alt="GlucoSmart Use Case Diagram">
+    </div>
+    
+    <div class="container">
+        <h2>Use Case Relationships</h2>
+        <p>The diagram shows several important relationships:</p>
+        <ul>
+            <li><strong>Include relationships:</strong> Some use cases automatically include others (e.g., Risk Assessment includes Recommendation Generation)</li>
+            <li><strong>Extend relationships:</strong> Optional extensions to base use cases (e.g., Report Generation can extend to Sharing with Provider)</li>
+            <li><strong>Actor associations:</strong> Different actors interact with specific use cases based on their roles</li>
+        </ul>
+        
+        <h2>Boundary Definition</h2>
+        <p>The system boundary clearly delineates which functions are part of the GlucoSmart application and which are external. This helps stakeholders understand the scope of the system.</p>
+    </div>
+</body>
+</html>

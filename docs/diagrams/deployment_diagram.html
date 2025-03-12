@@ -138,3 +138,128 @@
     </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlucoSmart Health Analytics - Deployment Diagram</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .info {
+            background-color: #f1f8ff;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>GlucoSmart Health Analytics - Deployment Diagram</h1>
+    
+    <div class="info">
+        <p>This deployment diagram illustrates the physical architecture of the GlucoSmart system, showing the hardware components, software artifacts, and their relationships.</p>
+    </div>
+    
+    <div class="container">
+        <h2>Deployment Architecture</h2>
+        <p>The GlucoSmart system is deployed across multiple environments with the following key components:</p>
+        <ul>
+            <li><strong>Client Devices:</strong> Web browsers and mobile applications</li>
+            <li><strong>CDN (Content Delivery Network):</strong> For static asset distribution</li>
+            <li><strong>Load Balancer:</strong> For request distribution and high availability</li>
+            <li><strong>Web/API Server Cluster:</strong> For application logic and API endpoints</li>
+            <li><strong>Database Server:</strong> For persistent data storage</li>
+            <li><strong>Document Processing Service:</strong> For medical record parsing</li>
+            <li><strong>Report Generation Service:</strong> For PDF report creation</li>
+            <li><strong>Monitoring and Logging System:</strong> For application health tracking</li>
+        </ul>
+    </div>
+    
+    <div class="image-container">
+        <img src="https://www.plantuml.com/plantuml/png/hLLDRzim3BthLn3VrWU2wXcKfZ7KIEPxgjGijqgw2pIms9OcDQnLD__xcWpK9JIhYP71FJBzptvtPcswfejYgNswxFrxrwOPGYKkm4ojfcIrGo7Ul7jitAGbGJ1KRDlCBL4C-qoZEYWrubeMzZ2lmSgE8XDiOc9DfkTRkEjgZYh6hAIgCq_P_OXi0bvmOsZrQXmfXwWA2Wn-uYbYXHZ-wABW_zPZ45_qPNeDrtJilgzGxL1rdXQG7e2QLJxajf3-KX6DiFJaSCZmfbfzLtIkjDwzyzx_5dCqw-JiRHPKHbWLRPalKL7g7pIVVRcFWvtqbgMxv99DTUx6DsyDfj4uBpfxrr9d6AhKchgNQ3O_Z0FxVLYt-GBDg5M1sME9PXaJCeW6qXeVF8SrVr5rIkUPCnAajQpBo6QCg56uQLd-YQLQNP2a5BtDJLKA8SbfUyUdwYLZ_mtC_E9H_xIoL9U7oRsOgRUBKq8zhS3HoDNp6rTbOVK1Dv9V1TJrF_vq9KHT4mYPCT3VwPcCWuPfcWnDSChjxucDJ2W1EQPn-9lY3-WmQP3Vfhw_W7XQGz8JHzgMOgZ96gDlDZBRxI6dPQeJn6McdtxDfNvK-MfYY-ZVYsDYuF_e_GG0" alt="GlucoSmart Deployment Diagram">
+    </div>
+    
+    <div class="container">
+        <h2>Deployment Specifications</h2>
+        
+        <h3>Client Tier</h3>
+        <ul>
+            <li><strong>Web Browser:</strong> HTML5-compatible browser (Chrome, Firefox, Safari, Edge)</li>
+            <li><strong>Mobile App:</strong> React Native application for iOS (14+) and Android (10+)</li>
+            <li><strong>Client-Side Assets:</strong> React.js SPA, CSS/Tailwind, JavaScript/TypeScript</li>
+        </ul>
+        
+        <h3>Delivery Tier</h3>
+        <ul>
+            <li><strong>CDN:</strong> Cloudflare for static asset delivery and caching</li>
+            <li><strong>Load Balancer:</strong> NGINX with SSL termination</li>
+        </ul>
+        
+        <h3>Application Tier</h3>
+        <ul>
+            <li><strong>Web/API Servers:</strong> Node.js instances running Express.js</li>
+            <li><strong>Container Orchestration:</strong> Kubernetes cluster for scalability</li>
+            <li><strong>Microservices:</strong> Specialized services for document processing, reporting</li>
+        </ul>
+        
+        <h3>Data Tier</h3>
+        <ul>
+            <li><strong>Database Server:</strong> PostgreSQL with replication</li>
+            <li><strong>Caching Layer:</strong> Redis for session management and frequent queries</li>
+            <li><strong>File Storage:</strong> Object storage for document uploads and reports</li>
+        </ul>
+        
+        <h3>Monitoring Tier</h3>
+        <ul>
+            <li><strong>Logging:</strong> ELK Stack (Elasticsearch, Logstash, Kibana)</li>
+            <li><strong>Metrics:</strong> Prometheus and Grafana</li>
+            <li><strong>Alerting:</strong> PagerDuty integration</li>
+        </ul>
+        
+        <h2>Communication Protocols</h2>
+        <ul>
+            <li><strong>Client to Server:</strong> HTTPS (REST API, WebSockets)</li>
+            <li><strong>Service to Service:</strong> gRPC, HTTP/2</li>
+            <li><strong>Database Access:</strong> TLS-encrypted connection</li>
+        </ul>
+        
+        <h2>Security Measures</h2>
+        <ul>
+            <li><strong>Network Security:</strong> VPC, security groups, network ACLs</li>
+            <li><strong>Data Encryption:</strong> TLS in transit, AES-256 at rest</li>
+            <li><strong>Authentication:</strong> JWT, OAuth 2.0</li>
+        </ul>
+    </div>
+</body>
+</html>
