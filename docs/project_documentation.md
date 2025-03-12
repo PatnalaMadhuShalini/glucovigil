@@ -364,7 +364,15 @@ The use case diagram above illustrates the key interactions between users and th
 2. **Healthcare Provider** - Medical professionals who review shared reports and patient data
 3. **System Administrator** - Technical personnel who maintain and monitor the system
 
-The diagram captures core use cases including registration, health data input, risk assessment, recommendation generation, and report sharing - demonstrating how different actors interact with various system features.
+The diagram captures core use cases including:
+- **User Management**: Registration and profile management
+- **Health Data Management**: Input of health metrics and medical record uploads
+- **Risk Assessment**: Generation of risk scores and personalized recommendations
+- **Progress Tracking**: Monitoring health improvements over time
+- **Reporting**: Creating and sharing health reports with providers
+- **System Administration**: User management, performance monitoring, and algorithm updates
+
+The diagram also shows include/extend relationships between use cases, highlighting how certain functionalities are linked, with recommendations being included in the risk assessment process.
 
 **Primary Actors:**
 
