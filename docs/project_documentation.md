@@ -358,7 +358,7 @@ The GlucoSmart Health Analytics system involves three primary actors who interac
 
 ![Use Case Diagram](./images/glucosmart_use_case_diagram.svg)
 
-The use case diagram above illustrates the key interactions between users and the GlucoSmart system. It shows three main actors:
+The use case diagram illustrates the key interactions between users and the GlucoSmart system. For a text-based version of this diagram, see [Use Case Diagram](./use_case_diagram.md). The diagram shows three main actors:
 
 1. **End User** - The primary system user who registers, inputs health data, tracks progress, and accesses recommendations
 2. **Healthcare Provider** - Medical professionals who review shared reports and patient data
