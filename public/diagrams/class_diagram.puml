@@ -1,0 +1,170 @@
+
+@startuml GlucoVigil Class Diagram
+
+' Styling
+skinparam class {
+  BackgroundColor #E8F4FF
+  BorderColor #2C3E50
+  ArrowColor #2C3E50
+}
+
+' User Management
+class User {
+  +id: number
+  +username: string
+  +password: string
+  +fullName: string
+  +email: string
+  +phone: string
+  +gender: string
+  +place: string
+  +achievements: Achievement[]
+  +preferredLanguage: string
+  +healthGoals: string[]
+  +verificationToken: string
+  +verified: boolean
+  +register(): void
+  +login(): void
+  +updateProfile(): void
+}
+
+' Health Data
+class HealthData {
+  +id: number
+  +userId: number
+  +demographics: Demographics
+  +physiological: Physiological
+  +lifestyle: Lifestyle
+  +prediction: Prediction
+  +createdAt: string
+  +nutritionPlan: NutritionPlan
+  +exercisePlan: ExercisePlan
+  +achievements: Achievement[]
+  +medicalRecords: any
+  +submitData(): void
+  +updateData(): void
+}
+
+class Demographics {
+  +age: number
+  +gender: string
+  +ethnicity: string
+}
+
+class Physiological {
+  +height: number
+  +weight: number
+  +bloodPressure: BloodPressure
+  +bloodSugar: number
+  +a1c: number
+  +gtt: number
+  +hemoglobin: number
+  +calculateBMI(): number
+}
+
+class BloodPressure {
+  +systolic: number
+  +diastolic: number
+  +isHypertensive(): boolean
+}
+
+class Lifestyle {
+  +exercise: string
+  +diet: string
+  +workStyle: string
+  +alcohol: string
+  +smoking: string
+  +evaluateRisk(): number
+}
+
+' Risk Assessment
+class RiskAssessment {
+  +calculateRisk(healthData: HealthData): Prediction
+  +identifyRiskFactors(): string[]
+  +generateRecommendations(): string[]
+}
+
+class Prediction {
+  +score: number
+  +level: string
+  +recommendations: string[]
+  +riskFactors: string[]
+}
+
+' Health Plans
+class NutritionPlan {
+  +recommendations: string[]
+  +mealPlan: MealPlan
+  +calories: number
+  +macros: MacroNutrients
+  +generatePlan(): void
+}
+
+class ExercisePlan {
+  +recommendations: string[]
+  +weeklyPlan: WorkoutPlan[]
+  +goals: ExerciseGoals
+  +generatePlan(): void
+}
+
+class Achievement {
+  +id: string
+  +name: string
+  +description: string
+  +icon: string
+  +unlockedAt: string
+  +unlock(): void
+}
+
+' Medical Records
+class DocumentProcessor {
+  +processDocument(file: File): HealthData
+  +extractMetrics(): any
+  +validateData(): boolean
+}
+
+' Feedback System
+class Feedback {
+  +id: number
+  +userId: number
+  +rating: number
+  +category: string
+  +comment: string
+  +createdAt: timestamp
+  +submit(): void
+}
+
+' Services
+class AuthenticationService {
+  +register(user: User): void
+  +login(credentials: Credentials): void
+  +verifyEmail(token: string): void
+}
+
+class HealthDataService {
+  +createHealthData(data: HealthData): void
+  +updateHealthData(data: HealthData): void
+  +getHealthHistory(userId: number): HealthData[]
+}
+
+class RecommendationService {
+  +generateRecommendations(healthData: HealthData): string[]
+  +prioritizeRecommendations(): void
+  +trackProgress(): void
+}
+
+' Relationships
+User "1" *-- "*" HealthData
+HealthData "1" *-- "1" Demographics
+HealthData "1" *-- "1" Physiological
+HealthData "1" *-- "1" Lifestyle
+HealthData "1" *-- "1" Prediction
+HealthData "1" *-- "*" Achievement
+Physiological "1" *-- "1" BloodPressure
+RiskAssessment ..> HealthData
+RiskAssessment ..> Prediction
+HealthData "1" *-- "0..1" NutritionPlan
+HealthData "1" *-- "0..1" ExercisePlan
+User "1" *-- "*" Feedback
+
+@enduml
