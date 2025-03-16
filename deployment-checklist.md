@@ -1,50 +1,90 @@
 # GlucoVigil External Deployment Checklist
 
-## Step 1: Set up PostgreSQL on Supabase ✅
+## Pre-Deployment Checklist
+
+- [ ] Repository is up to date with all latest changes
+- [ ] Project has been tested locally and works properly
+- [ ] All required packages are listed in package.json
+- [ ] No sensitive credentials are committed to the repository
+- [ ] .gitignore includes .env and other sensitive files
+
+## Step 1: Set up PostgreSQL on Supabase
 
 - [ ] Create Supabase account at [supabase.com](https://supabase.com)
 - [ ] Create new project (name: glucovigil-db)
 - [ ] Set secure database password
+- [ ] Choose region closest to your target users
+- [ ] Wait for database provisioning to complete
 - [ ] Copy PostgreSQL connection string from Settings > Database > Connection String
-- [ ] Update connection string for next steps
+- [ ] Test the connection string locally (optional)
 
-## Step 2: Deploy Backend on Render ✅
+## Step 2: Configure Environment
 
-- [ ] Create Render account at [render.com](https://render.com)
-- [ ] Create new Web Service and connect GitHub repository
-- [ ] Configure build command: `npm install && npm run build`
-- [ ] Configure start command: `npm start`
-- [ ] Add environment variables:
+- [ ] Create a secure session secret:
   ```
-  DATABASE_URL=your-supabase-connection-string
-  SESSION_SECRET=udmWC/5/o7d6ZTi0p3rgtSnuObYsSViv7Zf7tPxIuWB4R73sp3+RN+8Z01cylZCsyraivhEAA/IRRtjg5sMPnA==
+  node -e "console.log(require('crypto').randomBytes(64).toString('base64'))"
+  ```
+- [ ] Prepare environment variables to be used on Render:
+  ```
+  DATABASE_URL=postgresql://postgres:[YOUR-PASSWORD]@db.[YOUR-PROJECT-REF].supabase.co:5432/postgres
+  SESSION_SECRET=your_generated_session_secret
   NODE_ENV=production
   PORT=10000
   ```
-- [ ] Deploy backend service
-- [ ] Note the backend URL for next step (e.g., https://glucovigil-backend.onrender.com)
 
-## Step 3: Deploy Frontend on Vercel ✅
+## Step 3: Deploy on Render
 
-The GlucoVigil app is a full-stack application where the frontend and backend are deployed together, so we'll skip this separate frontend deployment step.
+- [ ] Create Render account at [render.com](https://render.com)
+- [ ] Create new Web Service and connect GitHub repository
+- [ ] Set service name: glucovigil
+- [ ] Configure build command: `npm install && npm run build`
+- [ ] Configure start command: `npm start`
+- [ ] Add all environment variables from Step 2
+- [ ] Set appropriate region (ideally same region as Supabase)
+- [ ] Select plan type (Free tier for testing)
+- [ ] Deploy the service
+- [ ] Monitor the build and deployment logs for errors
 
-## Step 4: Testing the Deployment ✅
+## Step 4: Post-Deployment Verification
 
-- [ ] Access your deployed app on Render
-- [ ] Create an account and log in
-- [ ] Enter health data for a diabetes prediction
-- [ ] Verify the prediction results
-- [ ] Check Supabase to ensure data is being saved to the database
+- [ ] Access your deployed application at the Render URL
+- [ ] Verify the application loads correctly
+- [ ] Test user registration and login
+- [ ] Test health data submission
+- [ ] Verify risk assessment works properly
+- [ ] Check recommendations are displaying
+- [ ] Test database operations by checking Supabase tables
 
-## Troubleshooting Common Issues ✅
+## Step 5: Optimization and Security (Optional)
 
-- If the deployment fails, check build logs on Render
-- Make sure environment variables are correctly set
-- Check database connection by reviewing logs
-- Ensure the PostgreSQL connection string is correct and accessible from Render
+- [ ] Set up a custom domain in Render
+- [ ] Configure SSL/TLS
+- [ ] Set up database backups in Supabase
+- [ ] Implement monitoring tools
+- [ ] Review application logs for any errors
+- [ ] Test performance under load
 
-## Next Steps ✅
+## Troubleshooting Guide
 
-- Set up custom domain (optional)
-- Configure automated backups in Supabase
-- Set up monitoring and alerts
+### Database Connection Issues
+- Check if the DATABASE_URL format is correct
+- Ensure password doesn't contain special characters that need escaping
+- Verify IP allow-list settings in Supabase
+
+### Build Failures
+- Check for TypeScript errors
+- Verify all dependencies are correctly listed
+- Look for file path issues in import statements
+
+### Runtime Errors
+- Check Render logs for server-side errors
+- Examine browser console for frontend issues
+- Verify environment variables are being correctly loaded
+
+## Production Readiness
+
+- [ ] Application functions correctly in production mode
+- [ ] Error handling for all API routes is implemented
+- [ ] HTTP security headers are configured
+- [ ] Rate limiting is implemented for sensitive endpoints
+- [ ] Database queries are optimized for performance

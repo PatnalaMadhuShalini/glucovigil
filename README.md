@@ -102,7 +102,10 @@ GlucoVigil is an advanced AI-powered healthcare web application revolutionizing 
    - Risk assessment features
    - Dashboard and reporting
 
-For a detailed deployment checklist, see [deployment-checklist.md](./deployment-checklist.md).
+For detailed deployment guidance, see:
+- [Deployment Checklist](./deployment-checklist.md)
+- [Supabase + Render Deployment Guide](./docs/supabase-render-deployment-guide.md)
+- [Deployment Architecture Diagram](./docs/deployment-architecture.md)
 
 ### Alternative Deployment Options
 
