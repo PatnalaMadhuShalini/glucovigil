@@ -5,7 +5,7 @@
 
 Diabetes represents one of the most significant global health challenges of the 21st century, affecting over 537 million adults worldwide with projections suggesting this number will rise to 783 million by 2045. This chronic metabolic disorder disrupts how the body processes glucose, leading to elevated blood sugar levels that can cause severe long-term complications including heart disease, kidney failure, vision loss, and nerve damage. Despite its prevalence and severity, many individuals remain unaware of their risk status until complications have already begun to develop.
 
-GlucoVigil Health Analytics emerges as a pioneering solution in the proactive identification and management of diabetes risk. Our platform leverages cutting-edge technology to bridge the gap between clinical knowledge and personalized preventive care, making sophisticated risk assessment accessible to everyone regardless of their medical background or geographic location.
+GlucoVigil Health Analytics emerges as a pioneering solution in the proactive identification and management of diabetes risk. The current implementation primarily utilizes a comprehensive rule-based analysis system, where each health factor is evaluated against predefined clinical criteria and weighted according to evidence-based guidelines. Our platform leverages this systematic approach to bridge the gap between clinical knowledge and personalized preventive care, making sophisticated risk assessment accessible to everyone regardless of their medical background or geographic location.
 
 ### The Challenge of Early Detection
 
