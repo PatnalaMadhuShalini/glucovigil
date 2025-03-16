@@ -1,0 +1,22 @@
+
+@startuml Document Processing
+actor User
+participant "Web UI" as UI
+participant "Document Service" as Doc
+participant "Health Data Service" as HDS
+participant "Risk Assessment Service" as RAS
+participant "Database" as DB
+
+User -> UI: Upload medical document
+UI -> Doc: Send document
+Doc -> Doc: Extract health metrics
+Doc -> UI: Display extracted data
+UI --> User: Confirm extracted data
+User -> UI: Confirm accuracy
+UI -> HDS: Submit verified data
+HDS -> DB: Store health metrics
+DB --> HDS: Confirm storage
+HDS -> RAS: Trigger risk reassessment
+RAS --> UI: Updated risk assessment
+UI --> User: Show updated results
+@enduml

@@ -1,0 +1,21 @@
+
+@startuml Progress Tracking
+actor User
+participant "Web UI" as UI
+participant "Health Data Service" as HDS
+participant "Analytics Service" as AS
+participant "Recommendation Service" as RS
+participant "Database" as DB
+
+User -> UI: Input new metrics
+UI -> HDS: Submit updated data
+HDS -> DB: Store new measurements
+DB --> HDS: Confirm storage
+HDS -> AS: Calculate progress
+AS -> DB: Fetch historical data
+DB --> AS: Return history
+AS -> AS: Analyze trends
+AS -> RS: Update recommendations
+RS --> UI: Return updated guidance
+UI --> User: Display progress and recommendations
+@enduml

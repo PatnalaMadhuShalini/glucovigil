@@ -1,0 +1,23 @@
+
+@startuml Risk Assessment Process
+actor User
+participant "Web UI" as UI
+participant "Health Data Service" as HDS
+participant "Risk Assessment Service" as RAS
+participant "Recommendation Service" as RS
+participant "Database" as DB
+
+User -> UI: Input health data
+UI -> HDS: Submit health metrics
+HDS -> HDS: Validate data
+HDS -> DB: Store health data
+DB --> HDS: Confirm storage
+HDS -> RAS: Request risk calculation
+RAS -> RAS: Calculate risk score
+RAS -> RS: Generate recommendations
+RS -> RS: Prioritize recommendations
+RS --> RAS: Return recommendations
+RAS --> HDS: Return assessment results
+HDS --> UI: Display results
+UI --> User: Show risk score and recommendations
+@enduml

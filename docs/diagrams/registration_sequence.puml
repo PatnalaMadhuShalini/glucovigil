@@ -1,0 +1,26 @@
+
+@startuml Registration Process
+actor User
+participant "Web UI" as UI
+participant "Auth Service" as Auth
+participant "Email Service" as Email
+participant "Database" as DB
+
+User -> UI: Fill registration form
+UI -> Auth: Submit registration data
+Auth -> Auth: Validate input
+Auth -> DB: Check email uniqueness
+DB --> Auth: Email status
+Alt email exists
+    Auth --> UI: Email already registered
+    UI --> User: Show error message
+else email unique
+    Auth -> Auth: Hash password
+    Auth -> DB: Create user record
+    DB --> Auth: Confirm creation
+    Auth -> Email: Send verification email
+    Email --> User: Receive verification email
+    Auth --> UI: Registration successful
+    UI --> User: Show success message
+end
+@enduml
