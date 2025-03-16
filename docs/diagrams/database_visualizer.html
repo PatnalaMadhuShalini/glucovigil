@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -86,7 +85,7 @@
                     timestamp created_at
                     timestamp updated_at
                 }
-                
+
                 HEALTH_DATA {
                     serial id PK
                     integer user_id FK
@@ -101,19 +100,17 @@
                     jsonb achievements
                     jsonb medical_records
                 }
-                
-                FEEDBACK {
+
+                EDUCATIONAL_CONTENT {
                     serial id PK
-                    integer user_id FK
-                    integer rating
+                    varchar title
+                    text content
                     varchar category
-                    text comment
-                    timestamp created_at
+                    jsonb related_risk_factors
+                    timestamp published_at
+                    timestamp updated_at
                 }
-                
-                USERS ||--o{ HEALTH_DATA : has
-                USERS ||--o{ FEEDBACK : provides
-                
+
                 ACHIEVEMENTS {
                     serial id PK
                     integer user_id FK
@@ -123,7 +120,26 @@
                     varchar category
                     integer points
                 }
-                
+
+                FEEDBACK {
+                    serial id PK
+                    integer user_id FK
+                    integer rating
+                    varchar category
+                    text comment
+                    timestamp created_at
+                }
+
+                HEALTH_REPORTS {
+                    serial id PK
+                    integer user_id FK
+                    varchar report_type
+                    text summary
+                    jsonb included_metrics
+                    boolean shared_with_provider
+                    timestamp generated_at
+                }
+
                 MEDICAL_DOCUMENTS {
                     serial id PK
                     integer user_id FK
@@ -134,7 +150,7 @@
                     jsonb extracted_data
                     timestamp uploaded_at
                 }
-                
+
                 RECOMMENDATIONS {
                     serial id PK
                     integer health_data_id FK
@@ -145,32 +161,15 @@
                     boolean implemented
                     timestamp created_at
                 }
-                
-                EDUCATIONAL_CONTENT {
-                    serial id PK
-                    varchar title
-                    text content
-                    varchar category
-                    jsonb related_risk_factors
-                    timestamp published_at
-                    timestamp updated_at
-                }
-                
-                HEALTH_REPORTS {
-                    serial id PK
-                    integer user_id FK
-                    varchar report_type
-                    text summary
-                    jsonb included_metrics
-                    boolean shared_with_provider
-                    timestamp generated_at
-                }
-                
-                USERS ||--o{ ACHIEVEMENTS : earns
-                USERS ||--o{ MEDICAL_DOCUMENTS : uploads
-                HEALTH_DATA ||--o{ RECOMMENDATIONS : generates
-                HEALTH_DATA ||--o{ MEDICAL_DOCUMENTS : linked_to
-                USERS ||--o{ HEALTH_REPORTS : receives
+
+                USERS ||--o{ HEALTH_DATA : "has"
+                USERS ||--o{ ACHIEVEMENTS : "earns"
+                USERS ||--o{ MEDICAL_DOCUMENTS : "uploads"
+                HEALTH_DATA ||--o{ RECOMMENDATIONS : "generates"
+                HEALTH_DATA ||--o{ MEDICAL_DOCUMENTS : "linked_to"
+                USERS ||--o{ HEALTH_REPORTS : "receives"
+                USERS ||--o{ FEEDBACK : "provides"
+                EDUCATIONAL_CONTENT ||--o{ USERS : "reads"
             </div>
         </div>
         
