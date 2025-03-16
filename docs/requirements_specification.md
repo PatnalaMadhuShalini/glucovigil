@@ -1,52 +1,29 @@
+# Software Requirements Specification (SRS)
 
-# Software Requirements Specification (SRS) Table
-
-## Functional Requirements
-
-| ID | Category | Requirement | Priority | Status |
-|----|----------|-------------|----------|---------|
-| F1 | Authentication | Secure user registration and login with email verification | High | Required |
-| F2 | Authentication | Multi-factor authentication support | Medium | Optional |
-| F3 | Profile | Health profile creation and management | High | Required |
-| F4 | Data Input | Manual entry of physiological measurements (blood sugar, pressure, etc.) | High | Required |
-| F5 | Data Input | Lifestyle factors tracking (exercise, diet, sleep) | High | Required |
-| F6 | Data Input | Mental health indicators recording | Medium | Required |
-| F7 | Data Input | Family history documentation | Medium | Required |
-| F8 | Risk Assessment | Diabetes risk score calculation using clinical algorithms | High | Required |
-| F9 | Risk Assessment | Risk level categorization (low, moderate, high) | High | Required |
-| F10 | Risk Assessment | Identification of specific risk factors | High | Required |
-| F11 | Recommendations | Generation of personalized health recommendations | High | Required |
-| F12 | Recommendations | Prioritization of recommendations by impact | Medium | Required |
-| F13 | Progress | Health metrics tracking over time | Medium | Required |
-| F14 | Progress | Goal setting and achievement monitoring | Medium | Required |
-| F15 | Reports | PDF health assessment report generation | Medium | Required |
-| F16 | Reports | Healthcare provider report sharing | Low | Optional |
-| F17 | Education | Contextual health information delivery | Medium | Required |
-| F18 | Integration | Medical document upload and processing | Low | Optional |
-| F19 | Integration | Health data extraction from documents | Low | Optional |
-| F20 | Notifications | Health tracking reminders and alerts | Low | Optional |
-
-## Non-Functional Requirements
-
-| ID | Category | Requirement | Metric | Priority |
-|----|----------|-------------|---------|----------|
-| N1 | Performance | Risk calculation response time | < 2 seconds | High |
-| N2 | Performance | Maximum concurrent users | 1,000+ | High |
-| N3 | Performance | Page load time | < 3 seconds | High |
-| N4 | Security | HIPAA compliance | Full compliance | Critical |
-| N5 | Security | Data encryption | End-to-end | Critical |
-| N6 | Security | Session management | Secure tokens | High |
-| N7 | Privacy | User data control | Full control | High |
-| N8 | Usability | Mobile responsiveness | All devices | High |
-| N9 | Usability | Accessibility compliance | WCAG 2.1 AA | High |
-| N10 | Usability | Minimal learning curve | < 10 minutes | Medium |
-| N11 | Reliability | System uptime | 99.9% | High |
-| N12 | Reliability | Data backup frequency | Daily | High |
-| N13 | Scalability | Database growth | 100K+ users | Medium |
-| N14 | Maintainability | Code coverage | > 80% | Medium |
-| N15 | Compatibility | Browser support | Major browsers | High |
-| N16 | Compatibility | Mobile OS support | iOS 14+, Android 10+ | High |
-| N17 | Documentation | API documentation | Complete | Medium |
-| N18 | Documentation | User guide | Comprehensive | Medium |
-| N19 | Compliance | GDPR compliance | Full compliance | Critical |
-| N20 | Recovery | Disaster recovery time | < 4 hours | High |
+| SI No | Requirement ID | Requirement Name | Requirement Description | Priority |
+|-------|---------------|------------------|------------------------|----------|
+| 1 | AUTH-1 | User Authentication | Secure user registration and login with email verification | Essential |
+| 2 | AUTH-2 | Multi-factor Authentication | Additional security layer for account access | Desirable |
+| 3 | PROF-1 | Health Profile Management | Creation and management of user health profiles | Essential |
+| 4 | DATA-1 | Physiological Measurements | Manual entry of blood sugar, pressure, and other vital signs | Essential |
+| 5 | DATA-2 | Lifestyle Tracking | Recording of exercise, diet, and sleep patterns | Essential |
+| 6 | DATA-3 | Mental Health Recording | Documentation of mental health indicators | Essential |
+| 7 | DATA-4 | Family History | Documentation of family medical history | Essential |
+| 8 | RISK-1 | Risk Score Calculation | Diabetes risk assessment using clinical algorithms | Essential |
+| 9 | RISK-2 | Risk Categorization | Classification into low, moderate, high risk levels | Essential |
+| 10 | RISK-3 | Risk Factor Analysis | Identification of specific contributing risk factors | Essential |
+| 11 | REC-1 | Health Recommendations | Generation of personalized health guidance | Essential |
+| 12 | REC-2 | Impact Prioritization | Ordering of recommendations by potential impact | Essential |
+| 13 | PROG-1 | Metrics Tracking | Monitoring of health metrics over time | Essential |
+| 14 | PROG-2 | Goal Management | Setting and tracking health goals | Essential |
+| 15 | REP-1 | Report Generation | Creation of PDF health assessment reports | Essential |
+| 16 | REP-2 | Provider Sharing | Ability to share reports with healthcare providers | Desirable |
+| 17 | EDU-1 | Health Education | Delivery of contextual health information | Essential |
+| 18 | INT-1 | Document Processing | Medical document upload and processing capabilities | Desirable |
+| 19 | INT-2 | Data Extraction | Extraction of health data from uploaded documents | Desirable |
+| 20 | NOT-1 | Health Reminders | System for tracking reminders and alerts | Desirable |
+| 21 | PERF-1 | System Performance | Fast response times and concurrent user support | Essential |
+| 22 | SEC-1 | Data Security | End-to-end encryption and HIPAA compliance | Essential |
+| 23 | UI-1 | User Interface | Responsive design across all devices | Essential |
+| 24 | COMP-1 | System Compatibility | Support for major browsers and platforms | Essential |
+| 25 | DOC-1 | System Documentation | Complete API and user documentation | Essential |
