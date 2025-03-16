@@ -319,6 +319,31 @@
     
     <div class="info">
         <p>This document presents the Entity-Relationship (ER) diagram and database schema for the GlucoSmart Health Analytics system, showing the key entities, their attributes, and relationships.</p>
+        
+        <h3>Theoretical Framework</h3>
+        
+        <h4>Core Entities</h4>
+        <ul>
+            <li><strong>USERS</strong>: Central entity storing user profiles and authentication data. Uses serial ID as primary key with unique constraints on username and email.</li>
+            <li><strong>HEALTH_DATA</strong>: Stores all health-related measurements and assessments. Links to users through foreign key relationship.</li>
+            <li><strong>EDUCATIONAL_CONTENT</strong>: Contains health education materials categorized by risk factors.</li>
+        </ul>
+
+        <h4>Relationships</h4>
+        <ul>
+            <li><strong>Users-Health Data (1:N)</strong>: One user can have multiple health data records, establishing temporal tracking.</li>
+            <li><strong>Users-Achievements (1:N)</strong>: Users earn multiple achievements through platform engagement.</li>
+            <li><strong>Health Data-Recommendations (1:N)</strong>: Health records generate multiple personalized recommendations.</li>
+            <li><strong>Users-Medical Documents (1:N)</strong>: Users can upload multiple medical documents.</li>
+        </ul>
+
+        <h4>Data Model Design Principles</h4>
+        <ul>
+            <li><strong>Hybrid Storage</strong>: Uses JSONB for flexible schema evolution while maintaining relational integrity for core data.</li>
+            <li><strong>Temporal Tracking</strong>: All major entities include timestamps for data versioning.</li>
+            <li><strong>Data Integrity</strong>: Enforced through foreign key constraints and unique indexes.</li>
+            <li><strong>Privacy By Design</strong>: User data isolation through clear ownership relationships.</li>
+        </ul>
     </div>
     
     <div class="container">
