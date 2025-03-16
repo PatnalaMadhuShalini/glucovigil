@@ -197,6 +197,124 @@ GlucoVigil Health Analytics addresses the limitations of existing systems throug
    - Support for 1,000+ concurrent users
    - Optimized assets and caching for improved performance
 
+
+
+### Algorithm Implementation Details
+
+#### 1. Rule-Based Risk Assessment Algorithm
+
+The core risk assessment system uses a hierarchical rule-based approach combined with evidence-based weighting:
+
+```typescript
+function ruleBasedRiskAssessment(healthData: HealthData): RiskScore {
+  let riskScore = 0;
+  const rules = [
+    {
+      condition: (data) => data.age > 45,
+      weight: 2,
+      reason: "Age above 45 increases diabetes risk"
+    },
+    {
+      condition: (data) => data.bmi > 30,
+      weight: 3,
+      reason: "Obesity significantly impacts insulin resistance"
+    },
+    {
+      condition: (data) => data.familyHistory.hasDirectRelativeWithDiabetes,
+      weight: 2,
+      reason: "Genetic predisposition"
+    }
+  ];
+
+  rules.forEach(rule => {
+    if (rule.condition(healthData)) {
+      riskScore += rule.weight;
+    }
+  });
+
+  return normalizeScore(riskScore);
+}
+```
+
+#### 2. Machine Learning Integration
+
+GlucoVigil incorporates several ML approaches:
+
+1. **Gradient Boosting for Risk Prediction**:
+```python
+from sklearn.ensemble import GradientBoostingClassifier
+
+def train_risk_model(X_train, y_train):
+    model = GradientBoostingClassifier(
+        n_estimators=100,
+        learning_rate=0.1,
+        max_depth=3
+    )
+    return model.fit(X_train, y_train)
+```
+
+2. **Feature Importance Analysis**:
+```python
+def analyze_feature_importance(model, feature_names):
+    importances = model.feature_importances_
+    return dict(zip(feature_names, importances))
+```
+
+3. **Pattern Recognition for Medical Documents**:
+```typescript
+class MedicalDocumentProcessor {
+  private static readonly PATTERNS = {
+    bloodSugar: /(?:blood sugar|glucose):\s*(\d+)\s*(?:mg\/dL)/i,
+    bloodPressure: /(?:BP|blood pressure):\s*(\d+)\/(\d+)/i,
+    // Additional patterns...
+  };
+
+  extractMetrics(text: string): HealthMetrics {
+    const metrics: HealthMetrics = {};
+    Object.entries(PATTERNS).forEach(([key, pattern]) => {
+      const match = text.match(pattern);
+      if (match) {
+        metrics[key] = parseFloat(match[1]);
+      }
+    });
+    return metrics;
+  }
+}
+```
+
+#### 3. Hybrid Approach
+
+GlucoVigil combines rule-based and ML approaches for robust risk assessment:
+
+```typescript
+class HybridRiskAssessor {
+  async calculateRisk(healthData: HealthData): Promise<RiskAssessment> {
+    // Rule-based initial assessment
+    const ruleBasedScore = this.ruleBasedAssessment(healthData);
+    
+    // ML model prediction
+    const mlScore = await this.mlModelPrediction(healthData);
+    
+    // Weighted combination
+    return {
+      score: this.combineScores(ruleBasedScore, mlScore),
+      confidence: this.calculateConfidence(ruleBasedScore, mlScore)
+    };
+  }
+}
+```
+
+#### 4. Future ML Enhancements
+
+The system is designed to incorporate more advanced ML capabilities:
+
+- Deep Learning for long-term risk trajectory prediction
+- Time series analysis for health metric trends
+- Natural Language Processing for improved medical document understanding
+- Computer Vision for medical image analysis (planned future enhancement)
+
+This hybrid approach combines the interpretability of rule-based systems with the predictive power of machine learning, providing both explainable results and sophisticated risk assessment capabilities.
+
 2. **Security and Privacy**
    - HIPAA-compliant data storage and processing
    - End-to-end encryption for sensitive information
