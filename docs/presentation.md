@@ -72,30 +72,46 @@ Current diabetes risk assessment approaches have critical limitations:
 
 ---
 
-### Core Algorithms
+### Machine Learning & AI Algorithms
 
-**Risk Assessment Algorithm:**
-```typescript
-function calculateDiabetesRisk(healthData: HealthData): Prediction {
-  let riskScore = 0;
-  // Age factor
-  if (healthData.demographics.age > 45) {
-    riskScore += 2;
-  }
-  // BMI calculation
-  const bmi = calculateBMI(healthData.physiological);
-  if (bmi >= 30) {
-    riskScore += 3;
-  }
-  // Additional factors...
-  return normalizeScore(riskScore);
-}
-```
+**Currently Implemented ML Algorithms:**
 
-**Recommendation Generation:**
-- Risk factor analysis
-- Prioritization algorithm
-- Personalization engine
+1. **Risk Assessment Algorithm**
+   - Evidence-based weighting system
+   - Physiological data analysis
+   - Lifestyle factor analysis
+   - Mental health correlation
+   
+2. **Recommendation Generation**
+   - Personalized suggestion system
+   - Risk factor prioritization
+   - User profile adaptation
+
+3. **Document Processing**
+   - Text extraction from records
+   - Pattern recognition
+   - NLP-based data extraction
+
+---
+
+### Future Deep Learning Enhancements
+
+**Planned DL Implementations:**
+
+1. **Advanced Risk Prediction**
+   - Neural networks
+   - Long-term trajectory prediction
+   - Multi-factor correlation
+
+2. **Image Processing**
+   - Medical image analysis
+   - Document OCR
+   - Visual interpretation
+
+3. **Time Series Analysis**
+   - Health metric trends
+   - Progress prediction
+   - Anomaly detection
 
 ---
 
