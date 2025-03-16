@@ -1,0 +1,81 @@
+
+@startuml Registration
+actor User
+participant "Web UI" as UI
+participant "Auth Service" as Auth
+participant "Email Service" as Email
+participant "Database" as DB
+
+User -> UI: Fill registration form
+UI -> Auth: Submit registration data
+Auth -> Auth: Validate input
+Auth -> DB: Check email uniqueness
+DB --> Auth: Email status
+alt email exists
+    Auth --> UI: Email already registered
+    UI --> User: Show error message
+else email unique
+    Auth -> Auth: Hash password
+    Auth -> DB: Create user record
+    DB --> Auth: Confirm creation
+    Auth -> Email: Send verification email
+    Email --> User: Receive verification email
+    Auth --> UI: Registration successful
+    UI --> User: Show success message
+end
+@enduml
+
+@startuml RiskAssessment
+actor User
+participant "Web UI" as UI
+participant "Health Service" as Health
+participant "Risk Engine" as Risk
+participant "Database" as DB
+
+User -> UI: Input health data
+UI -> Health: Submit metrics
+Health -> Health: Validate data
+Health -> DB: Store metrics
+DB --> Health: Confirm storage
+Health -> Risk: Calculate risk
+Risk -> Risk: Apply algorithms
+Risk -> DB: Store results
+DB --> Risk: Confirm storage
+Risk --> Health: Return assessment
+Health --> UI: Display results
+UI --> User: Show risk score
+@enduml
+
+@startuml DocumentProcessing
+actor User
+participant "Web UI" as UI
+participant "Document Service" as Doc
+participant "Health Service" as Health
+participant "Database" as DB
+
+User -> UI: Upload document
+UI -> Doc: Send document
+Doc -> Doc: Extract data
+Doc -> Health: Process metrics
+Health -> DB: Store data
+DB --> Health: Confirm storage
+Health --> UI: Update display
+UI --> User: Show results
+@enduml
+
+@startuml HealthData
+actor User
+participant "Web UI" as UI
+participant "Health Service" as Health
+participant "Analytics" as Analytics
+participant "Database" as DB
+
+User -> UI: View health data
+UI -> Health: Request data
+Health -> DB: Fetch records
+DB --> Health: Return data
+Health -> Analytics: Process trends
+Analytics --> Health: Return insights
+Health --> UI: Display dashboard
+UI --> User: Show health status
+@enduml
