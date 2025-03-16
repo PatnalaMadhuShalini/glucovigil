@@ -1,0 +1,26 @@
+Here is your data neatly organized into a table:
+
+| Requirement ID | Test Case | Scenario Test Steps | Test Data | Expected Results | Actual Results | Pass/Fail |
+|----------------|-----------|---------------------|-----------|------------------|----------------|-----------|
+| AUTH-1        | TC001     | User Registration   | 1. Navigate to registration page<br>2. Enter valid credentials<br>3. Submit form | Username: testuser<br>Email: test@example.com<br>Password: Test@123 | User account created successfully | Account created and verification email sent | Pass |
+| AUTH-1        | TC002     | Invalid Registration| 1. Navigate to registration page<br>2. Enter invalid email<br>3. Submit form | Username: test<br>Email: invalid-email<br>Password: test123 | Form validation error shown | Error message displayed | Pass |
+| PROF-1        | TC003     | Health Profile Creation | 1. Login<br>2. Navigate to profile<br>3. Enter health data<br>4. Save | Height: 170cm<br>Weight: 70kg<br>Age: 30 | Profile saved successfully | Data stored in database | Pass |
+| DATA-1        | TC004     | Blood Sugar Input   | 1. Navigate to measurements<br>2. Enter blood sugar<br>3. Save | Blood Sugar: 120mg/dL<br>Time: Current | Measurement saved successfully | Data stored and displayed | Pass |
+| RISK-1        | TC005     | Risk Assessment     | 1. Complete health profile<br>2. Request assessment | Complete health profile data | Risk score calculated and displayed | Risk level shown with recommendations | Pass |
+| PERF-1        | TC006     | Response Time       | 1. Load dashboard<br>2. Measure response time | Multiple page loads | Page loads < 2 seconds | Average load time: 1.8s | Pass |
+| SEC-1         | TC007     | Data Encryption     | 1. Check database storage<br>2. Verify encryption | Sensitive user data | All sensitive data encrypted | Data stored with encryption | Pass |
+| UI-1          | TC008     | Mobile Responsiveness | 1. Access on mobile device<br>2. Test all features | Various screen sizes | UI adapts to all screens | Responsive on all devices | Pass |
+| REL-1         | TC009     | System Uptime       | 1. Monitor system<br>2. Track availability | 24-hour monitoring | 99.9% uptime | 99.95% uptime achieved | Pass |
+| COMPAT-1      | TC010     | Browser Compatibility | 1. Test on different browsers | Chrome, Firefox, Safari | Works on all major browsers | Compatible with all tested browsers | Pass |
+| INT-1         | TC011     | API Integration     | 1. Call health data API<br>2. Verify response | Sample health data | Valid API response | Correct data returned | Pass |
+| INT-2         | TC012     | Database Operations | 1. Save user data<br>2. Retrieve data | User profile data | Data persistence verified | Data correctly stored/retrieved | Pass |
+| REP-1         | TC013     | Report Generation   | 1. Request health report<br>2. Download PDF | User health data | PDF report generated | Report created successfully | Pass |
+| EDU-1         | TC014     | Content Delivery    | 1. Access educational content<br>2. View articles | Health articles | Content loads properly | Articles displayed correctly | Pass |
+| NOT-1         | TC015     | Notification System | 1. Trigger reminder<br>2. Check delivery | Reminder settings | Notification sent | Alert delivered on time | Pass |
+| SEC-1         | TC016     | Authentication      | 1. Login with invalid credentials<br>2. Check response | Invalid credentials | Access denied | Authentication failed properly | Pass |
+| SEC-2         | TC017     | Authorization       | 1. Access restricted area<br>2. Verify permissions | Unauthorized user | Access blocked | Proper access control | Pass |
+| SEC-1         | TC018     | SQL Injection       | 1. Input malicious SQL<br>2. Submit form | Malicious input | Input sanitized | Attack prevented | Pass |
+| SEC-2         | TC019     | Session Management  | 1. Check session timeout<br>2. Verify logout | Active session | Session expires correctly | Proper session handling | Pass |
+| SEC-1         | TC020     | Data Privacy        | 1. Check data access<br>2. Verify permissions | User health data | Data properly restricted | Privacy maintained | Pass |
+
+Let me know if you'd like further edits or customizations!
