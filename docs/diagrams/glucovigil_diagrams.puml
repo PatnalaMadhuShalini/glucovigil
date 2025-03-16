@@ -1,0 +1,101 @@
+
+@startuml Use Case Diagram
+left to right direction
+actor "End User" as user
+actor "Healthcare Provider" as doctor
+actor "System Admin" as admin
+
+rectangle "GlucoVigil Health Analytics" {
+  usecase "Register Account" as UC1
+  usecase "Input Health Data" as UC2
+  usecase "View Risk Assessment" as UC3
+  usecase "Upload Medical Documents" as UC4
+  usecase "Track Progress" as UC5
+  usecase "Generate Health Report" as UC6
+  usecase "Manage System" as UC7
+  usecase "Review Patient Data" as UC8
+}
+
+user --> UC1
+user --> UC2
+user --> UC3
+user --> UC4
+user --> UC5
+user --> UC6
+doctor --> UC8
+admin --> UC7
+@enduml
+
+@startuml Activity Diagram
+start
+:User Registration;
+:Complete Health Profile;
+fork
+  :Input Demographics;
+fork again
+  :Input Physiological Data;
+fork again
+  :Input Lifestyle Data;
+end fork
+:Process Health Data;
+:Calculate Risk Score;
+if (Risk Level?) then (High)
+  :Generate Urgent Recommendations;
+else (Low/Moderate)
+  :Generate Standard Recommendations;
+endif
+:Display Results;
+:Track Progress;
+stop
+@enduml
+
+@startuml State Chart
+[*] --> Unregistered
+Unregistered --> Registered : Register
+Registered --> ProfileIncomplete : Initial Login
+ProfileIncomplete --> ProfileComplete : Submit Health Data
+ProfileComplete --> RiskAssessed : Calculate Risk
+RiskAssessed --> Monitoring : Generate Plan
+Monitoring --> RiskReassessed : Update Health Data
+RiskReassessed --> Monitoring : Update Plan
+Monitoring --> [*] : Account Closed
+@enduml
+
+@startuml Class Diagram
+class User {
+  +id: number
+  +username: string
+  +email: string
+  +password: string
+  +healthData: HealthData
+  +register()
+  +updateProfile()
+}
+
+class HealthData {
+  +demographics: Demographics
+  +physiological: Physiological
+  +lifestyle: Lifestyle
+  +calculateRisk()
+  +updateMetrics()
+}
+
+class RiskAssessment {
+  +score: number
+  +level: string
+  +factors: string[]
+  +generateReport()
+  +updateAssessment()
+}
+
+class Recommendation {
+  +type: string
+  +priority: number
+  +description: string
+  +generatePlan()
+}
+
+User "1" *-- "1" HealthData
+HealthData "1" -- "1" RiskAssessment
+RiskAssessment "1" -- "*" Recommendation
+@enduml
