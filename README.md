@@ -60,25 +60,64 @@ GlucoVigil is an advanced AI-powered healthcare web application revolutionizing 
 
 ## External Deployment
 
-For deploying GlucoVigil to an external environment:
+### Supabase + Render Deployment Method
+
+#### Step 1: Set up PostgreSQL on Supabase
+
+1. Create a Supabase account at [supabase.com](https://supabase.com)
+2. Create a new project:
+   - Choose a project name (e.g., "glucovigil-db")
+   - Set a secure database password (save it securely)
+   - Select the region closest to your target audience
+3. Get your connection string:
+   - Go to Settings > Database > Connection String
+   - Copy the PostgreSQL connection string
+   - Replace the placeholders with your actual credentials:
+     ```
+     postgresql://postgres:[YOUR-PASSWORD]@db.[YOUR-PROJECT-REF].supabase.co:5432/postgres
+     ```
+
+#### Step 2: Deploy Backend on Render
+
+1. Create a Render account at [render.com](https://render.com)
+2. Create a new Web Service:
+   - Connect your GitHub repository or upload your project
+   - Configure build settings:
+     - Build Command: `npm install && npm run build`
+     - Start Command: `npm start`
+3. Set environment variables:
+   - `DATABASE_URL`: Your Supabase connection string
+   - `SESSION_SECRET`: Your secure session secret
+   - `NODE_ENV`: Set to `production`
+   - `PORT`: Set to `10000` (Render automatically assigns a port, but your app will use this internal port)
+4. Deploy your application by clicking "Create Web Service"
+
+#### Step 3: Testing Your Deployment
+
+1. Wait for the deployment to complete (can take a few minutes)
+2. Access your application at the URL provided by Render
+3. Test all functionality:
+   - User registration and login
+   - Health data submission
+   - Risk assessment features
+   - Dashboard and reporting
+
+For a detailed deployment checklist, see [deployment-checklist.md](./deployment-checklist.md).
+
+### Alternative Deployment Options
+
+You can also deploy GlucoVigil using:
+
+1. **Vercel**: Ideal for frontend deployment
+2. **Railway**: One-click deployments with GitHub integration
+3. **Heroku**: Platform as a service with easy scaling
+4. **AWS Elastic Beanstalk**: For enterprise-grade deployments
+
+For any deployment method, ensure you:
 
 1. Set up your production database (PostgreSQL)
-
-2. Configure environment variables on your deployment platform:
-   - `DATABASE_URL`: Your production database connection string
-   - `SESSION_SECRET`: A strong, unique session secret
-   - `PORT`: The port your service will run on (often provided by the platform)
-   - `NODE_ENV`: Set to `production`
-
-3. Build the application:
-   ```
-   npm run build
-   ```
-
-4. Start the production server:
-   ```
-   npm start
-   ```
+2. Configure environment variables correctly
+3. Set `NODE_ENV` to `production`
 
 ## Database Management
 
