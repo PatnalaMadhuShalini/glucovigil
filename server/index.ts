@@ -3,10 +3,14 @@ import fs from "fs";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import { createServer } from "http";
+import dotenv from "dotenv";
 import viteConfig from "../vite.config";
 import { setupVite, log } from "./vite";
 import { setupAuth, setupAuthRoutes } from "./auth";
 import { registerRoutes } from "./routes";
+
+// Load environment variables from .env file
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
