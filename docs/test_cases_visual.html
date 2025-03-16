@@ -1,170 +1,122 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>GlucoVigil Test Cases Overview</title>
+    <title>Test Cases Overview</title>
     <style>
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: Arial, sans-serif;
             margin: 40px;
-            background: #f0f4f8;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 30px;
+            background: #f5f5f5;
         }
         .test-cases {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
             background: white;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .test-cases th {
-            background: #34495e;
+            background: #2c3e50;
             color: white;
             padding: 15px;
             text-align: left;
-            font-size: 14px;
         }
         .test-cases td {
             padding: 12px 15px;
-            border-bottom: 1px solid #eee;
-            font-size: 14px;
+            border: 1px solid #ddd;
+            vertical-align: top;
         }
         .test-cases tr:hover {
-            background: #f8fafc;
+            background: #f8f9fa;
         }
         .pass {
             color: #27ae60;
             font-weight: bold;
         }
-        .category {
-            background: #f7f9fc;
-            font-weight: bold;
+        h1 {
             color: #2c3e50;
-        }
-        .test-id {
-            color: #3498db;
-            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
         }
         .steps {
-            color: #666;
-            line-height: 1.4;
+            white-space: pre-line;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>GlucoVigil Test Cases Overview</h1>
-        <table class="test-cases">
-            <tr>
-                <th>Test ID</th>
-                <th>Category</th>
-                <th>Description</th>
-                <th>Status</th>
-            </tr>
-            <tr class="category">
-                <td colspan="4">Authentication & Profile Management</td>
-            </tr>
-            <tr>
-                <td class="test-id">TC001</td>
-                <td>User Registration</td>
-                <td class="steps">Complete registration flow with valid credentials</td>
-                <td class="pass">Pass</td>
-            </tr>
-            <tr>
-                <td class="test-id">TC002</td>
-                <td>Invalid Registration</td>
-                <td class="steps">Validate form with invalid email format</td>
-                <td class="pass">Pass</td>
-            </tr>
-            <tr>
-                <td class="test-id">TC003</td>
-                <td>Health Profile</td>
-                <td class="steps">Create and save health profile data</td>
-                <td class="pass">Pass</td>
-            </tr>
-            <tr class="category">
-                <td colspan="4">Data Management</td>
-            </tr>
-            <tr>
-                <td class="test-id">TC004</td>
-                <td>Blood Sugar Input</td>
-                <td class="steps">Record and store blood sugar measurements</td>
-                <td class="pass">Pass</td>
-            </tr>
-            <tr>
-                <td class="test-id">TC005</td>
-                <td>Risk Assessment</td>
-                <td class="steps">Generate risk assessment report</td>
-                <td class="pass">Pass</td>
-            </tr>
-            <tr class="category">
-                <td colspan="4">Performance & UI</td>
-            </tr>
-            <tr>
-                <td class="test-id">TC006</td>
-                <td>Response Time</td>
-                <td class="steps">Verify page load times under 2 seconds</td>
-                <td class="pass">Pass</td>
-            </tr>
-            <tr>
-                <td class="test-id">TC008</td>
-                <td>Responsive Design</td>
-                <td class="steps">Test UI adaptation across devices</td>
-                <td class="pass">Pass</td>
-            </tr>
-            <tr class="category">
-                <td colspan="4">Security</td>
-            </tr>
-            <tr>
-                <td class="test-id">TC016</td>
-                <td>Authentication</td>
-                <td class="steps">Verify secure login process</td>
-                <td class="pass">Pass</td>
-            </tr>
-            <tr>
-                <td class="test-id">TC017</td>
-                <td>Authorization</td>
-                <td class="steps">Check access control mechanisms</td>
-                <td class="pass">Pass</td>
-            </tr>
-            <tr>
-                <td class="test-id">TC018</td>
-                <td>SQL Injection</td>
-                <td class="steps">Test input sanitization</td>
-                <td class="pass">Pass</td>
-            </tr>
-            <tr class="category">
-                <td colspan="4">Integration</td>
-            </tr>
-            <tr>
-                <td class="test-id">TC011</td>
-                <td>API Integration</td>
-                <td class="steps">Validate API responses</td>
-                <td class="pass">Pass</td>
-            </tr>
-            <tr>
-                <td class="test-id">TC012</td>
-                <td>Database Operations</td>
-                <td class="steps">Verify data persistence</td>
-                <td class="pass">Pass</td>
-            </tr>
-            <tr>
-                <td class="test-id">TC013</td>
-                <td>Report Generation</td>
-                <td class="steps">Generate and download PDF reports</td>
-                <td class="pass">Pass</td>
-            </tr>
-        </table>
-    </div>
+    <h1>Detailed Test Cases</h1>
+    <table class="test-cases">
+        <tr>
+            <th>Requirement ID</th>
+            <th>Test Case</th>
+            <th>Scenario Test Steps</th>
+            <th>Test Data</th>
+            <th>Expected Results</th>
+            <th>Actual Results</th>
+            <th>Pass/Fail</th>
+        </tr>
+        <tr>
+            <td>AUTH-1</td>
+            <td>TC001</td>
+            <td class="steps">1. Navigate to registration page
+2. Enter valid credentials
+3. Submit form</td>
+            <td>Username: testuser
+Email: test@example.com
+Password: Test@123</td>
+            <td>User account created successfully</td>
+            <td>Account created and verification email sent</td>
+            <td class="pass">Pass</td>
+        </tr>
+        <tr>
+            <td>AUTH-1</td>
+            <td>TC002</td>
+            <td class="steps">1. Navigate to registration page
+2. Enter invalid email
+3. Submit form</td>
+            <td>Username: test
+Email: invalid-email
+Password: test123</td>
+            <td>Form validation error shown</td>
+            <td>Error message displayed</td>
+            <td class="pass">Pass</td>
+        </tr>
+        <tr>
+            <td>PROF-1</td>
+            <td>TC003</td>
+            <td class="steps">1. Login
+2. Navigate to profile
+3. Enter health data
+4. Save</td>
+            <td>Height: 170cm
+Weight: 70kg
+Age: 30</td>
+            <td>Profile saved successfully</td>
+            <td>Data stored in database</td>
+            <td class="pass">Pass</td>
+        </tr>
+        <tr>
+            <td>DATA-1</td>
+            <td>TC004</td>
+            <td class="steps">1. Navigate to measurements
+2. Enter blood sugar
+3. Save</td>
+            <td>Blood Sugar: 120mg/dL
+Time: Current</td>
+            <td>Measurement saved successfully</td>
+            <td>Data stored and displayed</td>
+            <td class="pass">Pass</td>
+        </tr>
+        <tr>
+            <td>RISK-1</td>
+            <td>TC005</td>
+            <td class="steps">1. Complete health profile
+2. Request assessment</td>
+            <td>Complete health profile data</td>
+            <td>Risk score calculated and displayed</td>
+            <td>Risk level shown with recommendations</td>
+            <td class="pass">Pass</td>
+        </tr>
+    </table>
 </body>
 </html>
