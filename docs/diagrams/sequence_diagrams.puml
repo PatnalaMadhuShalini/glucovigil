@@ -1,0 +1,71 @@
+
+@startuml Registration Process
+actor User
+participant "Web UI" as UI
+participant "Auth Service" as Auth
+participant "Email Service" as Email
+participant "Database" as DB
+
+User -> UI: Fill registration form
+UI -> Auth: Submit registration data
+Auth -> Auth: Validate input
+Auth -> DB: Check email uniqueness
+DB --> Auth: Email status
+Alt email exists
+    Auth --> UI: Email already registered
+    UI --> User: Show error message
+else email unique
+    Auth -> Auth: Hash password
+    Auth -> DB: Create user record
+    DB --> Auth: Confirm creation
+    Auth -> Email: Send verification email
+    Email --> User: Receive verification email
+    Auth --> UI: Registration successful
+    UI --> User: Show success message
+end
+@enduml
+
+@startuml Risk Assessment Process
+actor User
+participant "Web UI" as UI
+participant "Health Data Service" as HDS
+participant "Risk Assessment Service" as RAS
+participant "Recommendation Service" as RS
+participant "Database" as DB
+
+User -> UI: Input health data
+UI -> HDS: Submit health metrics
+HDS -> HDS: Validate data
+HDS -> DB: Store health data
+DB --> HDS: Confirm storage
+HDS -> RAS: Request risk calculation
+RAS -> RAS: Calculate risk score
+RAS -> RS: Generate recommendations
+RS -> RS: Prioritize recommendations
+RS --> RAS: Return recommendations
+RAS --> HDS: Return assessment results
+HDS --> UI: Display results
+UI --> User: Show risk score and recommendations
+@enduml
+
+@startuml Document Processing
+actor User
+participant "Web UI" as UI
+participant "Document Service" as Doc
+participant "Health Data Service" as HDS
+participant "Risk Assessment Service" as RAS
+participant "Database" as DB
+
+User -> UI: Upload medical document
+UI -> Doc: Send document
+Doc -> Doc: Extract health metrics
+Doc -> UI: Display extracted data
+UI --> User: Confirm extracted data
+User -> UI: Confirm accuracy
+UI -> HDS: Submit verified data
+HDS -> DB: Store health metrics
+DB --> HDS: Confirm storage
+HDS -> RAS: Trigger risk reassessment
+RAS --> UI: Updated risk assessment
+UI --> User: Show updated results
+@enduml
