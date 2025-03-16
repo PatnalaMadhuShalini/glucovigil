@@ -1,131 +1,45 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GlucoVigile - Use Case Diagram</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <title>GlucoVigil - Use Case Diagram</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f8f9fa;
-        }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .diagram { text-align: center; margin: 20px 0; }
+        img { max-width: 100%; height: auto; border: 1px solid #ddd; }
         h1, h2 {
             color: #2c3e50;
             margin-top: 0;
         }
-        .diagram-container {
-            background-color: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        .description {
             margin-bottom: 30px;
-        }
-        .info {
-            background-color: #f1f8ff;
-            padding: 20px;
-            border-left: 4px solid #3498db;
-            margin-bottom: 20px;
-            border-radius: 0 4px 4px 0;
-        }
-        .image-container {
-            text-align: center;
-            margin: 20px 0;
-        }
-        .image-container img {
-            max-width: 100%;
-            height: auto;
-            border: 1px solid #ddd;
-            border-radius: 4px;
         }
     </style>
 </head>
 <body>
-    <h1>GlucoVigile Health Analytics - Use Case Diagram</h1>
-    
-    <div class="info">
-        <p>This diagram illustrates the key interactions between different actors and the GlucoVigile system, showing the primary functions and relationships.</p>
-    </div>
-    
-    <div class="diagram-container">
-        <div class="mermaid">
-        %%{init: {'theme': 'neutral', 'themeVariables': { 'primaryColor': '#f4f4f4', 'primaryTextColor': '#323232'}}}%%
-        graph TB
-          subgraph "GlucoVigile System"
-            direction TB
-            
-            subgraph "User Management"
-              UC1["Register Account"]
-              UC2["Authenticate User"]
-              UC3["Update Profile"]
-              UC4["Manage Privacy Settings"]
-            end
-            
-            subgraph "Health Data Management"
-              UC5["Input Health Metrics"]
-              UC6["Upload Medical Records"]
-              UC7["View Historical Data"]
-              UC8["Track Health Trends"]
-            end
-            
-            subgraph "Risk Assessment"
-              UC9["Calculate Diabetes Risk Score"]
-              UC10["Generate Recommendations"]
-              UC11["Create Health Reports"]
-              UC12["Provide Educational Content"]
-            end
-          end
-          
-          Actor1(("End User"))
-          Actor2(("Healthcare Provider"))
-          Actor3(("System Administrator"))
-          
-          Actor1 --> UC1
-          Actor1 --> UC2
-          Actor1 --> UC3
-          Actor1 --> UC4
-          Actor1 --> UC5
-          Actor1 --> UC6
-          Actor1 --> UC7
-          Actor1 --> UC8
-          
-          Actor1 --> UC9
-          Actor1 --> UC10
-          Actor1 --> UC11
-          Actor1 --> UC12
-          
-          Actor2 --> UC11
-          
-          Actor3 --> UC1
-          Actor3 --> UC2
-          
-          classDef actor fill:#f9d5e5,stroke:#333,stroke-width:1px
-          classDef usecases fill:#eeeeee,stroke:#333,stroke-width:1px
-          classDef subgraph fill:#f4f4f4,stroke:#333,stroke-width:1px
-          
-          class Actor1,Actor2,Actor3 actor
-          class UC1,UC2,UC3,UC4,UC5,UC6,UC7,UC8,UC9,UC10,UC11,UC12 usecases
+    <div class="container">
+        <h1>GlucoVigil Health Analytics - Use Case Diagram</h1>
+        <div class="diagram">
+            <img src="https://www.plantuml.com/plantuml/png/VLLDRzim3BthLn3xeYdH1IfHr8ehKR0TJP4YL89KrUKxYaaBhTtHRhVR_xrqK8qgKn7mddpdFyyvzxvxPbgMLHgm7LAc3GZGJX2-cE6hJ2p9XHKD5Z28Z1R25wIa8_l6NnIaFYHQ0bfYKg5FQYv8_m7EVni7_V45AfQKIG6o0sImGCWKW62k1QAQWqAGGNH8PGz64QAWgm4mWIKmG2GmWC9W9u8WWHpHOGXL_XrB_0q2TmAWqcXvnGkWdmAHWbx9nKe5uU6E3U15O3pI6kB0Kj91P8h8i8B8P0F1P0J4PGZ5ObpIaiF0KT91P4l8i4F8v0B1v0N4vGZ5vbpIKiF0qT91v4V8S4F8P051P0R4PGd5ObpI6SF0KT91P8V8i4B8v0F1P0J4vGV5vbpIKCF0qT91v4R8S8B8P0B1v0N4vGd5vbpIaSF0qT91v4V8S4F8v0F1P0J4PGV5ObpIaiF0KT91P4R8i8B8v051v0N4vGd5vbpIqSF0qT91v4V8S4F8P0F1P0J4PGV5ObpIKiF0KT91P4l8i4B8v0B1v0N4vGZ5vbpIaSF0qT91v4R8S8F8P051P0R4PGd5" alt="GlucoVigil Use Case Diagram"/>
+        </div>
+        <div class="description">
+            <h2>Use Case Description</h2>
+            <p>The diagram shows three main actors:</p>
+            <ul>
+                <li><strong>End User:</strong> Primary system user who manages their health data</li>
+                <li><strong>Healthcare Provider:</strong> Medical professionals who access patient data</li>
+                <li><strong>System Administrator:</strong> Technical personnel managing the system</li>
+            </ul>
+            <p>Key use cases include:</p>
+            <ul>
+                <li>User Registration and Authentication</li>
+                <li>Health Data Management</li>
+                <li>Risk Assessment</li>
+                <li>Progress Tracking</li>
+                <li>Report Generation</li>
+                <li>System Maintenance</li>
+            </ul>
         </div>
     </div>
-    
-    <div class="image-container">
-        <h3>Alternative Static Image</h3>
-        <img src="https://www.plantuml.com/plantuml/png/ZLJ1RjD04BtxAuPmW0lKfA92LR1Qk0fQ51YJsWNfSifI9zP50WQYkGsOwR_FDYi0TbxUBR_-qMfQmk1KebTXZRy8v7Af_FoNWIyqWa3h6-N4OJSL73g97PkK3u5-eTrfVQYy07PahIzAYRE1tTYvVCnX3-mj-1E2tQcPWKO4Kb0KoODMCf0VeG6g-0JDO3T2w9U8e1RnZUU1a2bD1VbAXnEjL6r5eO9fJyXAPmF-Ae7kqVDikLGxmqWm1Ia7XsYR2IH8Vy2SLRxW_EAM4GBLT6fRqTK-1cF6OSzUPm0OYKQhc3OcYKLa0YlfpgHY_8W_mWq4gBKiXQX8MSaZyRh49bNEGq1Bq6Vvvw24Wh-wekVekMz0f2CZ4nAg1uh0pWLw8Ufr2HJMSHUzwPnKwm6ZfVzQ7qW9bIx1L-01umGe5ULEZxDnpTvLO2Wd2uTTBjLWFk9kUe6CkCTPSwW1l6NrlW6EBRUVuESS8IgSBk1mVZARVX-YvnE8qQXQBzILdcHqTpUF0VEIEe4DkW5Xrho8vjKVTK5yOxp8KQsL-_xyDU2hUW0Ks4cTbF6pJYTD7S6-nnGZVZW5Tm01KVN-Gy2v8Q5GFvKZCwzW_-XK8FJcVDpxWpN2_9YvYlZs8_t-3G00" alt="GlucoVigile Use Case Diagram" style="width: 100%; max-width: 800px;">
-    </div>
-    
-    <script>
-        mermaid.initialize({
-            startOnLoad: true,
-            theme: 'neutral',
-            flowchart: { useMaxWidth: false }
-        });
-    </script>
 </body>
 </html>
