@@ -1,0 +1,50 @@
+Risk Assessment Algorithm (calculateDiabetesRisk):
+Analyzes demographic data (age, ethnicity)
+Evaluates physiological metrics (BMI, blood sugar, blood pressure)
+Assesses mental health factors
+Considers lifestyle factors
+Weighs family history
+Produces normalized risk score (0-5 scale)
+Recommendation Generation Algorithm:
+Analyzes identified risk factors
+Generates personalized health suggestions
+Prioritizes recommendations by impact
+Removes duplicate suggestions
+Adapts based on user characteristics
+Document Processing Algorithm:
+Extracts health data from medical records
+Uses pattern recognition for metrics
+Validates extracted values
+Integrates data with health profile
+Risk Trend Analysis Algorithm:
+Tracks changes in risk factors
+Calculates improvement percentages
+Identifies significant trends
+Projects future trajectory
+Generates progress visualizations
+These algorithms work together to provide comprehensive health analytics and personalized recommendations for diabetes risk management.
+
+just give what the current used ml anddl algorithms in list
+
+PS
+
+devimadhushalin
+Assistant
+just now
+Based on the codebase analysis, here are the currently implemented algorithms in GlucoVigil:
+
+Machine Learning (ML) Algorithms:
+
+Risk Assessment Algorithm
+
+Evidence-based weighting system for risk factors
+Feature importance scoring based on clinical guidelines
+Normalized risk score calculation (0-5 scale)
+Pattern Recognition Algorithm
+
+Medical document text extraction
+Health metric pattern matching
+Regular expression based data extraction
+Note: The current implementation primarily uses rule-based algorithms and statistical methods rather than complex ML/DL models. The system uses evidence-based clinical guidelines (like ADA and CDC statistics) to calculate risk scores and generate recommendations. There are no deep learning algorithms currently implemented in the codebase.
+
+The main algorithmic logic can be found in the risk assessment and recommendation generation functions in server/routes.ts, which use deterministic rules based on medical guidelines rather than trained ML models.
