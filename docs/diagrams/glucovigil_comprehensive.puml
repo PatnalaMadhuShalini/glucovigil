@@ -1,0 +1,123 @@
+
+@startuml Use Case Diagram
+left to right direction
+skinparam actorStyle awesome
+
+actor "End User" as user
+actor "Healthcare Provider" as doctor
+actor "System Admin" as admin
+
+rectangle "GlucoVigil Health Analytics" {
+  usecase "Register Account" as UC1
+  usecase "Verify Email" as UC2
+  usecase "Complete Health Profile" as UC3
+  usecase "Input Health Data" as UC4
+  usecase "Upload Medical Documents" as UC5
+  usecase "View Risk Assessment" as UC6
+  usecase "Track Progress" as UC7
+  usecase "Generate Health Report" as UC8
+  usecase "View Recommendations" as UC9
+  usecase "Access Educational Content" as UC10
+  usecase "Manage Patient Data" as UC11
+  usecase "System Maintenance" as UC12
+  usecase "Update Risk Models" as UC13
+}
+
+user --> UC1
+user --> UC2
+user --> UC3
+user --> UC4
+user --> UC5
+user --> UC6
+user --> UC7
+user --> UC8
+user --> UC9
+user --> UC10
+doctor --> UC11
+doctor --> UC8
+admin --> UC12
+admin --> UC13
+
+@enduml
+
+@startuml Activity Diagram
+start
+:User Registration;
+:Email Verification;
+
+fork
+  :Complete Demographics;
+fork again
+  :Input Physical Metrics;
+fork again
+  :Enter Lifestyle Data;
+fork again
+  :Medical History Upload;
+end fork
+
+:Validate Data;
+
+if (Data Complete?) then (yes)
+  :Process Health Information;
+  :Calculate Risk Score;
+  
+  if (Risk Level?) then (High)
+    :Generate Urgent Alerts;
+    :Create Priority Recommendations;
+  else (Low/Medium)
+    :Generate Standard Report;
+    :Provide General Recommendations;
+  endif
+  
+  :Display Dashboard;
+  
+  fork
+    :Show Risk Factors;
+  fork again
+    :Display Health Metrics;
+  fork again
+    :Present Recommendations;
+  end fork
+  
+  :Enable Progress Tracking;
+  
+else (no)
+  :Request Missing Information;
+  :Display Partial Analysis;
+endif
+
+:Store User Data;
+stop
+
+@enduml
+
+@startuml State Chart Diagram
+[*] --> Unregistered
+
+Unregistered --> PendingVerification : Register
+PendingVerification --> ProfileIncomplete : Verify Email
+ProfileIncomplete --> BasicProfile : Submit Demographics
+BasicProfile --> ComprehensiveProfile : Complete Health Data
+
+state ComprehensiveProfile {
+  [*] --> DataProcessing
+  DataProcessing --> RiskAssessed : Calculate Risk
+  RiskAssessed --> RecommendationsGenerated : Generate Plan
+  RecommendationsGenerated --> MonitoringActive : Activate Monitoring
+}
+
+ComprehensiveProfile --> DataUpdate : New Health Data
+DataUpdate --> ComprehensiveProfile : Process Update
+
+state MonitoringActive {
+  [*] --> ActiveTracking
+  ActiveTracking --> GoalProgress : Track Changes
+  GoalProgress --> RiskReassessment : Periodic Review
+  RiskReassessment --> ActiveTracking : Update Plan
+}
+
+MonitoringActive --> AccountSuspended : Inactivity
+AccountSuspended --> MonitoringActive : Resume Activity
+AccountSuspended --> [*] : Account Deletion
+
+@enduml
