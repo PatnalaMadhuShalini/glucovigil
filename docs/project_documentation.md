@@ -1285,3 +1285,143 @@ GlucoVigil leverages TypeScript's strong typing system and Zod schema validation
 - Consistent data structures throughout the application
 
 This comprehensive OO approach results in a robust, maintainable system architecture that can evolve to accommodate new features and changing requirements while maintaining code quality and system integrity.
+### Rule-Based Algorithms
+
+#### Current Implementation
+
+The GlucoVigil system employs a sophisticated rule-based algorithm for diabetes risk assessment that operates on the following principles:
+
+1. **Weighted Risk Factors**
+- Demographic factors (age, ethnicity): 15% weight
+- Physiological measurements (BMI, blood pressure): 35% weight
+- Lifestyle factors (diet, exercise): 25% weight
+- Medical history: 15% weight
+- Mental health indicators: 10% weight
+
+2. **Risk Calculation Rules**
+```typescript
+function calculateRiskScore(factors: HealthData): number {
+  let score = 0;
+  
+  // Age-based rules
+  if (factors.demographics.age > 45) score += 2;
+  if (factors.demographics.age > 65) score += 1;
+  
+  // BMI-based rules
+  const bmi = calculateBMI(factors.physiological.height, factors.physiological.weight);
+  if (bmi > 30) score += 3;
+  else if (bmi > 25) score += 2;
+  
+  // Blood pressure rules
+  if (factors.physiological.bloodPressure.systolic > 140) score += 2;
+  if (factors.physiological.bloodPressure.diastolic > 90) score += 2;
+  
+  // Lifestyle rules
+  if (factors.lifestyle.exercise === "none") score += 2;
+  if (factors.lifestyle.diet === "poor") score += 2;
+  
+  return normalizeScore(score);
+}
+```
+
+3. **Decision Trees**
+The system uses hierarchical decision trees to determine risk levels:
+- Low Risk: Score < 2.0
+- Moderate Risk: Score 2.0-3.5
+- High Risk: Score > 3.5
+
+### Future Enhancements
+
+#### 1. Machine Learning Integration
+
+**Proposed Enhancement:** Implementation of supervised learning algorithms for improved risk prediction.
+
+```typescript
+interface MLModel {
+  train(data: HealthData[]): void;
+  predict(input: HealthData): Prediction;
+  evaluate(): ModelMetrics;
+}
+
+class DiabetesPredictor implements MLModel {
+  private model: RandomForestClassifier;
+  
+  async train(data: HealthData[]): Promise<void> {
+    const features = this.extractFeatures(data);
+    const labels = this.extractLabels(data);
+    await this.model.fit(features, labels);
+  }
+  
+  predict(input: HealthData): Prediction {
+    const features = this.preprocessInput(input);
+    return this.model.predict(features);
+  }
+}
+```
+
+#### 2. Time Series Analysis
+
+**Enhancement Goals:**
+- Implement trend analysis for health metrics
+- Predict future risk trajectories
+- Identify patterns in blood sugar variations
+
+```typescript
+interface TimeSeriesAnalyzer {
+  analyzeHealthTrends(data: HealthData[]): TrendAnalysis;
+  predictFutureMetrics(window: number): Prediction[];
+  identifyPatterns(): Pattern[];
+}
+```
+
+#### 3. Natural Language Processing
+
+**Proposed Features:**
+- Medical document parsing
+- Symptom description analysis 
+- Automated health report generation
+- Contextual recommendation system
+
+#### 4. Deep Learning Integration
+
+**Planned Components:**
+1. **Neural Network Architecture:**
+   - Input Layer: 50+ health parameters
+   - Hidden Layers: Dense layers with dropout
+   - Output Layer: Risk probability distribution
+
+2. **Model Features:**
+   - Transfer learning from pre-trained health models
+   - Regular retraining with new data
+   - Uncertainty quantification in predictions
+
+#### 5. Advanced Rule Engine
+
+**Enhanced Rule System:**
+```typescript
+interface RuleEngine {
+  rules: Rule[];
+  context: HealthContext;
+  
+  evaluate(data: HealthData): RiskAssessment;
+  addRule(rule: Rule): void;
+  updateContext(context: HealthContext): void;
+}
+
+interface Rule {
+  condition: (data: HealthData) => boolean;
+  action: (context: HealthContext) => void;
+  priority: number;
+  description: string;
+}
+```
+
+#### 6. Hybrid System Architecture
+
+**Proposed Integration:**
+- Combine rule-based logic with ML predictions
+- Weighted ensemble of multiple models
+- Dynamic adaptation based on user feedback
+- Continuous learning from new data
+
+These enhancements will significantly improve the system's accuracy and capabilities while maintaining its interpretability and reliability.
