@@ -1,101 +1,226 @@
 
-@startuml Use Case Diagram
-left to right direction
-actor "End User" as user
-actor "Healthcare Provider" as doctor
-actor "System Admin" as admin
+@startuml "Activity Diagram"
+title GlucoVigil Health Analytics - Activity Flow
 
-rectangle "GlucoVigil Health Analytics" {
-  usecase "Register Account" as UC1
-  usecase "Input Health Data" as UC2
-  usecase "View Risk Assessment" as UC3
-  usecase "Upload Medical Documents" as UC4
-  usecase "Track Progress" as UC5
-  usecase "Generate Health Report" as UC6
-  usecase "Manage System" as UC7
-  usecase "Review Patient Data" as UC8
-}
-
-user --> UC1
-user --> UC2
-user --> UC3
-user --> UC4
-user --> UC5
-user --> UC6
-doctor --> UC8
-admin --> UC7
-@enduml
-
-@startuml Activity Diagram
 start
 :User Registration;
-:Complete Health Profile;
+:Verification;
 fork
-  :Input Demographics;
+  :Complete Demographics;
 fork again
-  :Input Physiological Data;
+  :Input Physical Metrics;
 fork again
-  :Input Lifestyle Data;
+  :Enter Lifestyle Data;
+fork again
+  :Medical History Upload;
 end fork
-:Process Health Data;
-:Calculate Risk Score;
-if (Risk Level?) then (High)
-  :Generate Urgent Recommendations;
-else (Low/Moderate)
-  :Generate Standard Recommendations;
+:Validate Data;
+if (Data Complete?) then (yes)
+  :Process Health Information;
+  :Calculate Risk Score;
+  if (Risk Level?) then (High)
+    :Generate Urgent Alerts;
+    :Create Priority Recommendations;
+  else (Low/Medium)
+    :Generate Standard Report;
+    :Provide General Recommendations;
+  endif
+else (no)
+  :Request Missing Information;
+  :Display Partial Analysis;
 endif
-:Display Results;
-:Track Progress;
+:Display Dashboard;
+fork
+  :Show Risk Factors;
+fork again
+  :Display Health Metrics;
+fork again
+  :Present Recommendations;
+end fork
+:Enable Progress Tracking;
+:Store User Data;
 stop
+
 @enduml
 
-@startuml State Chart
+@startuml "State Chart"
 [*] --> Unregistered
-Unregistered --> Registered : Register
-Registered --> ProfileIncomplete : Initial Login
-ProfileIncomplete --> ProfileComplete : Submit Health Data
-ProfileComplete --> RiskAssessed : Calculate Risk
-RiskAssessed --> Monitoring : Generate Plan
-Monitoring --> RiskReassessed : Update Health Data
-RiskReassessed --> Monitoring : Update Plan
-Monitoring --> [*] : Account Closed
+Unregistered --> PendingVerification : Register
+PendingVerification --> ProfileIncomplete : Verify Email
+ProfileIncomplete --> BasicProfile : Submit Demographics
+BasicProfile --> ComprehensiveProfile : Complete Health Data
+ComprehensiveProfile --> DataProcessing
+DataProcessing --> RiskAssessed : Calculate Risk
+RiskAssessed --> RecommendationsGenerated : Generate Plan
+RecommendationsGenerated --> MonitoringActive : Activate Monitoring
+state MonitoringActive {
+  [*] --> ActiveTracking
+  ActiveTracking --> GoalProgress : Track Changes
+  GoalProgress --> RiskReassessment : Periodic Review
+  RiskReassessment --> ActiveTracking : Update Plan
+}
+MonitoringActive --> AccountSuspended : Inactivity/Resume Activity
+AccountSuspended --> [*] : Account Deletion
+
 @enduml
 
-@startuml Class Diagram
+@startuml "Use Case Diagram"
+left to right direction
+actor "patient" as pat
+actor "admin" as adm
+
+rectangle "Gluco Vigil Health Analytics System" {
+  usecase "User Management" as UC1
+  note right of UC1
+    Register, Authenticate, Profile
+  end note
+  
+  usecase "Health Data Management" as UC2
+  note right of UC2
+    Input Data, Upload Records
+  end note
+  
+  usecase "Risk Assessment" as UC3
+  note right of UC3
+    Calculate Score, Risk Factors
+  end note
+  
+  usecase "Generate Recommendations" as UC4
+  note right of UC4
+    Personalized Health Advice
+  end note
+  
+  usecase "Monitor Progress" as UC5
+  usecase "Reports" as UC6
+  usecase "Feedback" as UC7
+  usecase "Optimize" as UC8
+
+  UC3 ..> UC4 : <<include>>
+  UC5 ..> UC3 : <<extend>>
+}
+
+pat --> UC1
+pat --> UC2
+pat --> UC3
+pat --> UC4
+pat --> UC5
+pat --> UC6
+pat --> UC7
+adm --> UC1
+adm --> UC8
+adm --> UC6
+adm --> UC7
+
+@enduml
+
+@startuml "Class Diagram"
+class AuthService {
+  +validateCredentials()
+  +generateToken()
+  +verifyToken()
+  +hashPassword()
+}
+
 class User {
-  +id: number
-  +username: string
-  +email: string
-  +password: string
-  +healthData: HealthData
+  +int id
+  +string username
+  +string email
+  +string fullName
+  +string hashedPassword
+  +boolean verified
   +register()
+  +login()
   +updateProfile()
+  +managePrivacySettings()
 }
 
 class HealthData {
-  +demographics: Demographics
-  +physiological: Physiological
-  +lifestyle: Lifestyle
-  +calculateRisk()
-  +updateMetrics()
+  +int id
+  +int userId
+  -Demographics demographics
+  -Physiological physiological
+  -Lifestyle lifestyle
+  -MentalHealth mentalHealth
+  -Date createdAt
+  +storeHealthData()
+  +retrieveHealthData()
+  +updateHealthData()
 }
 
-class RiskAssessment {
-  +score: number
-  +level: string
-  +factors: string[]
+class Demographics {
+  -int age
+  -string gender
+  -string ethnicity
+  -string location
+}
+
+class Physiological {
+  -float height
+  -float weight
+  -int bloodSugar
+  -BloodPressure bloodPressure
+  -float hba1c
+  +calculateBMI()
+}
+
+class BloodPressure {
+  +int systolic
+  +int diastolic
+}
+
+class Lifestyle {
+  +string exercise
+  +string diet
+  +string smoking
+  +string alcohol
+  +string workStyle
+}
+
+class MentalHealth {
+  +string stressLevel
+  +string sleepQuality
+  +string anxiety
+  +evaluateImpact()
+}
+
+class RiskAssessmentService {
+  +calculateRiskScore()
+  +identifyRiskFactors()
+  +determineDiabLevel()
+  +trackProgressOverTime()
+}
+
+class RecommendationService {
+  +generateRecommendations()
+  +prioritizeRecommendations()
+  +adaptRecommendations()
+}
+
+class ReportService {
+  +createPDFReport()
+  +formatHealthData()
+  +includeVisualization()
+}
+
+class Prediction {
+  +float score
+  +string level
+  +string[] riskFactors
+  +string[] recommendations
+  -Date generatedAt
   +generateReport()
-  +updateAssessment()
 }
 
-class Recommendation {
-  +type: string
-  +priority: number
-  +description: string
-  +generatePlan()
-}
+AuthService --> User : authenticates
+User "1" --> "0..*" HealthData : has
+HealthData "1" *-- "1" Demographics : contains
+HealthData "1" *-- "1" Physiological : contains
+HealthData "1" *-- "1" Lifestyle : contains
+HealthData "1" *-- "1" MentalHealth : contains
+Physiological "1" *-- "1" BloodPressure : contains
+HealthData --> RiskAssessmentService : analyzes
+RiskAssessmentService --> RecommendationService : creates
+RecommendationService --> Prediction : generates
+ReportService --> Prediction : formats
 
-User "1" *-- "1" HealthData
-HealthData "1" -- "1" RiskAssessment
-RiskAssessment "1" -- "*" Recommendation
 @enduml
