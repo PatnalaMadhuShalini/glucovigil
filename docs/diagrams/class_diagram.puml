@@ -1,0 +1,112 @@
+
+@startuml
+class AuthService {
+  +validateCredentials()
+  +generateToken()
+  +verifyToken()
+  +hashPassword()
+}
+
+class User {
+  +int id
+  +string username
+  +string email
+  +string fullName
+  +string hashedPassword
+  +boolean verified
+  +register()
+  +login()
+  +updateProfile()
+  +managePrivacySettings()
+}
+
+class HealthData {
+  +int id
+  +int userId
+  -Demographics demographics
+  -Physiological physiological
+  -Lifestyle lifestyle
+  -MentalHealth mentalHealth
+  -Date createdAt
+  +storeHealthData()
+  +getMentalData()
+  +updateHealthData()
+}
+
+class Demographics {
+  -int age
+  -string gender
+  -string ethnicity
+  -string location
+}
+
+class Physiological {
+  -float height
+  -float weight
+  -int bloodSugar
+  -BloodPressure bloodPressure
+  -float bmi
+  +calculateBMI()
+}
+
+class BloodPressure {
+  +int systolic
+  +int diastolic
+}
+
+class Lifestyle {
+  +string exercise
+  +string diet
+  +string smoking
+  +string alcohol
+  +string workStyle
+}
+
+class MentalHealth {
+  +string stressLevel
+  +string sleepQuality
+  +string anxiety
+  +evaluateImpact()
+}
+
+class RiskAssessmentService {
+  +calculateRiskScore()
+  +identifyRiskFactors()
+  +determineDiabLevel()
+  +trackProgressOverTime()
+}
+
+class RecommendationService {
+  +generateRecommendations()
+  +prioritizeRecommendations()
+  +adaptRecommendations()
+}
+
+class ReportService {
+  +createPDFReport()
+  +formatHealthData()
+  +includeVisualization()
+}
+
+class Prediction {
+  +float score
+  +string level
+  +string[] riskFactors
+  +string[] recommendations
+  -Date generatedAt
+  +generateReport()
+}
+
+AuthService --> User : authenticates
+User "1" --> "1..*" HealthData : has
+HealthData "1" *-- "1" Demographics : contains
+HealthData "1" *-- "1" Physiological : contains
+HealthData "1" *-- "1" Lifestyle : contains
+HealthData "1" *-- "1" MentalHealth : contains
+Physiological "1" *-- "1" BloodPressure : contains
+HealthData --> RiskAssessmentService : analyzes
+RiskAssessmentService --> RecommendationService : creates
+RecommendationService --> Prediction : generates
+ReportService --> Prediction : formats
+
+@enduml
