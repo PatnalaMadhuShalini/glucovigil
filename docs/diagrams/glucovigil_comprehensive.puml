@@ -5,7 +5,6 @@ skinparam actorStyle awesome
 
 actor "End User" as user
 actor "Healthcare Provider" as doctor
-actor "System Admin" as admin
 
 rectangle "GlucoVigil Health Analytics" {
   usecase "Register Account" as UC1
@@ -19,8 +18,6 @@ rectangle "GlucoVigil Health Analytics" {
   usecase "View Recommendations" as UC9
   usecase "Access Educational Content" as UC10
   usecase "Manage Patient Data" as UC11
-  usecase "System Maintenance" as UC12
-  usecase "Update Risk Models" as UC13
 }
 
 user --> UC1
@@ -35,8 +32,6 @@ user --> UC9
 user --> UC10
 doctor --> UC11
 doctor --> UC8
-admin --> UC12
-admin --> UC13
 
 @enduml
 
