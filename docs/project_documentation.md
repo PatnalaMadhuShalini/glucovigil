@@ -1182,7 +1182,142 @@ Object-Oriented Analysis and Design (OOAD) provides the foundation for GlucoVigi
 The GlucoVigil Health Analytics platform addresses the following key user scenarios:
 
 **Scenario 1: Initial User Registration and Risk Assessment**
-A 45-year-old individual with a family history of diabetes discovers the GlucoVigil platform while researching diabetes prevention. They register an account, providing basic demographic information (age, gender, ethnicity) and preliminary health data (height, weight, recent blood glucose reading). The system creates a user profile, securely stores the health data, and runs an initial risk assessment algorithm. Based on the limited information, GlucoVigil calculates a preliminary risk score and categorizes the user as "moderate risk," highlighting age and family history as key risk factors. The system generates initial recommendations for further health data collection to refine the assessment.
+Pre-conditions:
+- User has access to internet and web browser
+- User has basic personal and health information available
+- System is operational and accessible
+
+A 45-year-old individual with a family history of diabetes discovers the GlucoVigil platform while researching diabetes prevention. They register an account, providing basic demographic information (age, gender, ethnicity) and preliminary health data (height, weight, recent blood glucose reading). The system creates a user profile, securely stores the health data, and runs an initial risk assessment algorithm. Based on the limited information, GlucoVigil calculates a preliminary risk score and categorizes the user as "moderate risk," highlighting age and family history as key risk factors.
+
+Post-conditions:
+- New user account created and verified
+- Initial health profile established
+- Preliminary risk assessment completed
+- Basic recommendations generated
+- User data securely stored in database
+
+**Scenario 2: Comprehensive Health Data Input**
+Pre-conditions:
+- User has verified account
+- Basic profile exists
+- User has access to detailed health metrics
+- System ready to process additional data
+
+A registered user completes a detailed health profile by entering physiological measurements (height, weight, blood pressure, blood glucose), lifestyle information (exercise frequency, diet quality, smoking status), and mental health indicators (stress level, sleep quality).
+
+Post-conditions:
+- Complete health profile updated
+- Risk assessment recalculated
+- Detailed recommendations generated
+- Data validation completed
+- Progress tracking initialized
+
+**Scenario 3: Risk Assessment Review**
+Pre-conditions:
+- Complete health profile available
+- Risk calculation algorithms operational
+- Historical data accessible
+
+User reviews their comprehensive risk assessment, including detailed breakdowns of contributing factors and trend analysis.
+
+Post-conditions:
+- Risk factors identified and prioritized
+- Comparative analytics generated
+- Personalized insights delivered
+- Risk visualization updated
+- Action items created
+
+**Scenario 4: Health Recommendation Implementation**
+Pre-conditions:
+- Risk assessment completed
+- Recommendation engine operational
+- User preferences available
+
+User receives and begins implementing personalized health recommendations based on their risk profile.
+
+Post-conditions:
+- Recommendations prioritized
+- Progress tracking enabled
+- Resource links provided
+- Reminder system activated
+- Feedback mechanism enabled
+
+**Scenario 5: Progress Monitoring**
+Pre-conditions:
+- Initial goals established
+- Baseline metrics recorded
+- Tracking system operational
+
+User tracks their progress over time through regular health data updates and goal achievement monitoring.
+
+Post-conditions:
+- Progress metrics updated
+- Trend analysis performed
+- Goals status updated
+- Recommendations adjusted
+- Achievement notifications sent
+
+**Scenario 6: Healthcare Provider Integration**
+Pre-conditions:
+- User consent provided
+- Provider authentication system active
+- Data sharing protocols established
+
+User shares their GlucoVigil health report with their healthcare provider for professional review.
+
+Post-conditions:
+- Report generated and shared
+- Provider access granted
+- Sharing preferences recorded
+- Audit trail updated
+- Confirmation sent to user
+
+**Scenario 7: Educational Content Engagement**
+Pre-conditions:
+- Content library available
+- User interests identified
+- Recommendation system active
+
+User accesses personalized educational content about diabetes prevention and management.
+
+Post-conditions:
+- Content engagement recorded
+- Knowledge assessment updated
+- Related resources suggested
+- Progress badges awarded
+- Learning path adjusted
+
+**Scenario 8: Mobile Health Tracking Integration**
+Pre-conditions:
+- Mobile device compatible
+- API connections established
+- User authorized data sharing
+- Device pairing ready
+
+The user connects their fitness wearable device to GlucoVigil using the integration feature.
+
+Post-conditions:
+- Device successfully paired
+- Data sync established
+- Real-time monitoring active
+- Analytics updated
+- Integration status confirmed
+
+**Scenario 9: System Administration and Analytics**
+Pre-conditions:
+- Admin access granted
+- Analytics tools operational
+- Data anonymization active
+- Reporting system ready
+
+A system administrator reviews platform usage analytics to identify opportunities for improvement.
+
+Post-conditions:
+- Usage patterns analyzed
+- Performance metrics updated
+- System improvements identified
+- Reports generated
+- Action items created assessment.
 
 **Scenario 2: Comprehensive Health Profile Completion**
 Following the initial assessment, the user returns to complete a comprehensive health profile. They input detailed physiological measurements (blood pressure, hemoglobin A1C, additional glucose readings), lifestyle information (exercise frequency, diet quality, smoking status, alcohol consumption), and mental health data (stress levels, sleep patterns). The HealthDataService validates the new information, stores it securely in the user's profile, and the RiskAssessmentService recalculates a more precise risk score based on the complete dataset. The system identifies additional risk factors, including elevated BMI and high stress levels, and adjusts the risk category.
