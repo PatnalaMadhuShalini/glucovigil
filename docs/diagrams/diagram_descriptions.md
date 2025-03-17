@@ -89,3 +89,38 @@ The class diagram shows the system's object-oriented structure:
    - ReportService formats results
 
 These diagrams collectively represent the complete system architecture and workflow of the GlucoVigil Health Analytics platform.
+# GlucoVigil Health Analytics System - Diagram Documentation
+
+## System Architecture Overview
+The GlucoVigil system implements a modern, scalable architecture designed for health analytics and risk assessment. The system is structured in multiple layers with clear separation of concerns, ensuring maintainability and scalability.
+
+### Data Model
+The system's data model centers around the User entity, with related entities capturing health metrics, achievements, and medical documentation. Key relationships ensure comprehensive health tracking and personalized recommendations.
+
+### Component Architecture
+The system utilizes a layered architecture:
+- Presentation Layer handles user interactions
+- API Layer manages service endpoints
+- Business Logic Layer implements core functionality
+- Data Access Layer handles persistence
+- External Integrations provide additional services
+
+### User Workflows
+The system supports various user journeys from registration through health monitoring:
+1. User registration and verification
+2. Health data collection and validation
+3. Risk assessment and recommendation generation
+4. Ongoing progress monitoring and reporting
+
+### System States
+The application manages multiple states throughout the user lifecycle, from initial registration through active monitoring, with appropriate handling of edge cases and account management.
+
+### Integration Points
+The system integrates with external services for:
+- Email notifications
+- Document processing
+- Analytics
+- PDF generation
+- Natural language processing
+
+This architecture ensures robust health analytics capabilities while maintaining security and scalability.
