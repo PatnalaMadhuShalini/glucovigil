@@ -1,0 +1,167 @@
+Scenario Name:
+User Registration and Profile setup
+Participating Actors:
+ User, Admin 
+Flow of events:
+1. The user discovers GlucoSmart while researching diabetes prevention options.
+2. The user registers for an account and completes their profile by providing:
+   - Demographic information.
+   - Basic health metrics.
+   - Family history.
+3. The system creates a user account and initializes the user's health profile.
+4. The system presents an initial diabetes risk assessment based on the limited information provided.
+5. The system prompts the user to complete additional health data inputs for a more comprehensive analysis.
+
+
+
+
+
+
+
+Scenario 2:  Comprehensive Health Data Input
+Scenario Name:
+ Comprehensive Health Data Input
+Participating Actors:
+User,Admin 
+Flow of events:
+The user completes a detailed health profile, including:
+Physiological measurements: height, weight, blood pressure, blood glucose.
+Lifestyle information: exercise frequency, diet quality, smoking status.
+Mental health indicators: stress level, sleep quality.
+The system validates the entered data for completeness and plausibility.
+The system securely stores (persists) the information.
+The system updates the user's diabetes risk assessment based on the comprehensive dataset.
+
+
+
+
+Scenario 3: Medical Record Integration
+Scenario Name:
+Medical Record Integration
+Participating Actors:
+ User,Admin
+Flow of events:
+1. The user uploads their lab results PDF document from a recent medical check-up.
+2. The system extracts relevant health metrics using Natural Language Processing (NLP) techniques.
+3. The system presents the extracted information for the user to verify.
+4. The user verifies the extracted information.
+5. The system integrates the confirmed data into the user's health profile.
+6. The system automatically updates the risk assessment, incorporating the clinical measurements for a more accurate evaluation.
+
+
+
+
+
+
+
+Scenario 4: Risk Assessment and Recommendation Review
+Scenario Name:
+Risk Assessment and Recommendation Review
+Participating Actors:
+User,Admin
+Flow of events:
+1. The user views their personalized diabetes risk assessment results after completing their health profile.
+2. The system presents:
+   - The user's normalized risk score (e.g., 3.8 out of 5).
+   - The corresponding risk category (e.g., "high risk").
+3. The system identifies contributing risk factors such as:
+   - Elevated BMI.
+   - Family history.
+   - Sedentary lifestyle.
+4. The system generates tailored recommendations, prioritized by their potential impact on risk reduction.
+5. The user reviews each recommendation, which includes accompanying explanations.
+6. The user selects specific recommendations to implement for lifestyle and health improvements.
+
+
+
+
+Scenario 5: Progress Tracking and Longitudinal Analysis
+Scenario Name:
+Progress Tracking and Longitudinal Analysis
+Participating Actors:
+User,Admin
+Flow of events:
+1. The user logs in to record updated health metrics following lifestyle changes.
+2. The system compares the new measurements with the user's historical data.
+3. The system calculates an improved risk score (e.g., reduced from 3.8 to 3.2).
+4. The system visually represents the user's progress through trend charts.
+5. The system adjusts its recommendations based on the user's progress and changing health status.
+
+
+
+
+
+Scenario 6: Health Report Generation and Provider Sharing
+Scenario Name:
+Health Report Generation and Provider Sharing
+Participating Actors:
+User,Admin
+Flow of events:
+1. The user generates a comprehensive health report summarizing:
+   - Their diabetes risk assessment.
+   - Key health metrics.
+   - Progress over time.
+
+2. The system creates a professionally formatted PDF document that includes:
+   - Graphs to visualize trends.
+   - Explanatory text for clarity.
+3. The user downloads the report.
+4. The user shares the report with their healthcare provider to facilitate a more informed discussion about diabetes prevention strategies.
+
+
+
+
+Scenario 7: Educational Content Engagement
+Scenario Name:
+Educational Content Engagement
+Participating Actors:
+User, Admin
+Flow of events:
+1. The user navigates to the educational section of the platform to explore how stress influences diabetes risk.
+2. The system presents evidence-based information about the stress-diabetes connection, tailored to the user's knowledge level.
+3. The system provides practical stress management techniques relevant to the user's specific circumstances.
+4. The user saves the techniques they want to implement to their personalized recommendation list for future action.
+
+
+
+
+
+
+
+
+Scenario 8: Goal Setting and Achievement Tracking
+Scenario Name:
+Goal Setting and Achievement Tracking
+Participating Actors:
+User, Admin
+Flow of events:
+1. The user sets specific health goals based on their personalized recommendations (e.g., "Walk 30 minutes daily," "Reduce processed food intake").
+2. The system helps the user define measurable targets for their health goals.
+3. The system tracks the user's progress using:
+   - Self-reported data.
+   - Connected devices (e.g., fitness trackers).
+4. The system provides encouragement and timely reminders to keep the user motivated.
+5. The system celebrates achievements when milestones are reached, reinforcing positive behavioral changes.
+
+
+
+
+Scenario 9: System Administration and Analytics
+Scenario Name:
+System Administration and Analytics
+Participating Actors:
+User, Admin
+Flow of events:
+1. The system administrator reviews platform usage analytics to identify areas for improvement.
+2. The system provides anonymized data on:
+   - User engagement patterns.
+   - Frequently viewed educational content.
+   - Common risk factors.
+   - Recommendation adherence rates.
+3. The insights from the data guide refinements in:
+   - The user interface for better usability.
+   - The content strategy to make it more engaging and relevant.
+   - Recommendation algorithms to improve their effectiveness and personalization.
+
+
+
