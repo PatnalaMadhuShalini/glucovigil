@@ -1,4 +1,3 @@
-
 # GlucoVigil Health Analytics - Project Documentation
 
 ## 1. Introduction
@@ -97,7 +96,7 @@ GlucoVigil Health Analytics addresses the limitations of existing systems throug
      riskScore += 2;
      riskFactors.push("Age above 45");
    }
-   
+
    if (bmi > 30) {
      riskScore += 3;
      riskFactors.push("BMI indicates obesity");
@@ -291,10 +290,10 @@ class HybridRiskAssessor {
   async calculateRisk(healthData: HealthData): Promise<RiskAssessment> {
     // Rule-based initial assessment
     const ruleBasedScore = this.ruleBasedAssessment(healthData);
-    
+
     // ML model prediction
     const mlScore = await this.mlModelPrediction(healthData);
-    
+
     // Weighted combination
     return {
       score: this.combineScores(ruleBasedScore, mlScore),
@@ -516,28 +515,119 @@ The GlucoVigil Health Analytics platform addresses the following key user scenar
 A new user discovers GlucoVigil while researching diabetes prevention options. They register for an account and complete their profile by providing demographic information, basic health metrics, and family history. The system creates a user account, initializes their health profile, and presents an initial diabetes risk assessment based on the limited information provided, prompting the user to complete additional health data inputs for a more comprehensive analysis.
 
 **Scenario 2: Comprehensive Health Data Input**
+
+**Pre-conditions:**
+- User has verified account
+- Basic profile exists
+- User has access to detailed health metrics
+- System ready to process additional data
+- Data validation services operational
+
 A registered user completes a detailed health profile by entering physiological measurements (height, weight, blood pressure, blood glucose), lifestyle information (exercise frequency, diet quality, smoking status), and mental health indicators (stress level, sleep quality). The system validates the data for completeness and plausibility, persists the information securely, and updates the user's diabetes risk assessment based on the comprehensive dataset.
 
-**Scenario 3: Medical Record Integration**
-A user who recently had a medical check-up uploads their lab results PDF document. The system extracts relevant health metrics using NLP techniques, presents the extracted information for user verification, and integrates the confirmed data into the user's health profile. The risk assessment is automatically updated with the clinical measurements, providing a more accurate evaluation.
+**Post-conditions:**
+- Complete health profile updated
+- Risk assessment recalculated
+- Detailed recommendations generated
+- Data validation completed
+- Progress tracking initialized
 
-**Scenario 4: Risk Assessment and Recommendation Review**
+**Scenario 3: Risk Assessment and Recommendation Review**
 After completing their health profile, a user views their personalized diabetes risk assessment results. The system presents their normalized risk score (3.8 out of 5), categorizes them as "high risk," identifies contributing risk factors (elevated BMI, family history, sedentary lifestyle), and generates tailored recommendations prioritized by potential impact. The user reviews each recommendation with accompanying explanations and selects specific items to implement.
 
-**Scenario 5: Progress Tracking and Longitudinal Analysis**
+**Scenario 4: Progress Tracking and Longitudinal Analysis**
 A user who has been using GlucoVigil for three months logs in to record updated health metrics following lifestyle changes. The system compares the new measurements with historical data, calculates an improved risk score (reduced from 3.8 to 3.2), visually represents the progress through trend charts, and adjusts recommendations based on the user's progress and changing health status.
 
+**Scenario 5: Progress Tracking and Longitudinal Analysis**
+
+**Pre-conditions:**
+- Initial goals established
+- Baseline metrics recorded
+- Tracking system operational
+- Data comparison tools available
+- Visualization components ready
+
+A user tracks their progress over time through regular health data updates and goal achievement monitoring.
+
+**Post-conditions:**
+- Progress metrics updated
+- Trend analysis performed
+- Goals status updated
+- Recommendations adjusted
+- Achievement notifications sent
+
 **Scenario 6: Health Report Generation and Provider Sharing**
+
+**Pre-conditions:**
+- User data available and validated
+- Report generation service operational
+- PDF creation tools functional
+- Sharing mechanisms enabled
+- Access controls configured
+
 A user with an upcoming doctor's appointment generates a comprehensive health report summarizing their diabetes risk assessment, key health metrics, and progress over time. The system creates a professionally formatted PDF document with graphs and explanatory text, which the user downloads and shares with their healthcare provider to facilitate a more informed discussion about diabetes prevention strategies.
 
+**Post-conditions:**
+- Report generated and formatted
+- PDF successfully created
+- Report securely shared
+- Access permissions updated
+- Activity logged
+
+
 **Scenario 7: Educational Content Engagement**
+
+**Pre-conditions:**
+- Content library available
+- User knowledge level assessed
+- Recommendation system active
+- Content filtering operational
+- User preferences recorded
+
 A user interested in learning more about how stress affects diabetes risk navigates to the educational section of the platform. The system presents evidence-based information about the stress-diabetes connection tailored to the user's knowledge level, provides practical stress management techniques relevant to their specific situation, and allows the user to save techniques they want to implement to their personalized recommendation list.
 
+**Post-conditions:**
+- Content engagement recorded
+- Knowledge assessment updated
+- Related resources suggested
+- Progress badges awarded
+- Learning path adjusted
+
 **Scenario 8: Goal Setting and Achievement Tracking**
+
+**Pre-conditions:**
+- Recommendation system functional
+- Goal tracking system active
+- Device integration available
+- Notification system operational
+- Achievement metrics defined
+
 A user sets specific health goals based on their personalized recommendations (e.g., "Walk 30 minutes daily," "Reduce processed food intake"). The system helps define measurable targets, tracks progress through self-reported data and connected devices, provides encouragement and reminders, and celebrates achievements when milestones are reached, reinforcing positive behavior changes.
 
+**Post-conditions:**
+- Goals established and recorded
+- Progress tracking initiated
+- Device connections configured
+- Reminders scheduled
+- Initial metrics captured
+
 **Scenario 9: System Administration and Analytics**
+
+**Pre-conditions:**
+- Admin access granted
+- Analytics tools operational
+- Data anonymization active
+- Reporting system ready
+- Access controls enforced
+
 A system administrator reviews platform usage analytics to identify opportunities for improvement. The system provides anonymized data on user engagement patterns, frequently viewed educational content, common risk factors, and recommendation adherence rates. This information guides refinements to the user interface, content strategy, and recommendation algorithms to enhance overall platform effectiveness.
+
+**Post-conditions:**
+- Usage patterns analyzed
+- Performance metrics updated
+- System improvements identified
+- Reports generated
+- Action items created
 
 Each scenario represents a distinct user journey within the GlucoVigil platform, with the system responding appropriately based on user inputs, stored data, and programmed logic to provide a personalized, supportive experience for diabetes risk management.
 
@@ -679,144 +769,16 @@ The use case diagram illustrates the comprehensive nature of the GlucoVigil plat
 4. User completes health profile
 5. System calculates initial risk assessment
 6. System generates personalized recommendations
-7. User is directed to their dashboard
-
-**Risk Assessment Process:**
-
-1. System receives health data input
-2. System validates data completeness
-3. Risk calculation algorithm processes input data
-4. Risk factors are identified and weighted
-5. Cumulative risk score is calculated
-6. Risk level is determined
-7. Personalized recommendations are generated
-8. Results are presented to the user
-
-![Activity Diagram - Risk Assessment](https://via.placeholder.com/800x600?text=Risk+Assessment+Activity+Diagram)
-
-#### 4.2.4 Class Diagrams
-
-The GlucoVigil system is organized into the following primary classes:
-
-**Core Domain Classes:**
-- **User**: Represents a registered user of the system
-- **HealthData**: Encapsulates all health-related information for a user
-- **Demographics**: Contains age, gender, ethnicity information
-- **Physiological**: Stores physical health measurements
-- **Lifestyle**: Captures exercise, diet, and other behavioral factors
-- **MentalHealth**: Represents stress, mood, and sleep information
-- **Prediction**: Contains risk assessment results and recommendations
-
-**Service Classes:**
-- **AuthenticationService**: Handles user authentication and authorization
-- **HealthDataService**: Manages health data operations
-- **RiskAssessmentService**: Calculates diabetes risk scores
-- **RecommendationService**: Generates personalized health recommendations
-- **DocumentProcessingService**: Extracts data from medical records
-- **ReportGenerationService**: Creates downloadable health reports
-
-![Class Diagram](https://via.placeholder.com/800x600?text=GlucoVigil+Class+Diagram)
-
-#### 4.2.5 Object Diagrams
-
-Object diagrams illustrate concrete instances of the class structure in action:
-
-**Sample User Health Assessment:**
-- User: JohnDoe (id: 1, email: john@example.com)
-  - Demographics: (age: 45, gender: male, ethnicity: Caucasian)
-  - Physiological: (height: 175cm, weight: 82kg, bloodSugar: 110mg/dL)
-  - Lifestyle: (exercise: moderate, diet: fair, smoking: former)
-  - MentalHealth: (stressLevel: high, sleepQuality: poor)
-  - Prediction: (score: 3.7, level: high, recommendations: ["Increase physical activity", "Reduce carbohydrate intake"])
-
-![Object Diagram](https://via.placeholder.com/800x400?text=GlucoVigil+Object+Diagram)
-
-#### 4.2.6 Other Diagrams
-
-**Sequence Diagram - Risk Assessment Flow:**
-
-The sequence diagram illustrates the interaction between system components during the risk assessment process:
-
-1. User submits health data via the UI
-2. Client forwards data to the Server API
-3. HealthDataService validates and stores the information
-4. RiskAssessmentService calculates the risk score
-5. RecommendationService generates personalized recommendations
-6. Results are returned to the Client
-7. UI displays the assessment results to the User
-
-![Sequence Diagram](https://via.placeholder.com/800x600?text=Risk+Assessment+Sequence+Diagram)
-
-**Component Diagram:**
-
-The component diagram shows the major architectural components and their dependencies:
-
-- **Client Application**: React frontend with state management
-- **API Gateway**: Entry point for client requests
-- **Authentication Component**: User management and security
-- **Health Data Management**: Data storage and retrieval
-- **Analytics Engine**: Risk assessment and recommendation generation
-- **Document Processor**: Medical record parsing and extraction
-- **Reporting Service**: Health report creation and formatting
-- **Database**: Persistent data storage
-
-![Component Diagram](https://via.placeholder.com/800x500?text=GlucoVigil+Component+Diagram)
-
-### 4.3 Software Environment
-
-#### 4.3.1 Development Environment
-
-- **IDE**: Visual Studio Code with TypeScript and React extensions
-- **Version Control**: Git with GitHub for source code management
-- **Package Management**: npm for dependency management
-- **Testing Framework**: Jest for unit testing, React Testing Library for component testing
-- **CI/CD**: GitHub Actions for continuous integration and deployment
-
-#### 4.3.2 Runtime Environment
-
-- **Frontend**:
-  - React.js (v18.x) for UI components
-  - TypeScript for type safety
-  - Tailwind CSS for styling
-  - Lucide React for iconography
-  - React Router for navigation
-  - Zod for schema validation
-
-- **Backend**:
-  - Node.js (v18.x) runtime
-  - Express.js for API routing
-  - TypeScript for type safety
-  - Drizzle ORM for database interactions
-  - Zod for schema validation
-  - Express Session for user session management
-  - WS for WebSocket support
-
-- **Database**:
-  - PostgreSQL (Neon serverless) for data storage
-  - Drizzle ORM for database schema management
-
-- **Deployment**:
-  - Containerized deployment with CI/CD pipeline
-  - HTTPS encryption for secure data transmission
-  - Environment-based configuration
-
-### 4.4 Procedure/Algorithm
-
-#### 4.4.1 Diabetes Risk Assessment Algorithm
-
-The core risk assessment algorithm calculates a diabetes risk score through a weighted analysis of multiple health factors:
-
-```typescript
-function calculateDiabetesRisk(healthData: HealthData): Prediction {
+7.function calculateDiabetesRisk(healthData: HealthData): Prediction {
   let riskScore = 0;
   const riskFactors: string[] = [];
-  
+
   // Demographic risk analysis
   if (healthData.demographics.age > 45) {
     riskScore += 2;
     riskFactors.push("Age over 45 - increases risk of type 2 diabetes");
   }
-  
+
   // Physiological risk analysis
   const bmi = calculateBMI(healthData.physiological.height, healthData.physiological.weight);
   if (bmi >= 30) {
@@ -826,7 +788,7 @@ function calculateDiabetesRisk(healthData: HealthData): Prediction {
     riskScore += 2;
     riskFactors.push("BMI 25-30 (overweight) - moderate impact on insulin resistance");
   }
-  
+
   // Blood sugar analysis
   if (healthData.physiological.bloodSugar > 140) {
     riskScore += 3;
@@ -835,66 +797,66 @@ function calculateDiabetesRisk(healthData: HealthData): Prediction {
     riskScore += 1;
     riskFactors.push("Blood sugar at upper range of normal - monitor closely");
   }
-  
+
   // Blood pressure analysis
   if (healthData.physiological.bloodPressure.systolic > 140 || 
       healthData.physiological.bloodPressure.diastolic > 90) {
     riskScore += 2;
     riskFactors.push("Hypertension - associated with increased diabetes risk");
   }
-  
+
   // Mental health factors
   if (healthData.mentalHealth?.stressLevel === "severe" || 
       healthData.mentalHealth?.stressLevel === "high") {
     riskScore += 2;
     riskFactors.push("Severe stress level - high impact on blood sugar control");
   }
-  
+
   if (healthData.mentalHealth?.sleepQuality === "poor") {
     riskScore += 1;
     riskFactors.push("Poor sleep quality - affects glucose metabolism");
   }
-  
+
   // Lifestyle factors
   if (healthData.lifestyle.exercise === "none") {
     riskScore += 2;
     riskFactors.push("Sedentary lifestyle - major risk factor for insulin resistance");
   }
-  
+
   if (healthData.lifestyle.diet === "poor") {
     riskScore += 2;
     riskFactors.push("Poor diet quality - impacts blood sugar regulation");
   }
-  
+
   // Family history
   if (healthData.familyHistory?.diabetesInFamily) {
     riskScore += 2;
     riskFactors.push("Family history of diabetes - genetic predisposition");
   }
-  
+
   // Substance use
   if (["heavy", "binge", "dependent"].includes(healthData.lifestyle.smoking)) {
     riskScore += 1;
     riskFactors.push("Heavy smoking - increases insulin resistance");
   }
-  
+
   if (["heavy", "binge", "dependent"].includes(healthData.lifestyle.alcohol)) {
     riskScore += 1;
     riskFactors.push("Heavy alcohol consumption - affects pancreatic function");
   }
-  
+
   // Normalize score to 0-5 scale
   const maxPossibleScore = 21;
   const normalizedScore = Math.min(5, (riskScore / maxPossibleScore) * 5);
-  
+
   // Determine risk level
   const level: "low" | "moderate" | "high" =
     normalizedScore <= 2 ? "low" :
     normalizedScore <= 3.5 ? "moderate" : "high";
-  
+
   // Generate recommendations
   const recommendations = generateRecommendations(normalizedScore, healthData, riskFactors);
-  
+
   return {
     score: parseFloat(normalizedScore.toFixed(1)),
     level,
@@ -915,7 +877,7 @@ function generateRecommendations(
   riskFactors: string[]
 ): string[] {
   const recommendations: string[] = [];
-  
+
   // Add specific recommendations based on identified risk factors
   riskFactors.forEach(factor => {
     if (factor.includes("Severe stress level")) {
@@ -941,7 +903,7 @@ function generateRecommendations(
     }
     // Additional factor-specific recommendations...
   });
-  
+
   // Add general recommendations based on overall risk score
   if (riskScore > 3.5) {
     recommendations.push(
@@ -959,7 +921,7 @@ function generateRecommendations(
       "Continue regular health check-ups"
     );
   }
-  
+
   // Personalize recommendations based on user data
   if (healthData.physiological.weight > 0 && healthData.physiological.height > 0) {
     const bmi = calculateBMI(healthData.physiological.height, healthData.physiological.weight);
@@ -970,7 +932,7 @@ function generateRecommendations(
       );
     }
   }
-  
+
   return [...new Set(recommendations)]; // Remove duplicates
 }
 ```
@@ -1202,6 +1164,7 @@ Pre-conditions:
 - Basic profile exists
 - User has access to detailed health metrics
 - System ready to process additional data
+- Data validation services operational
 
 A registered user completes a detailed health profile by entering physiological measurements (height, weight, blood pressure, blood glucose), lifestyle information (exercise frequency, diet quality, smoking status), and mental health indicators (stress level, sleep quality).
 
@@ -1437,24 +1400,24 @@ The GlucoVigil system employs a sophisticated rule-based algorithm for diabetes 
 ```typescript
 function calculateRiskScore(factors: HealthData): number {
   let score = 0;
-  
+
   // Age-based rules
   if (factors.demographics.age > 45) score += 2;
   if (factors.demographics.age > 65) score += 1;
-  
+
   // BMI-based rules
   const bmi = calculateBMI(factors.physiological.height, factors.physiological.weight);
   if (bmi > 30) score += 3;
   else if (bmi > 25) score += 2;
-  
+
   // Blood pressure rules
   if (factors.physiological.bloodPressure.systolic > 140) score += 2;
   if (factors.physiological.bloodPressure.diastolic > 90) score += 2;
-  
+
   // Lifestyle rules
   if (factors.lifestyle.exercise === "none") score += 2;
   if (factors.lifestyle.diet === "poor") score += 2;
-  
+
   return normalizeScore(score);
 }
 ```
@@ -1480,13 +1443,13 @@ interface MLModel {
 
 class DiabetesPredictor implements MLModel {
   private model: RandomForestClassifier;
-  
+
   async train(data: HealthData[]): Promise<void> {
     const features = this.extractFeatures(data);
     const labels = this.extractLabels(data);
     await this.model.fit(features, labels);
   }
-  
+
   predict(input: HealthData): Prediction {
     const features = this.preprocessInput(input);
     return this.model.predict(features);
@@ -1537,7 +1500,7 @@ interface TimeSeriesAnalyzer {
 interface RuleEngine {
   rules: Rule[];
   context: HealthContext;
-  
+
   evaluate(data: HealthData): RiskAssessment;
   addRule(rule: Rule): void;
   updateContext(context: HealthContext): void;
@@ -1549,14 +1512,3 @@ interface Rule {
   priority: number;
   description: string;
 }
-```
-
-#### 6. Hybrid System Architecture
-
-**Proposed Integration:**
-- Combine rule-based logic with ML predictions
-- Weighted ensemble of multiple models
-- Dynamic adaptation based on user feedback
-- Continuous learning from new data
-
-These enhancements will significantly improve the system's accuracy and capabilities while maintaining its interpretability and reliability.
