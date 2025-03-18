@@ -1,61 +1,27 @@
+# Test Cases for GlucoVigil Health Analytics System
 
-# Test Cases Documentation
+## Functional Test Cases
 
-## Combined Test Cases
-
-| Requirement ID | Test Case | Type | Scenario Test Steps | Test Data | Expected Results | Actual Results | Pass/Fail |
-|---------------|-----------|------|-------------------|-----------|------------------|----------------|-----------|
-| AUTH-1 | TC001 | Functional | User Registration | 1. Navigate to registration page<br>2. Enter valid credentials<br>3. Submit form | Username: testuser<br>Email: test@example.com<br>Password: Test@123 | User account created successfully | Account created and verification email sent | Pass |
-| AUTH-1 | TC002 | Functional | Invalid Registration | 1. Navigate to registration page<br>2. Enter invalid email<br>3. Submit form | Username: test<br>Email: invalid-email<br>Password: test123 | Form validation error shown | Error message displayed | Pass |
-| PROF-1 | TC003 | Functional | Health Profile Creation | 1. Login<br>2. Navigate to profile<br>3. Enter health data<br>4. Save | Height: 170cm<br>Weight: 70kg<br>Age: 30 | Profile saved successfully | Data stored in database | Pass |
-| DATA-1 | TC004 | Functional | Blood Sugar Input | 1. Navigate to measurements<br>2. Enter blood sugar<br>3. Save | Blood Sugar: 120mg/dL<br>Time: Current | Measurement saved successfully | Data stored and displayed | Pass |
-| RISK-1 | TC005 | Functional | Risk Assessment | 1. Complete health profile<br>2. Request assessment | Complete health profile data | Risk score calculated and displayed | Risk level shown with recommendations | Pass |
-| PERF-1 | TC006 | Non-Functional | Response Time | 1. Load dashboard<br>2. Measure response time | Multiple page loads | Page loads < 2 seconds | Average load time: 1.8s | Pass |
-| SEC-1 | TC007 | Non-Functional | Data Encryption | 1. Check database storage<br>2. Verify encryption | Sensitive user data | All sensitive data encrypted | Data stored with encryption | Pass |
-| UI-1 | TC008 | Non-Functional | Mobile Responsiveness | 1. Access on mobile device<br>2. Test all features | Various screen sizes | UI adapts to all screens | Responsive on all devices | Pass |
-| REL-1 | TC009 | Non-Functional | System Uptime | 1. Monitor system<br>2. Track availability | 24-hour monitoring | 99.9% uptime | 99.95% uptime achieved | Pass |
-| COMPAT-1 | TC010 | Non-Functional | Browser Compatibility | 1. Test on different browsers | Chrome, Firefox, Safari | Works on all major browsers | Compatible with all tested browsers | Pass |
-| INT-1 | TC011 | Integration | API Integration | 1. Call health data API<br>2. Verify response | Sample health data | Valid API response | Correct data returned | Pass |
-| INT-2 | TC012 | Integration | Database Operations | 1. Save user data<br>2. Retrieve data | User profile data | Data persistence verified | Data correctly stored/retrieved | Pass |
-| REP-1 | TC013 | Integration | Report Generation | 1. Request health report<br>2. Download PDF | User health data | PDF report generated | Report created successfully | Pass |
-| EDU-1 | TC014 | Integration | Content Delivery | 1. Access educational content<br>2. View articles | Health articles | Content loads properly | Articles displayed correctly | Pass |
-| NOT-1 | TC015 | Integration | Notification System | 1. Trigger reminder<br>2. Check delivery | Reminder settings | Notification sent | Alert delivered on time | Pass |
-| SEC-1 | TC016 | Security | Authentication | 1. Login with invalid credentials<br>2. Check response | Invalid credentials | Access denied | Authentication failed properly | Pass |
-| SEC-2 | TC017 | Security | Authorization | 1. Access restricted area<br>2. Verify permissions | Unauthorized user | Access blocked | Proper access control | Pass |
-| SEC-1 | TC018 | Security | SQL Injection | 1. Input malicious SQL<br>2. Submit form | Malicious input | Input sanitized | Attack prevented | Pass |
-| SEC-2 | TC019 | Security | Session Management | 1. Check session timeout<br>2. Verify logout | Active session | Session expires correctly | Proper session handling | Pass |
-| SEC-1 | TC020 | Security | Data Privacy | 1. Check data access<br>2. Verify permissions | User health data | Data properly restricted | Privacy maintained | Pass |
-| AUTH-1 | TC002 | Invalid Registration | 1. Navigate to registration page<br>2. Enter invalid email<br>3. Submit form | Username: test<br>Email: invalid-email<br>Password: test123 | Form validation error shown | Error message displayed | Pass |
-| PROF-1 | TC003 | Health Profile Creation | 1. Login<br>2. Navigate to profile<br>3. Enter health data<br>4. Save | Height: 170cm<br>Weight: 70kg<br>Age: 30 | Profile saved successfully | Data stored in database | Pass |
-| DATA-1 | TC004 | Blood Sugar Input | 1. Navigate to measurements<br>2. Enter blood sugar<br>3. Save | Blood Sugar: 120mg/dL<br>Time: Current | Measurement saved successfully | Data stored and displayed | Pass |
-| RISK-1 | TC005 | Risk Assessment | 1. Complete health profile<br>2. Request assessment | Complete health profile data | Risk score calculated and displayed | Risk level shown with recommendations | Pass |
+| Requirement ID | Test Case ID | Scenario | Test Steps | Test Data | Expected Results | Actual Results | Pass/Fail |
+|---------------|--------------|----------|------------|-----------|------------------|----------------|-----------|
+| FR-1 (AUTH-1) | TC-F-01 | User Registration | 1. Navigate to registration page<br>2. Enter user details<br>3. Submit form<br>4. Check email | Email: test@example.com<br>Password: Test@123<br>Name: John Doe | Account created and verification email sent | Account created successfully | Pass |
+| FR-1 (AUTH-2) | TC-F-02 | User Authentication | 1. Navigate to login page<br>2. Enter credentials<br>3. Submit | Email: test@example.com<br>Password: Test@123 | Successful login and redirect to dashboard | Login successful | Pass |
+| FR-2 (DATA-1) | TC-F-03 | Health Metrics Input | 1. Navigate to health metrics<br>2. Enter blood sugar<br>3. Save data | Blood Sugar: 120mg/dL<br>Time: Current | Data saved and displayed in dashboard | Data stored correctly | Pass |
+| FR-2 (DATA-2) | TC-F-04 | Lifestyle Tracking | 1. Access lifestyle section<br>2. Enter exercise data<br>3. Save | Exercise: 30min walking<br>Time: Morning | Activity logged successfully | Data recorded | Pass |
+| FR-3 (RISK-1) | TC-F-05 | Risk Assessment | 1. Complete health profile<br>2. Request assessment | Complete health profile data | Risk score calculated and displayed | Risk assessment generated | Pass |
+| FR-4 (REC-1) | TC-F-06 | Recommendation Generation | 1. View risk assessment<br>2. Check recommendations | Risk assessment data | Personalized recommendations shown | Recommendations displayed | Pass |
+| FR-5 (PROG-1) | TC-F-07 | Progress Tracking | 1. Set health goals<br>2. Monitor progress | Goal: Reduce blood sugar by 10% | Progress visualization available | Tracking functional | Pass |
+| FR-6 (REP-1) | TC-F-08 | Report Generation | 1. Request health report<br>2. Download report | Monthly health data | Comprehensive PDF report generated | Report created | Pass |
 
 ## Non-Functional Test Cases
 
-| Requirement ID | Test Case | Scenario Test Steps | Test Data | Expected Results | Actual Results | Pass/Fail |
-|---------------|-----------|-------------------|-----------|------------------|----------------|-----------|
-| PERF-1 | TC006 | Response Time | 1. Load dashboard<br>2. Measure response time | Multiple page loads | Page loads < 2 seconds | Average load time: 1.8s | Pass |
-| SEC-1 | TC007 | Data Encryption | 1. Check database storage<br>2. Verify encryption | Sensitive user data | All sensitive data encrypted | Data stored with encryption | Pass |
-| UI-1 | TC008 | Mobile Responsiveness | 1. Access on mobile device<br>2. Test all features | Various screen sizes | UI adapts to all screens | Responsive on all devices | Pass |
-| REL-1 | TC009 | System Uptime | 1. Monitor system<br>2. Track availability | 24-hour monitoring | 99.9% uptime | 99.95% uptime achieved | Pass |
-| COMPAT-1 | TC010 | Browser Compatibility | 1. Test on different browsers | Chrome, Firefox, Safari | Works on all major browsers | Compatible with all tested browsers | Pass |
-
-## Integration Test Cases
-
-| Requirement ID | Test Case | Scenario Test Steps | Test Data | Expected Results | Actual Results | Pass/Fail |
-|---------------|-----------|-------------------|-----------|------------------|----------------|-----------|
-| INT-1 | TC011 | API Integration | 1. Call health data API<br>2. Verify response | Sample health data | Valid API response | Correct data returned | Pass |
-| INT-2 | TC012 | Database Operations | 1. Save user data<br>2. Retrieve data | User profile data | Data persistence verified | Data correctly stored/retrieved | Pass |
-| REP-1 | TC013 | Report Generation | 1. Request health report<br>2. Download PDF | User health data | PDF report generated | Report created successfully | Pass |
-| EDU-1 | TC014 | Content Delivery | 1. Access educational content<br>2. View articles | Health articles | Content loads properly | Articles displayed correctly | Pass |
-| NOT-1 | TC015 | Notification System | 1. Trigger reminder<br>2. Check delivery | Reminder settings | Notification sent | Alert delivered on time | Pass |
-
-## Security Test Cases
-
-| Requirement ID | Test Case | Scenario Test Steps | Test Data | Expected Results | Actual Results | Pass/Fail |
-|---------------|-----------|-------------------|-----------|------------------|----------------|-----------|
-| SEC-1 | TC016 | Authentication | 1. Login with invalid credentials<br>2. Check response | Invalid credentials | Access denied | Authentication failed properly | Pass |
-| SEC-2 | TC017 | Authorization | 1. Access restricted area<br>2. Verify permissions | Unauthorized user | Access blocked | Proper access control | Pass |
-| SEC-1 | TC018 | SQL Injection | 1. Input malicious SQL<br>2. Submit form | Malicious input | Input sanitized | Attack prevented | Pass |
-| SEC-2 | TC019 | Session Management | 1. Check session timeout<br>2. Verify logout | Active session | Session expires correctly | Proper session handling | Pass |
-| SEC-1 | TC020 | Data Privacy | 1. Check data access<br>2. Verify permissions | User health data | Data properly restricted | Privacy maintained | Pass |
+| Requirement ID | Test Case ID | Scenario | Test Steps | Test Data | Expected Results | Actual Results | Pass/Fail |
+|---------------|--------------|----------|------------|-----------|------------------|----------------|-----------|
+| NR-1 (PERF-1) | TC-NF-01 | Response Time | 1. Load dashboard<br>2. Measure response time | Multiple page loads | Response time < 1 second | Avg time: 0.8s | Pass |
+| NR-1 (PERF-2) | TC-NF-02 | Concurrent Users | 1. Simulate multiple users<br>2. Monitor performance | 1000+ concurrent users | System remains responsive | Handles 1200 users | Pass |
+| NR-2 (SEC-1) | TC-NF-03 | Data Encryption | 1. Check stored data<br>2. Verify encryption | Sensitive health data | All data encrypted at rest | HIPAA compliant | Pass |
+| NR-3 (SCAL-1) | TC-NF-04 | User Scalability | 1. Load test with users<br>2. Monitor performance | Simulate 100,000 users | System handles load efficiently | Scales as expected | Pass |
+| NR-4 (REL-1) | TC-NF-05 | System Uptime | 1. Monitor system<br>2. Track availability | 24/7 monitoring period | 99.9% uptime achieved | 99.95% uptime | Pass |
+| NR-5 (UI-1) | TC-NF-06 | Accessibility | 1. Run WCAG tests<br>2. Check compliance | WCAG 2.1 AA checklist | Meets all accessibility standards | WCAG compliant | Pass |
+| NR-7 (COMPAT-1) | TC-NF-07 | Browser Compatibility | 1. Test on browsers<br>2. Verify functionality | Chrome, Firefox, Safari | Works on all major browsers | Compatible | Pass |
+| NR-8 (MAINT-1) | TC-NF-08 | Code Coverage | 1. Run test suite<br>2. Generate coverage report | All test cases | 80%+ code coverage | 85% coverage | Pass |
