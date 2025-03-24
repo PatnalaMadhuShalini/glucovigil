@@ -9,3 +9,9 @@ vite.config.ts.*
 .env
 .env.local
 .env.*.local
+
+# Config files and directories that might contain sensitive information
+.config/
+*.config.json
+config.js
+config/

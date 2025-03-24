@@ -114,6 +114,23 @@ The first time your app connects to the Supabase database, it will automatically
 3. **CORS Configuration**: Set proper CORS policies
 4. **TLS/SSL**: Ensure all connections use HTTPS (Render provides this automatically)
 
+### Handling Configuration Files
+
+When deploying your application:
+
+1. **Never upload sensitive configuration files**:
+   - Add `.config/`, `*.config.json`, and similar patterns to your `.gitignore`
+   - Use environment variables for sensitive information instead of config files
+
+2. **Use template files for sharing configuration structure**:
+   - Create example files like `config.example.js` with placeholder values
+   - Include clear instructions for team members to create their own config files
+
+3. **For GitHub repositories**:
+   - The `.git` directory should never be uploaded (Git handles this automatically)
+   - Double-check that no sensitive files are included in your commits before pushing
+   - Consider using Git pre-commit hooks to prevent accidentally committing sensitive files
+
 ## Next Steps After Deployment
 
 1. **Custom Domain**: Configure a custom domain in Render settings
