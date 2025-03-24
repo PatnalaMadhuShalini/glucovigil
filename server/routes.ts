@@ -11,6 +11,10 @@ import express from 'express';
 import { log } from './vite';
 
 export async function registerRoutes(router: Router): Promise<void> {
+  // Health check endpoint for Render
+  router.get('/health', (_req, res) => {
+    res.status(200).json({ status: 'ok' });
+  });
   // Add test endpoint for API verification
   router.get("/ping", (req, res) => {
     console.log("Ping endpoint hit:", {
